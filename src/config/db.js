@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 import logger from './logger';
 import config from './config';
 
+/**
+ * Connect To Database
+ */
 const connectDB = async () => {
   const DB = config.db.url.replace('<PASSWORD>', config.db.password);
 
