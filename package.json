@@ -17,11 +17,6 @@
     "prettier:fix": "prettier --write \"./**/*.{js,jsx,json}\"",
     "prepare": "husky install"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run prettier && npm run lint"
-    }
-  },
   "dependencies": {
     "argon2": "^0.27.2",
     "cloudinary": "^1.25.1",
@@ -61,7 +56,6 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "husky": "^6.0.0",
     "prettier": "^2.2.1"
   }
 }
