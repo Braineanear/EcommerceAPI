@@ -9,6 +9,7 @@ const envVarsSchema = Joi.object()
       .valid('production', 'development', 'test')
       .required(),
     PORT: Joi.number().default(3000),
+    REDIS_PORT: Joi.number().default(6397),
     DATABASE_CONNECTION: Joi.string().required().description('MongoDB URL'),
     DATABASE_PASSWORD: Joi.string().required().description('MongoDB Password'),
     JWT_SECRET: Joi.string().required().description('JWT Secret Key'),
@@ -44,7 +45,12 @@ if (error) {
 
 const config = {
   env: envVars.NODE_ENV,
-  port: envVars.PORT,
+  server: {
+    port: envVars.PORT
+  },
+  redis: {
+    port: envVars.REDIS_PORT
+  },
   url: {
     production: envVars.SERVER_URL_PROD,
     development: envVars.SERVER_URL_DEV
