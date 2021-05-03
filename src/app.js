@@ -8,14 +8,14 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import passport from 'passport';
 
-import jwtLogin from './config/passport.js';
-import config from './config/config.js';
-import { successHandle, errorHandle } from './config/morgan.js';
-import limiter from './middlewares/rateLimiter.js';
-import errorHandler from './utils/errorHandler.js';
-import AppError from './utils/appError.js';
+import jwtLogin from './config/passport';
+import config from './config/config';
+import { successHandle, errorHandle } from './config/morgan';
+import limiter from './middlewares/rateLimiter';
+import errorHandler from './utils/errorHandler';
+import AppError from './utils/appError';
 
-import routes from './routes/index.js';
+import routes from './routes/index';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
