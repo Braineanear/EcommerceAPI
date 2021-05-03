@@ -1,16 +1,17 @@
 import app from './app';
 import logger from './config/logger';
 import connectDB from './config/db';
+import config from './config/config';
 
 // Connect to MongoDB
 connectDB();
 
-const port = process.env.PORT || 3000;
+const serverPort = config.server.port || 3000;
 
-const server = app.listen(port, () => {
+const server = app.listen(serverPort, () => {
   logger.info(`
       ################################################
-      🚀 Server listening on port: ${port} 🚀
+      🚀 Server listening on port: ${serverPort} 🚀
       ################################################
   `);
 });
