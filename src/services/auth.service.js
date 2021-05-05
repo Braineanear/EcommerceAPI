@@ -23,7 +23,7 @@ export const loginUserWithEmailAndPassword = async (email, password) => {
   let err, user, isMatch;
 
   // 1) Get User With Specific Email and Password
-  [err, user] = await catchAsync(User.findOne({ email })).select('+password');
+  [err, user] = await catchAsync(User.findOne({ email }).select('+password'));
 
   // 2) Check if Passwords are The Same
   [err, isMatch] = await catchAsync(user.isPasswordMatch(password));
