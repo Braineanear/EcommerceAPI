@@ -3,7 +3,6 @@ import crypto from 'crypto';
 import validator from 'validator';
 import { hash, verify } from 'argon2';
 import { toJSON, paginate } from './plugins/index';
-import { roles } from '../config/roles';
 
 const userSchema = mongoose.Schema(
   {
@@ -55,7 +54,7 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      enum: roles,
+      enum: ['user', 'admin', 'seller'],
       default: 'user'
     },
     isEmailVerified: {
