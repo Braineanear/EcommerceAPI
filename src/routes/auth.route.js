@@ -38,7 +38,12 @@ router.post(
   forgotPassword
 );
 router.post('/reset-password', validate(resetPasswordValidate), resetPassword);
-router.post('/send-verification-email', auth(), sendVerificationEmail);
-router.post('/verify-email', validate(verifyEmailValidate), verifyEmail);
+router.post('/send-verification-email', auth('user'), sendVerificationEmail);
+router.post(
+  '/verify-email',
+  auth('user'),
+  validate(verifyEmailValidate),
+  verifyEmail
+);
 
 export default router;
