@@ -30,6 +30,15 @@ import {
   deleteUserById
 } from './user.service';
 
+import {
+  createCategory,
+  queryCategories,
+  getCategoryByName,
+  getCategoryById,
+  updateCategoryById,
+  deleteCategoryById
+} from './category.service';
+
 import { set, get, generateCacheKey } from './redis.service';
 
 const authService = {
@@ -64,6 +73,22 @@ const userService = {
   deleteUserById
 };
 
+const categoryService = {
+  createCategory,
+  queryCategories,
+  getCategoryByName,
+  getCategoryById,
+  updateCategoryById,
+  deleteCategoryById
+};
+
 const redisService = { set, get, generateCacheKey };
 
-export { authService, tokenService, userService, emailService, redisService };
+export {
+  authService,
+  tokenService,
+  userService,
+  emailService,
+  categoryService,
+  redisService
+};
