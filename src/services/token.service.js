@@ -44,25 +44,18 @@ export const generateToken = (
  * @param {string} type
  * @returns {Promise<Token>}
  */
-export const saveToken = async (token, userId, expires, type) => {
+export const saveToken = catchAsync(async (token, userId, expires, type) => {
   // 1) Create New Token Document
-  const [err, tokenDoc] = await catchAsync(
-    Token.create({
-      token,
-      user: userId,
-      expires: expires.toDate(),
-      type
-    })
-  );
+  const tokenDoc = await Token.create({
+    token,
+    user: userId,
+    expires: expires.toDate(),
+    type
+  });
 
-  // 2) Handling create Method Errors
-  if (err) {
-    throw new AppError(err, 500);
-  }
-
-  // 3) If Everything is OK, Send Token Data
+  // 2) If Everything is OK, Send Token Data
   return tokenDoc;
-};
+});
 
 /**
  * Verify token and return token doc (or throw an error if it is not valid)
@@ -70,39 +63,32 @@ export const saveToken = async (token, userId, expires, type) => {
  * @param {string} type
  * @returns {Promise<Token>}
  */
-export const verifyToken = async (token, type) => {
+export const verifyToken = catchAsync(async (token, type) => {
   // 1) Verify Token
   const payload = jwt.verify(token, config.jwt.secret);
 
   // 2) Get Token Data
-  const [err, tokenDoc] = await catchAsync(
-    Token.findOne({
-      token,
-      type,
-      user: payload.sub
-    })
-  );
+  const tokenDoc = await Token.findOne({
+    token,
+    type,
+    user: payload.sub
+  });
 
   // 3) Check if Token Already Exist or not
   if (!tokenDoc) {
-    throw new AppError('Token not found', 404);
+    throw new AppError('No Token Found', 404);
   }
 
-  // 4) Handling findOne Method Errors
-  if (err) {
-    throw new AppError(err, 500);
-  }
-
-  // 5) If Everything is OK, Send Token
+  // 4) If Everything is OK, Send Token
   return tokenDoc;
-};
+});
 
 /**
  * Generate auth tokens
  * @param {User} user
  * @returns {Promise<Object>}
  */
-export const generateAuthTokens = async (user) => {
+export const generateAuthTokens = catchAsync(async (user) => {
   // 1) Set Access Token Expire Time
   const accessTokenExpires = moment().add(
     config.jwt.accessExpirationMinutes,
@@ -130,16 +116,14 @@ export const generateAuthTokens = async (user) => {
   );
 
   // 5) Save Tokens
-  const [err] = await catchAsync(
-    saveToken(refreshToken, user.id, refreshTokenExpires, tokenTypes.REFRESH)
+  await saveToken(
+    refreshToken,
+    user.id,
+    refreshTokenExpires,
+    tokenTypes.REFRESH
   );
 
-  // 6) Handling saveToken Method Errors
-  if (err) {
-    throw new AppError(err, 500);
-  }
-
-  // If Everything is OK, Send Access Token & Refresh Token
+  // 6) If Everything is OK, Send Access Token & Refresh Token
   return {
     access: {
       token: accessToken,
@@ -150,22 +134,20 @@ export const generateAuthTokens = async (user) => {
       expires: refreshTokenExpires.toDate()
     }
   };
-};
+});
 
 /**
  * Generate reset password token
  * @param {string} email
  * @returns {Promise<string>}
  */
-export const generateResetPasswordToken = async (email) => {
-  let err, user;
-
+export const generateResetPasswordToken = catchAsync(async (email) => {
   // 1) Get User's Data
-  [err, user] = await catchAsync(User.findOne({ email }));
+  const user = await User.findOne({ email });
 
   // 2) Check if User Exist or not
   if (!user) {
-    throw new AppError('No users found with this email', 404);
+    throw new AppError(`No users found with this email: ${email}`, 404);
   }
 
   // 3) Set Reset Token Expire Time
@@ -182,30 +164,23 @@ export const generateResetPasswordToken = async (email) => {
   );
 
   // 5) Save Reset Token
-  [err] = await catchAsync(
-    saveToken(
-      resetPasswordToken,
-      user.id,
-      resetTokenExpires,
-      tokenTypes.RESET_PASSWORD
-    )
+  await saveToken(
+    resetPasswordToken,
+    user.id,
+    resetTokenExpires,
+    tokenTypes.RESET_PASSWORD
   );
 
-  // 6) Handling saveToken Method Errors
-  if (err) {
-    throw new AppError(err, 500);
-  }
-
-  // 7) If Everything is OK, Send Reset Password Token
+  // 6) If Everything is OK, Send Reset Password Token
   return resetPasswordToken;
-};
+});
 
 /**
  * Generate verify email token
  * @param {string} email
  * @returns {Promise<string>}
  */
-export const generateVerifyEmailToken = async (user) => {
+export const generateVerifyEmailToken = catchAsync(async (user) => {
   // 1) Set Verify Email Token Expire Time
   const verifyEmailTokenExpires = moment().add(
     config.jwt.verifyEmailExpirationMinutes,
@@ -220,20 +195,13 @@ export const generateVerifyEmailToken = async (user) => {
   );
 
   // 3) Save Verify Email Token
-  const [err] = await catchAsync(
-    saveToken(
-      verifyEmailToken,
-      user.id,
-      verifyEmailTokenExpires,
-      tokenTypes.VERIFY_EMAIL
-    )
+  await saveToken(
+    verifyEmailToken,
+    user.id,
+    verifyEmailTokenExpires,
+    tokenTypes.VERIFY_EMAIL
   );
 
-  // 4) Handling saveToken Method Errors
-  if (err) {
-    throw new AppError(err, 500);
-  }
-
-  // 5) If Everything is OK, Send Verify Email Token
+  // 4) If Everything is OK, Send Verify Email Token
   return verifyEmailToken;
-};
+});
