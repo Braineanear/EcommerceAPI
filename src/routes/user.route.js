@@ -21,13 +21,13 @@ const router = express.Router();
 
 router
   .route('/')
-  .post(auth('manageUsers'), validate(createUserValidate), createUser)
-  .get(auth('getUsers'), validate(getUsersValidate), getUsers);
+  .post(auth('admin'), validate(createUserValidate), createUser)
+  .get(validate(getUsersValidate), getUsers);
 
 router
   .route('/:userId')
-  .get(auth('getUsers'), validate(getUserValidate), getUser)
-  .patch(auth('manageUsers'), validate(updateUserValidate), updateUser)
-  .delete(auth('manageUsers'), validate(deleteUserValidate), deleteUser);
+  .get(validate(getUserValidate), getUser)
+  .patch(auth('admin'), validate(updateUserValidate), updateUser)
+  .delete(auth('admin'), validate(deleteUserValidate), deleteUser);
 
 export default router;
