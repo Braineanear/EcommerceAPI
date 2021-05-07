@@ -1,3 +1,4 @@
+import { getAllProducts, addProduct } from './product.controller';
 import {
   register,
   login,
@@ -16,6 +17,14 @@ import {
   deleteUser
 } from './user.controller';
 
+import {
+  getAllCategories,
+  getCategory,
+  addCategory,
+  updateCategory,
+  deleteCategory
+} from './category.controller';
+
 const authController = {
   register,
   login,
@@ -26,6 +35,7 @@ const authController = {
   sendVerificationEmail,
   verifyEmail
 };
+
 const userController = {
   createUser,
   getUsers,
@@ -34,4 +44,22 @@ const userController = {
   deleteUser
 };
 
-export { authController, userController };
+const categoryController = {
+  getAllCategories,
+  getCategory,
+  addCategory,
+  updateCategory,
+  deleteCategory
+};
+
+const productController = {
+  getAllProducts,
+  addProduct
+};
+
+export {
+  authController,
+  userController,
+  productController,
+  categoryController
+};
