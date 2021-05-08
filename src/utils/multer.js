@@ -37,6 +37,19 @@ export const singleFile = (name) => (req, res, next) => {
   });
 };
 
+export const anyMulter = () => (req, res, next) => {
+  const upload = multer({
+    storage,
+    limits,
+    fileFilter
+  }).any();
+
+  upload(req, res, (err) => {
+    if (err) return next(new AppError(err, 500));
+    next();
+  });
+};
+
 export const multipleFiles = (name, number) => (req, res, next) => {
   const uploads = multer({
     storage,
