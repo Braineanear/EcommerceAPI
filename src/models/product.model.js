@@ -3,6 +3,12 @@ import { toJSON, paginate } from './plugins/index';
 
 const productSchema = mongoose.Schema(
   {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+      min: 5
+    },
     mainImage: {
       type: String,
       required: true
@@ -12,19 +18,12 @@ const productSchema = mongoose.Schema(
       required: true
     },
     images: {
-      type: Array,
+      type: [String],
       required: true
     },
     imagesId: {
-      type: Array,
+      type: [String],
       required: true
-    },
-    name: {
-      type: String,
-      required: true,
-      unique: true,
-      min: 5,
-      max: 30
     },
     description: {
       type: String,
@@ -33,12 +32,23 @@ const productSchema = mongoose.Schema(
       max: 100
     },
     category: {
+      type: String,
+      required: true
+    },
+    user: {
       type: mongoose.SchemaTypes.ObjectId,
-      ref: 'categories'
+      ref: 'User',
+      required: true
     },
     price: {
+      type: String,
+      required: true,
+      default: '0'
+    },
+    oldPrice: {
       type: Number,
-      required: true
+      required: true,
+      default: '0'
     },
     color: {
       type: String
@@ -49,6 +59,15 @@ const productSchema = mongoose.Schema(
     quantity: {
       type: String,
       default: 0
+    },
+    quality: {
+      type: String,
+      required: true,
+      default: 'New'
+    },
+    isPopular: {
+      type: Boolean,
+      required: true
     },
     sold: {
       type: Number,
@@ -61,6 +80,10 @@ const productSchema = mongoose.Schema(
     status: {
       type: String,
       required: true
+    },
+    isOutOfStock: {
+      type: Boolean,
+      default: false
     }
   },
   {
