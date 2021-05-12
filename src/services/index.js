@@ -39,6 +39,16 @@ import {
   deleteCategoryById
 } from './category.service';
 
+import {
+  queryProducts,
+  queryProductById,
+  createProduct,
+  updateProductDetails,
+  updateProductMainImage,
+  updateProductImages,
+  deleteProduct
+} from './product.service';
+
 import { set, get, generateCacheKey } from './redis.service';
 
 const authService = {
@@ -82,6 +92,16 @@ const categoryService = {
   deleteCategoryById
 };
 
+const productService = {
+  queryProducts,
+  queryProductById,
+  createProduct,
+  updateProductDetails,
+  updateProductMainImage,
+  updateProductImages,
+  deleteProduct
+};
+
 const redisService = { set, get, generateCacheKey };
 
 export {
@@ -90,5 +110,6 @@ export {
   userService,
   emailService,
   categoryService,
+  productService,
   redisService
 };
