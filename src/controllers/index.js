@@ -1,4 +1,12 @@
-import { getAllProducts, addProduct } from './product.controller';
+import {
+  getAllProducts,
+  getProduct,
+  addProduct,
+  updateProductDetails,
+  updateProductMainImage,
+  updateProductImages,
+  deleteProduct
+} from './product.controller';
 import {
   register,
   login,
@@ -54,7 +62,12 @@ const categoryController = {
 
 const productController = {
   getAllProducts,
-  addProduct
+  getProduct,
+  addProduct,
+  updateProductDetails,
+  updateProductMainImage,
+  updateProductImages,
+  deleteProduct
 };
 
 export {
