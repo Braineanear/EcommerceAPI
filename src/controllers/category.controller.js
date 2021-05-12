@@ -2,7 +2,6 @@
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/appError';
 import dataUri from '../utils/datauri';
-import pick from '../utils/pick';
 import { uploadFile, destroyFile } from '../utils/cloudinary';
 
 // Configs
@@ -50,13 +49,8 @@ export const getAllCategories = catchAsync(async (req, res, next) => {
     });
   }
 
-  // 6) Setting Filter & Options
-  const filter = pick(req.query, ['name', 'description', 'status', 'image']);
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
-  const select = ['name', 'description', 'image', 'status'];
-
   // 7) Get All Users
-  categories = await categoryService.queryCategories(filter, options, select);
+  categories = await categoryService.queryCategories(req);
 
   // 8) Check If Categories Already Exist
   if (!categories) {
