@@ -1,6 +1,7 @@
 // Utils
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/appError';
+import APIFeatures from '../utils/apiFeatures';
 
 // Models
 import { User } from '../models/index';
@@ -35,9 +36,9 @@ export const createUser = catchAsync(async (userBody) => {
  * @param {number} [options.page] - Current page (default = 1)
  * @returns {Promise<QueryResult>}
  */
-export const queryUsers = catchAsync(async (filter, options) => {
+export const queryUsers = catchAsync(async (req) => {
   // 1) Get All Users
-  const users = await User.paginate(filter, options);
+  const users = APIFeatures(req, User);
 
   // 2) Check if No Users
   if (!users) {
