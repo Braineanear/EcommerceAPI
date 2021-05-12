@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { toJSON, paginate } from './plugins/index';
+import toJSON from './plugins/index';
 
 const categorySchema = mongoose.Schema(
   {
@@ -32,7 +32,6 @@ const categorySchema = mongoose.Schema(
 
 // add plugin that converts mongoose to json
 categorySchema.plugin(toJSON);
-categorySchema.plugin(paginate);
 
 const Category = mongoose.model('Category', categorySchema);
 
