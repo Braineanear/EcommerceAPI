@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { toJSON, paginate } from './plugins/index';
+import { toJSON } from './plugins/index';
 
 const productSchema = mongoose.Schema(
   {
@@ -92,7 +92,15 @@ const productSchema = mongoose.Schema(
 
 // add plugin that converts mongoose to json
 productSchema.plugin(toJSON);
-productSchema.plugin(paginate);
+
+productSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'user',
+    select: 'name email role'
+  });
+
+  next();
+});
 
 const Product = mongoose.model('Product', productSchema);
 
