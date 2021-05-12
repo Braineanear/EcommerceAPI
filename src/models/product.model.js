@@ -36,9 +36,8 @@ const productSchema = mongoose.Schema(
       required: true
     },
     user: {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: 'User',
-      required: true
+      type: mongoose.Types.ObjectId,
+      ref: 'User'
     },
     price: {
       type: String,
