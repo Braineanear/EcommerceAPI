@@ -2,7 +2,6 @@
 import logger from '../config/logger';
 
 // Utils
-import pick from '../utils/pick';
 import AppError from '../utils/appError';
 import catchAsync from '../utils/catchAsync';
 
@@ -68,17 +67,13 @@ export const getUsers = catchAsync(async (req, res, next) => {
     });
   }
 
-  // 6) Setting Filter & Options
-  const filter = pick(req.query, ['name', 'role']);
-  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  // 6) Get All Users
+  data = await userService.queryUsers(req);
 
-  // 7) Get All Users
-  data = await userService.queryUsers(filter, options);
-
-  // 8) Put Data into Redis With a Specific Key
+  // 7) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(data), 'EX', 60);
 
-  // 9) If Everything is OK, Send Data
+  // 8) If Everything is OK, Send Data
   return res.status(200).json({
     status: 'success',
     message: 'Found Users',
