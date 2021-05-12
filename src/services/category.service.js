@@ -33,6 +33,10 @@ export const queryCategories = catchAsync(async (req) => {
   // 1) Get All Categories
   const categories = APIFeatures(req, Category);
 
+  if (!categories) {
+    throw new AppError('No Categories Found', 404);
+  }
+
   // 2) Send Categories Data
   return categories;
 });
