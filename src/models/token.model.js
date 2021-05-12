@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { toJSON } from './plugins/index';
+import toJSON from './plugins/index';
 import tokenTypes from '../config/tokens';
 
 const tokenSchema = mongoose.Schema(
