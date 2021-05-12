@@ -1,6 +1,7 @@
 // Utils
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/appError';
+import APIFeatures from '../utils/apiFeatures';
 
 // Models
 import { Category } from '../models/index';
@@ -28,9 +29,9 @@ export const createCategory = catchAsync(async (categoryBody) => {
  * @param {Array} select - Select Certain Fields
  * @returns {Promise<Categories>}
  */
-export const queryCategories = catchAsync(async (filter, options, select) => {
+export const queryCategories = catchAsync(async (req) => {
   // 1) Get All Categories
-  const categories = await Category.paginate(filter, options, select);
+  const categories = APIFeatures(req, Category);
 
   // 2) Send Categories Data
   return categories;
