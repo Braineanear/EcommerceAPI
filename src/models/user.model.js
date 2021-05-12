@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import crypto from 'crypto';
 import validator from 'validator';
 import { hash, verify } from 'argon2';
-import { toJSON, paginate } from './plugins/index';
+import toJSON from './plugins/index';
 
 const userSchema = mongoose.Schema(
   {
@@ -68,7 +68,6 @@ const userSchema = mongoose.Schema(
 
 // add plugin that converts mongoose to json
 userSchema.plugin(toJSON);
-userSchema.plugin(paginate);
 
 /**
  * Check if email is taken
