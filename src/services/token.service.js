@@ -44,11 +44,11 @@ export const generateToken = (
  * @param {string} type
  * @returns {Promise<Token>}
  */
-export const saveToken = catchAsync(async (token, userId, expires, type) => {
+export const saveToken = catchAsync(async (token, id, expires, type) => {
   // 1) Create New Token Document
   const tokenDoc = await Token.create({
     token,
-    user: userId,
+    user: id,
     expires: expires.toDate(),
     type
   });
