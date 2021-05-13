@@ -1,5 +1,4 @@
 // Utils
-import AppError from '../utils/appError';
 import catchAsync from '../utils/catchAsync';
 
 // Services
@@ -18,16 +17,8 @@ import {
  * @returns {JSON}
  */
 export const register = catchAsync(async (req, res, next) => {
-  const { username, name, email, password, passwordConfirmation } = req.body;
-
   // 1) Create User
-  const user = await userService.createUser({
-    username,
-    name,
-    email,
-    password,
-    passwordConfirmation
-  });
+  const user = await userService.createUser(req.body);
 
   // 2) Generate Tokens [Access Token / Refresh Token]
   const tokens = await tokenService.generateAuthTokens(user);
@@ -55,20 +46,13 @@ export const register = catchAsync(async (req, res, next) => {
  * @returns {JSON}
  */
 export const login = catchAsync(async (req, res, next) => {
-  const { email, password } = req.body;
+  // 1) Login User Email & Password
+  const user = await authService.loginUserWithEmailAndPassword(req.body);
 
-  // 1) Check if email and password exist
-  if (!email || !password) {
-    return next(new AppError('Please provide email and password', 400));
-  }
-
-  // 2) Login User Email & Password
-  const user = await authService.loginUserWithEmailAndPassword(email, password);
-
-  // 3) Generate Auth Tokens
+  // 2) Generate Auth Tokens
   const tokens = await tokenService.generateAuthTokens(user);
 
-  // 4) If Everything is OK, Send User's Data & Tokens
+  // 3) If Everything is OK, Send User's Data & Tokens
   return res.status(200).json({
     status: 'success',
     message: 'User Logged in Successfully',
