@@ -8,6 +8,11 @@ import { uploadFile, destroyFile } from '../utils/cloudinary';
 // Model
 import { Product } from '../models/index';
 
+/**
+ * Query products
+ * @param {Object} request
+ * @returns {Promise<Products>}
+ */
 export const queryProducts = catchAsync(async (req) => {
   // 1) Get All Products
   const products = await apiFeatures(req, Product, {
@@ -24,6 +29,11 @@ export const queryProducts = catchAsync(async (req) => {
   return products;
 });
 
+/**
+ * Query Product Using It's ID
+ * @param {String} productId
+ * @returns {Promise<Product>}
+ */
 export const queryProductById = catchAsync(async (productId) => {
   // 1) Get Product Using It's ID
   const product = await Product.findById(productId).populate('user');
@@ -37,6 +47,11 @@ export const queryProductById = catchAsync(async (productId) => {
   return product;
 });
 
+/**
+ * Create new product
+ * @param {Object} request
+ * @returns {Promise<Product>}
+ */
 export const createProduct = catchAsync(async (req) => {
   const {
     name,
@@ -133,13 +148,15 @@ export const createProduct = catchAsync(async (req) => {
     isOutOfStock
   });
 
-  // 10) Populate User
-  product = await Product.findById(product._id).populate('user');
-
-  // 11) If Everything is OK, Send Data
+  // 10) If Everything is OK, Send Data
   return product;
 });
 
+/**
+ * Update Product Details
+ * @param {Object} request
+ * @returns {Promise<Product>}
+ */
 export const updateProductDetails = catchAsync(async (req) => {
   const { id } = req.params;
 
@@ -160,6 +177,11 @@ export const updateProductDetails = catchAsync(async (req) => {
   return result;
 });
 
+/**
+ * Update Product Main Image
+ * @param {Object} request
+ * @returns {Promise<Product>}
+ */
 export const updateProductMainImage = catchAsync(async (req) => {
   let mainImage = req.files;
   const { id } = req.params;
@@ -205,6 +227,11 @@ export const updateProductMainImage = catchAsync(async (req) => {
   return result;
 });
 
+/**
+ * Update Product Images
+ * @param {Object} request
+ * @returns {Promise<Product>}
+ */
 export const updateProductImages = catchAsync(async (req) => {
   let images = req.files;
   const { id } = req.params;
@@ -266,6 +293,10 @@ export const updateProductImages = catchAsync(async (req) => {
   return result;
 });
 
+/**
+ * Delete Product Using It's ID
+ * @param {Object} request
+ */
 export const deleteProduct = catchAsync(async (req) => {
   const { id } = req.params;
 
@@ -278,4 +309,59 @@ export const deleteProduct = catchAsync(async (req) => {
 
   // 2) Delete Product Using It's ID
   await Product.findByIdAndDelete(id);
+});
+
+/**
+ * Get Products Statics
+ * @return {Array<Stats>}
+ */
+export const getProductStats = catchAsync(async () => {
+  const stats = await Product.aggregate([
+    {
+      $match: { ratingsAverage: { $gte: 4.5 } }
+    },
+    {
+      $group: {
+        _id: '$category',
+        'Number Of Products': { $sum: 1 },
+        'Number Of Ratings': { $sum: '$ratingsQuantity' },
+        'Average Rating': { $avg: '$ratingsAverage' },
+        'Average Price': { $avg: '$price' },
+        'Minimum Price': { $min: '$price' },
+        'Maximum Price': { $max: '$price' },
+        Quantity: { $sum: '$quantity' }
+      }
+    },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'Category'
+      }
+    },
+    {
+      $unwind: '$Category'
+    },
+    {
+      $project: {
+        _id: 0,
+        'Number Of Products': 1,
+        'Number Of Ratings': 1,
+        'Average Rating': 1,
+        'Average Price': 1,
+        'Minimum Price': 1,
+        'Maximum Price': 1,
+        Quantity: 1,
+        Category: {
+          name: 1
+        }
+      }
+    },
+    {
+      $sort: { avgPrice: 1 }
+    }
+  ]);
+
+  return stats;
 });
