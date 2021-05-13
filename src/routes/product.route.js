@@ -10,11 +10,15 @@ const {
   updateProductDetails,
   updateProductMainImage,
   updateProductImages,
-  deleteProduct
+  deleteProduct,
+  top5Cheap,
+  productStats
 } = productController;
 
 const router = express.Router();
 
+router.get('/top-5-cheap', top5Cheap, getAllProducts);
+router.get('/product-stats', productStats);
 router.get('/', getAllProducts);
 router.get('/:id', getProduct);
 router.patch('/:id/details', updateProductDetails);
@@ -24,6 +28,6 @@ router.delete('/:id', deleteProduct);
 
 router.use(auth('admin', 'seller'));
 
-router.route('/').post(addProduct);
+router.route('/').post(anyMulter(), addProduct);
 
 export default router;
