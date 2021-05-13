@@ -41,7 +41,7 @@
     "passport-jwt": "^4.0.0",
     "redis": "^3.1.2",
     "sharp": "^0.28.1",
-    "slugify": "^1.5.0",
+    "slugify": "^1.5.3",
     "validator": "^13.6.0",
     "winston": "^3.3.3",
     "xss-clean": "^0.1.1"
