@@ -8,12 +8,17 @@ import { User } from '../models/index';
 
 /**
  * Create new user
- * @param {Object} userBody
+ * @param {Object} req
  * @returns {Promise<User>}
  */
-export const createUser = catchAsync(async (userBody) => {
+export const createUser = catchAsync(async (req) => {
+  const { name, username, email, password, passwordConfirmation } = req.body;
+
+  if (!name || !username || !email || !password || !passwordConfirmation) {
+    throw new AppError('All fields are required', 400);
+  }
   // 1) Check if The Email Already Taken
-  const isEmailTaken = await User.isEmailTaken(userBody.email);
+  const isEmailTaken = await User.isEmailTaken(email);
 
   // 2) If The Email Taken
   if (isEmailTaken) {
@@ -21,7 +26,13 @@ export const createUser = catchAsync(async (userBody) => {
   }
 
   // 3) Create New User
-  const user = await User.create(userBody);
+  const user = await User.create({
+    name,
+    username,
+    email,
+    password,
+    passwordConfirmation
+  });
 
   // 4) If Everything is OK, Send User Data
   return user;
@@ -38,10 +49,10 @@ export const createUser = catchAsync(async (userBody) => {
  */
 export const queryUsers = catchAsync(async (req) => {
   // 1) Get All Users
-  const users = APIFeatures(req, User);
+  const users = await APIFeatures(req, User);
 
   // 2) Check if No Users
-  if (!users) {
+  if (users.length === 0) {
     throw new AppError('No Users Found', 404);
   }
 
@@ -55,17 +66,17 @@ export const queryUsers = catchAsync(async (req) => {
  * @param {Object} updateBody
  * @returns {Promise<User>}
  */
-export const updateUserById = catchAsync(async (userId, updateBody) => {
+export const updateUserById = catchAsync(async (id, body) => {
   // 1) Check if Email Already Taken
-  const isEmailTaken = await User.isEmailTaken(updateBody.email, userId);
+  const isEmailTaken = await User.isEmailTaken(body.email, id);
 
   // 2) If Email Taken
-  if (updateBody.email && isEmailTaken) {
+  if (body.email && isEmailTaken) {
     throw new AppError('Email already taken', 400);
   }
 
   // 3) Find User Document and Update it
-  const user = await User.findByIdAndUpdate(userId, updateBody, {
+  const user = await User.findByIdAndUpdate(id, body, {
     new: true,
     runValidators: true
   });
