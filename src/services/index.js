@@ -35,7 +35,8 @@ import {
   queryCategories,
   getCategoryByName,
   getCategoryById,
-  updateCategoryById,
+  updateCategoryDetails,
+  updateCategoryImage,
   deleteCategoryById
 } from './category.service';
 
@@ -46,7 +47,8 @@ import {
   updateProductDetails,
   updateProductMainImage,
   updateProductImages,
-  deleteProduct
+  deleteProduct,
+  getProductStats
 } from './product.service';
 
 import { set, get, generateCacheKey } from './redis.service';
@@ -88,7 +90,8 @@ const categoryService = {
   queryCategories,
   getCategoryByName,
   getCategoryById,
-  updateCategoryById,
+  updateCategoryDetails,
+  updateCategoryImage,
   deleteCategoryById
 };
 
@@ -99,7 +102,8 @@ const productService = {
   updateProductDetails,
   updateProductMainImage,
   updateProductImages,
-  deleteProduct
+  deleteProduct,
+  getProductStats
 };
 
 const redisService = { set, get, generateCacheKey };
