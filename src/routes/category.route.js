@@ -7,21 +7,23 @@ const {
   getAllCategories,
   getCategory,
   addCategory,
-  updateCategory,
+  updateCategoryDetails,
+  updateCategoryImage,
   deleteCategory
 } = categoryController;
 
 const router = express.Router();
 
-router
-  .route('/')
-  .get(getAllCategories)
-  .post(auth('admin'), singleFile('image'), addCategory);
+router.use(auth('admin'));
+
+router.route('/').get(getAllCategories).post(singleFile('image'), addCategory);
 
 router
   .route('/:id')
   .get(getCategory)
-  .patch(auth('admin'), singleFile('image'), updateCategory)
-  .delete(auth('admin'), deleteCategory);
+  .delete(deleteCategory)
+  .patch(updateCategoryDetails);
+
+router.patch('/:id/image', singleFile('image'), updateCategoryImage);
 
 export default router;
