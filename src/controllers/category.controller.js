@@ -1,8 +1,5 @@
 // Utils
 import catchAsync from '../utils/catchAsync';
-import AppError from '../utils/appError';
-import dataUri from '../utils/datauri';
-import { uploadFile, destroyFile } from '../utils/cloudinary';
 
 // Configs
 import logger from '../config/logger';
@@ -15,19 +12,20 @@ import { categoryService, redisService } from '../services/index';
  * @param   {Object} req
  * @param   {Object} res
  * @param   {Object} next
- * @returns {JSON<Categories>}
+ * @returns {JSON}
  */
 export const getAllCategories = catchAsync(async (req, res, next) => {
-  let { page, sortBy, limit } = req.query;
+  let { page, sort, limit, select } = req.query;
   // 1) Setting Default Params
   if (!page) page = 1;
-  if (!sortBy) sortBy = 'sortField:asc';
+  if (!sort) sort = '';
   if (!limit) limit = 10;
+  if (!select) select = '';
 
   // 2) Generating Redis key
   const key = redisService.generateCacheKey(
     'categories',
-    `page:${page}-sortBy:${sortBy}-limit:${limit}`
+    `page:${page}-sort:${sort}-limit:${limit}-select:${select}`
   );
 
   // 3) Getting Cached Data From Redis
@@ -49,18 +47,13 @@ export const getAllCategories = catchAsync(async (req, res, next) => {
     });
   }
 
-  // 7) Get All Users
+  // 6) Get All Users
   categories = await categoryService.queryCategories(req);
 
-  // 8) Check If Categories Already Exist
-  if (!categories) {
-    return next(new AppError('No Categories Found', 404));
-  }
-
-  // 9) Put Data into Redis With a Specific Key
+  // 7) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(categories), 'EX', 60);
 
-  // 10) If Everything is OK, Send Data
+  // 8) If Everything is OK, Send Data
   return res.status(200).json({
     status: 'success',
     message: 'Categories Found',
@@ -69,11 +62,11 @@ export const getAllCategories = catchAsync(async (req, res, next) => {
 });
 
 /**
- * Get Category's Data
+ * Get Category Using It's ID
  * @param   {Object} req
  * @param   {Object} res
  * @param   {Object} next
- * @returns {JSON<Category>}
+ * @returns {JSON}
  */
 export const getCategory = catchAsync(async (req, res, next) => {
   const { id } = req.params;
@@ -103,15 +96,10 @@ export const getCategory = catchAsync(async (req, res, next) => {
   // 5) Get All Users
   category = await categoryService.getCategoryById(id);
 
-  // 6) Check If Category Already Exist
-  if (!category) {
-    return next(new AppError(`No Category Found With This Name: ${id}`, 404));
-  }
-
-  // 7) Put Data into Redis With a Specific Key
+  // 6) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(category), 'EX', 60);
 
-  // 8) If Everything is OK, Send Category
+  // 7) If Everything is OK, Send Category
   return res.status(200).json({
     status: 'success',
     message: 'Found Category Successfully',
@@ -124,38 +112,13 @@ export const getCategory = catchAsync(async (req, res, next) => {
  * @param   {Object} req
  * @param   {Object} res
  * @param   {Object} next
- * @returns {JSON<Category>}
+ * @returns {JSON}
  */
 export const addCategory = catchAsync(async (req, res, next) => {
-  const { name, description, status } = req.body;
-  let image = req.file;
+  // 1) Insert Data into The Database
+  const result = await categoryService.createCategory(req);
 
-  // 1) Check If The User Entered All Fields
-  if (!name || !description || !status || !image) {
-    return next(new AppError('All fields are required', 400));
-  }
-
-  // 2) Specifiy Folder Name Where The Images Are Going To Be Uploaded In Cloudinary
-  const folderName = 'Category';
-
-  // 4) Generate a Buffer instance from a Data URI string
-  image = dataUri(image);
-
-  // 5) Upload Image to Cloudinary
-  image = await uploadFile(image.content, folderName, 600);
-
-  const categoryBody = {
-    name,
-    description,
-    status,
-    image: image.secure_url,
-    imageId: image.public_id
-  };
-
-  // 6) Insert Data into The Database
-  const result = await categoryService.createCategory(categoryBody);
-
-  // 7) If Everything is OK, Send Result
+  // 2) If Everything is OK, Send Result
   return res.status(201).json({
     status: 'success',
     message: 'Category Created Successfully',
@@ -164,51 +127,19 @@ export const addCategory = catchAsync(async (req, res, next) => {
 });
 
 /**
- * Update Category's Data
+ * Update Category Details
  * @param   {Object} req
  * @param   {Object} res
  * @param   {Object} next
- * @returns {JSON<Category>}
+ * @returns {JSON}
  */
-export const updateCategory = catchAsync(async (req, res, next) => {
-  const { name, description, status } = req.body;
+export const updateCategoryDetails = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  let image = req.file;
 
-  // 1) Check If The User Entered All Fields
-  if (!name || !description || !status) {
-    return next(new AppError('All fields are required', 400));
-  }
+  // 1) Update Category
+  const result = await categoryService.updateCategoryDetails(id, req.body);
 
-  // 2) Get Category Data
-  const category = await categoryService.getCategoryById(id);
-
-  // 3) Check If Category Already Exist
-  if (!category) {
-    return next(new AppError(`No Category Found With This ID: ${id}`, 404));
-  }
-
-  // 4) Destroy Category Current Image From Cloudinary
-  destroyFile(category.imageId);
-
-  // 5) Specifiy Folder Name Where The Images Are Going To Be Uploaded In Cloudinary
-  const folderName = 'Category';
-  image = dataUri(image);
-  image = await uploadFile(image.content, folderName, 600);
-
-  // 6) Create Category Body Object
-  const categoryBody = {
-    name,
-    description,
-    status,
-    image: image.secure_url,
-    imageId: image.public_id
-  };
-
-  // 7) Update Category
-  const result = await categoryService.updateCategoryById(id, categoryBody);
-
-  // 8) If Everything is OK, Send Category Data
+  // 2) If Everything is OK, Send Category Data
   return res.status(200).json({
     status: 'success',
     message: 'Category Updated Successfully',
@@ -217,7 +148,29 @@ export const updateCategory = catchAsync(async (req, res, next) => {
 });
 
 /**
- * Delete Category's Data
+ * Update Category Image
+ * @param   {Object} req
+ * @param   {Object} res
+ * @param   {Object} next
+ * @returns {JSON}
+ */
+export const updateCategoryImage = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  let image = req.file;
+
+  // 1) Update Category
+  const result = await categoryService.updateCategoryImage(id, image);
+
+  // 2) If Everything is OK, Send Category Data
+  return res.status(200).json({
+    status: 'success',
+    message: 'Category Updated Successfully',
+    result
+  });
+});
+
+/**
+ * Delete Category
  * @param   {Object} req
  * @param   {Object} res
  * @param   {Object} next
