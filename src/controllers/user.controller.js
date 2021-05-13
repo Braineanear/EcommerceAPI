@@ -2,7 +2,6 @@
 import logger from '../config/logger';
 
 // Utils
-import AppError from '../utils/appError';
 import catchAsync from '../utils/catchAsync';
 
 // Services
@@ -38,16 +37,18 @@ export const createUser = catchAsync(async (req, res, next) => {
  * @returns {JSON}
  */
 export const getUsers = catchAsync(async (req, res, next) => {
-  let { page, sortBy, limit } = req.query;
+  let { page, sort, limit, select } = req.query;
+
   // 1) Setting Default Params
   if (!page) page = 1;
-  if (!sortBy) sortBy = 'sortField:asc';
+  if (!sort) sort = '';
   if (!limit) limit = 10;
+  if (!select) select = '';
 
   // 2) Generating Redis key
   const key = redisService.generateCacheKey(
     'users',
-    `page:${page}-sortBy:${sortBy}-limit:${limit}`
+    `page:${page}-sortBy:${sort}-limit:${limit}-select:${select}`
   );
 
   // 3) Getting Cached Data From Redis
@@ -113,15 +114,10 @@ export const getUser = catchAsync(async (req, res, next) => {
   // 5) Find User Document By It's ID
   user = await User.findById(req.params.userId);
 
-  // 6) Check if User Already Exist
-  if (!user) {
-    return next(new AppError('No User Found', 404));
-  }
-
-  // 7) Put Data into Redis With a Specific Key
+  // 6) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(user), 'EX', 60);
 
-  // 8) If Everything is OK, Send User's Data
+  // 7) If Everything is OK, Send User's Data
   return res.status(200).json({
     status: 'success',
     user
