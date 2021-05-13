@@ -33,6 +33,8 @@ const categorySchema = mongoose.Schema(
 // add plugin that converts mongoose to json
 categorySchema.plugin(toJSON);
 
+categorySchema.index({ name: 1, image: 1 }, { unique: true });
+
 const Category = mongoose.model('Category', categorySchema);
 
 export default Category;
