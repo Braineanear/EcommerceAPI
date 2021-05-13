@@ -5,7 +5,9 @@ import {
   updateProductDetails,
   updateProductMainImage,
   updateProductImages,
-  deleteProduct
+  deleteProduct,
+  top5Cheap,
+  productStats
 } from './product.controller';
 import {
   register,
@@ -29,7 +31,8 @@ import {
   getAllCategories,
   getCategory,
   addCategory,
-  updateCategory,
+  updateCategoryDetails,
+  updateCategoryImage,
   deleteCategory
 } from './category.controller';
 
@@ -56,7 +59,8 @@ const categoryController = {
   getAllCategories,
   getCategory,
   addCategory,
-  updateCategory,
+  updateCategoryDetails,
+  updateCategoryImage,
   deleteCategory
 };
 
@@ -67,7 +71,9 @@ const productController = {
   updateProductDetails,
   updateProductMainImage,
   updateProductImages,
-  deleteProduct
+  deleteProduct,
+  top5Cheap,
+  productStats
 };
 
 export {
