@@ -1,53 +1,74 @@
 import mongoose from 'mongoose';
+import slugify from 'slugify';
+
+// Plugins
 import toJSON from './plugins/index';
 
 const productSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, 'A product must have a name'],
       unique: true,
-      min: 5
+      trim: true,
+      maxlength: [
+        40,
+        'A product name must have less or equal then 40 characters'
+      ],
+      minlength: [
+        10,
+        'A product name must have more or equal then 10 characters'
+      ]
     },
+    slug: String,
     mainImage: {
       type: String,
-      required: true
+      required: [true, 'A product must have a main image']
     },
     mainImageId: {
-      type: String,
-      required: true
+      type: String
     },
     images: {
       type: [String],
-      required: true
+      required: [true, 'A product must have sub images']
     },
     imagesId: {
-      type: [String],
-      required: true
+      type: [String]
     },
     description: {
       type: String,
-      required: true,
-      min: 5,
-      max: 100
+      required: [true, 'A product must have a description'],
+      min: [
+        10,
+        'A product description must have more or equal than 10 characters'
+      ],
+      max: [
+        100,
+        'A product description must have less or equal than 100 characters'
+      ]
     },
     category: {
-      type: String,
-      required: true
+      type: mongoose.Schema.ObjectId,
+      ref: 'Category'
     },
     user: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.ObjectId,
       ref: 'User'
     },
     price: {
-      type: String,
-      required: true,
-      default: '0'
-    },
-    oldPrice: {
       type: Number,
       required: true,
-      default: '0'
+      default: 0
+    },
+    priceDiscount: {
+      type: Number,
+      validate: {
+        validator: function (value) {
+          // this only points to current doc on NEW documnet creation
+          return value < this.price;
+        },
+        message: 'Discount price ({VALUE}) should be below regular price'
+      }
     },
     color: {
       type: String
@@ -56,48 +77,69 @@ const productSchema = mongoose.Schema(
       type: String
     },
     quantity: {
-      type: String,
+      type: Number,
       default: 0
-    },
-    quality: {
-      type: String,
-      required: true,
-      default: 'New'
-    },
-    isPopular: {
-      type: Boolean,
-      required: true
     },
     sold: {
       type: Number,
       default: 0
     },
-    offer: {
-      type: String,
-      default: null
-    },
-    status: {
-      type: String,
-      required: true
-    },
     isOutOfStock: {
       type: Boolean,
       default: false
+    },
+    ratingsAverage: {
+      type: Number,
+      default: 4.5,
+      min: [1, 'Rating must be above 1.0'],
+      max: [5, 'Rating must be below 5.0'],
+      set: (val) => Math.round(val * 10) / 10
+    },
+    ratingsQuantity: {
+      type: Number,
+      default: 0
     }
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
 // add plugin that converts mongoose to json
 productSchema.plugin(toJSON);
 
+productSchema.index(
+  { name: 1, category: 1, price: 1, ratingsAverage: -1 },
+  { unique: true }
+);
+productSchema.index({ slug: 1 });
+
+// Virtual populate
+productSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'product',
+  localField: '_id'
+});
+
+// DOCUMENT MIDDLEWARE: runs before .save() and .create() !.update()
+productSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
 productSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'user',
-    select: 'name email role'
-  });
+  this.populate([
+    {
+      path: 'user',
+      select: 'name email role'
+    },
+    {
+      path: 'category',
+      select: 'name description image status'
+    }
+  ]);
 
   next();
 });
