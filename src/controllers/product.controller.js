@@ -3,13 +3,20 @@ import logger from '../config/logger';
 
 // Utils
 import catchAsync from '../utils/catchAsync';
-import AppError from '../utils/appError';
 
 // Services
 import { productService, redisService } from '../services/index';
 
+/**
+ * Get All Products
+ * @param   {Object} req
+ * @param   {Object} res
+ * @param   {Object} next
+ * @returns {JSON}
+ */
 export const getAllProducts = catchAsync(async (req, res, next) => {
   let { page, sortBy, limit } = req.query;
+
   // 1) Setting Default Params
   if (!page) page = 1;
   if (!sortBy) sortBy = 'sortField:asc';
@@ -38,18 +45,13 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     });
   }
 
-  // 7) Get All Users
+  // 6) Get All Users
   products = await productService.queryProducts(req);
 
-  // 8) Check If Products Already Exist
-  if (!products) {
-    return next(new AppError('No Products Found', 404));
-  }
-
-  // 9) Put Data into Redis With a Specific Key
+  // 7) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(products), 'EX', 60);
 
-  // 10) If Everything is OK, Send Data
+  // 8) If Everything is OK, Send Data
   return res.status(200).json({
     status: 'success',
     message: 'Found Products',
@@ -57,8 +59,16 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * Get Product
+ * @param   {Object} req
+ * @param   {Object} res
+ * @param   {Object} next
+ * @returns {JSON}
+ */
 export const getProduct = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+
   // 1) Generating Redis key
   const key = redisService.generateCacheKey('product', `id:${id}`);
 
@@ -82,15 +92,10 @@ export const getProduct = catchAsync(async (req, res, next) => {
   // 5) Get Product Using It's ID
   product = await productService.queryProductById(id);
 
-  // 6) Check If Product Already Exist
-  if (!product) {
-    return next(new AppError(`No Product Found With This ID: ${id}`, 404));
-  }
-
-  // 7) Put Data into Redis With a Specific Key
+  // 6) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(product), 'EX', 60);
 
-  // 8) If Everything is OK, Send Product
+  // 7) If Everything is OK, Send Product
   return res.status(200).json({
     status: 'success',
     message: 'Found Product',
@@ -98,16 +103,18 @@ export const getProduct = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * Create New Product
+ * @param   {Object} req
+ * @param   {Object} res
+ * @param   {Object} next
+ * @returns {JSON}
+ */
 export const addProduct = catchAsync(async (req, res, next) => {
   // 1) Create Product
   const products = await productService.createProduct(req);
 
-  // 2) Check If Products Already Exist
-  if (!products) {
-    return next(new AppError('No Products Found', 404));
-  }
-
-  // 3) If Everything is OK, Send Data
+  // 2) If Everything is OK, Send Data
   return res.status(200).json({
     status: 'success',
     message: 'Category Created Successfully',
@@ -115,16 +122,18 @@ export const addProduct = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * Update Product Details
+ * @param   {Object} req
+ * @param   {Object} res
+ * @param   {Object} next
+ * @returns {JSON}
+ */
 export const updateProductDetails = catchAsync(async (req, res, next) => {
   // 1) Update Product Using It's ID
   const product = await productService.updateProductDetails(req);
 
-  // 2) Check If Product Already Exist
-  if (!product) {
-    return next(new AppError(`No Product Found With This ID: ${req.id}`, 404));
-  }
-
-  // 3) If Everything is OK, Send Product
+  // 2) If Everything is OK, Send Product
   return res.status(200).json({
     status: 'success',
     message: 'Product Updated Successfully',
@@ -132,16 +141,18 @@ export const updateProductDetails = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * Update Product Main Image
+ * @param   {Object} req
+ * @param   {Object} res
+ * @param   {Object} next
+ * @returns {JSON}
+ */
 export const updateProductMainImage = catchAsync(async (req, res, next) => {
   // 1) Update Product Using It's ID
   const product = await productService.updateProductMainImage(req);
 
-  // 2) Check If Product Already Exist
-  if (!product) {
-    return next(new AppError(`No Product Found With This ID: ${req.id}`, 404));
-  }
-
-  // 3) If Everything is OK, Send Product
+  // 2) If Everything is OK, Send Product
   return res.status(200).json({
     status: 'success',
     message: 'Product Updated Successfully',
@@ -149,16 +160,18 @@ export const updateProductMainImage = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * Update Product Images
+ * @param   {Object} req
+ * @param   {Object} res
+ * @param   {Object} next
+ * @returns {JSON}
+ */
 export const updateProductImages = catchAsync(async (req, res, next) => {
   // 1) Update Product Using It's ID
   const product = await productService.updateProductImages(req);
 
-  // 2) Check If Product Already Exist
-  if (!product) {
-    return next(new AppError(`No Product Found With This ID: ${req.id}`, 404));
-  }
-
-  // 3) If Everything is OK, Send Product
+  // 2) If Everything is OK, Send Product
   return res.status(200).json({
     status: 'success',
     message: 'Product Updated Successfully',
@@ -166,11 +179,49 @@ export const updateProductImages = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * Delete Product
+ * @param   {Object} req
+ * @param   {Object} res
+ * @param   {Object} next
+ * @return  {JSON}
+ */
 export const deleteProduct = catchAsync(async (req, res, next) => {
   await productService.deleteProduct(req);
 
   return res.status(200).json({
     status: 'success',
     message: 'Product Deleted Successfully'
+  });
+});
+
+/**
+ * Get Top 5 Cheapeast Products
+ * @param   {Object} req
+ * @param   {Object} res
+ * @param   {Object} next
+ */
+export const top5Cheap = catchAsync(async (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.select = 'name,price,ratingsAverage';
+
+  next();
+});
+
+/**
+ * Get Products Statics
+ * @param   {Object} req
+ * @param   {Object} res
+ * @param   {Object} next
+ * @return  {JSON}
+ */
+export const productStats = catchAsync(async (req, res, next) => {
+  const stats = await productService.getProductStats();
+
+  return res.status(200).json({
+    status: 'success',
+    message: 'Product Statics',
+    stats
   });
 });
