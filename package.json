@@ -24,30 +24,30 @@
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "datauri": "^3.0.0",
-    "dotenv": "^8.2.0",
+    "dotenv": "^8.6.0",
     "express": "^4.17.1",
     "express-rate-limit": "^5.2.6",
-    "helmet": "^4.5.0",
+    "helmet": "^4.6.0",
     "http-errors": "^1.8.0",
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "method-override": "^3.0.0",
     "moment": "^2.29.1",
-    "mongoose": "^5.12.5",
+    "mongoose": "^5.12.8",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "nodemailer": "^6.5.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "redis": "^3.1.2",
-    "sharp": "^0.28.1",
+    "sharp": "^0.28.2",
     "slugify": "^1.5.3",
     "validator": "^13.6.0",
     "winston": "^3.3.3",
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
-    "eslint": "^7.25.0",
+    "eslint": "^7.26.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.1",
@@ -57,6 +57,6 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.3.0"
   }
 }
