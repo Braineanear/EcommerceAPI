@@ -8,15 +8,15 @@ const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      required: true
+      required: [true, 'Please tell us your name']
     },
     username: {
       type: String,
-      required: true
+      required: [true, 'Please enter your username']
     },
     email: {
       type: String,
-      required: true,
+      required: [true, 'Please provide an email'],
       unique: true,
       trim: true,
       lowercase: true,
@@ -26,9 +26,16 @@ const userSchema = mongoose.Schema(
         }
       }
     },
+    image: {
+      type: String,
+      required: [true, 'Please select an image']
+    },
+    imageId: {
+      type: String
+    },
     password: {
       type: String,
-      required: true,
+      required: [true, 'Please provide a password'],
       trim: true,
       minlength: 8,
       validate(value) {
@@ -38,7 +45,7 @@ const userSchema = mongoose.Schema(
           );
         }
       },
-      private: true
+      select: false
     },
     passwordConfirmation: {
       type: String,
@@ -49,7 +56,8 @@ const userSchema = mongoose.Schema(
           return el === this.password;
         },
         messege: 'Passwords are not the same'
-      }
+      },
+      select: false
     },
     role: {
       type: String,
@@ -59,7 +67,8 @@ const userSchema = mongoose.Schema(
     isEmailVerified: {
       type: Boolean,
       default: false
-    }
+    },
+    passwordChangedAt: Date
   },
   {
     timestamps: true
@@ -68,6 +77,8 @@ const userSchema = mongoose.Schema(
 
 // add plugin that converts mongoose to json
 userSchema.plugin(toJSON);
+
+userSchema.index({ name: 1, email: 1 }, { unique: true });
 
 /**
  * Check if email is taken
