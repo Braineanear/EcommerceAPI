@@ -19,23 +19,27 @@ import { Token, User } from '../models/index';
  * @param {string} password
  * @returns {Promise<User>}
  */
-export const loginUserWithEmailAndPassword = catchAsync(
-  async (email, password) => {
-    // 1) Get User With Specific Email and Password
-    const user = await User.findOne({ email }).select('+password');
+export const loginUserWithEmailAndPassword = catchAsync(async (body) => {
+  const { email, password } = body;
 
-    // 2) Check if Passwords are The Same
-    const isMatch = await user.isPasswordMatch(password);
-
-    // 3) If Email or Passwords isn't Correct
-    if (!user || !isMatch) {
-      throw new AppError('Incorrect email or password', 403);
-    }
-
-    // 4) If Everything OK, Send User's Data
-    return user;
+  // 1) Check Email & Password
+  if (!email || !password) {
+    throw new AppError('All fields are required', 400);
   }
-);
+  // 2) Get User With Specific Email and Password
+  const user = await User.findOne({ email }).select('+password');
+
+  // 3) Check if Passwords are The Same
+  const isMatch = await user.isPasswordMatch(password);
+
+  // 4) If Email or Passwords isn't Correct
+  if (!user || !isMatch) {
+    throw new AppError('Incorrect email or password', 403);
+  }
+
+  // 5) If Everything OK, Send User
+  return user;
+});
 
 /**
  * Logout
