@@ -7,6 +7,14 @@ import {
 } from './auth.service';
 
 import {
+  createReview,
+  queryReviews,
+  queryReviewById,
+  updateReview,
+  deleteReview
+} from './review.service';
+
+import {
   generateToken,
   saveToken,
   verifyToken,
@@ -59,6 +67,14 @@ const authService = {
   refreshAuth,
   resetPassword,
   verifyEmail
+};
+
+const reviewService = {
+  createReview,
+  queryReviews,
+  queryReviewById,
+  updateReview,
+  deleteReview
 };
 
 const emailService = {
@@ -115,5 +131,6 @@ export {
   emailService,
   categoryService,
   productService,
-  redisService
+  redisService,
+  reviewService
 };
