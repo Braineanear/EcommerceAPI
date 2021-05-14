@@ -13,7 +13,7 @@ import { Review } from '../models/index';
  */
 export const createReview = catchAsync(async (body) => {
   // 1) Check All Fields Provieded
-  if (!body.product || !body.user) {
+  if (!body.product || !body.user || !body.review || !body.rating) {
     throw new AppError('All fields are required', 400);
   }
 
@@ -43,7 +43,7 @@ export const queryReviews = catchAsync(async (req) => {
   ]);
 
   // 2) Check if Reviews Already Exist
-  if (!reviews) {
+  if (reviews.length === 0) {
     throw new AppError('No Reviews Found', 404);
   }
 
@@ -61,7 +61,7 @@ export const queryReviewById = catchAsync(async (id) => {
   const review = await Review.findById(id);
 
   // 2) Check If Review Already Exist
-  if (review) {
+  if (!review) {
     throw new AppError(`No Review Found With This ID: ${id}`, 404);
   }
 
