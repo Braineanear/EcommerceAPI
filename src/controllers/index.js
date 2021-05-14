@@ -9,6 +9,7 @@ import {
   top5Cheap,
   productStats
 } from './product.controller';
+
 import {
   register,
   login,
@@ -19,6 +20,7 @@ import {
   sendVerificationEmail,
   verifyEmail
 } from './auth.controller';
+
 import {
   createUser,
   getUsers,
@@ -35,6 +37,14 @@ import {
   updateCategoryImage,
   deleteCategory
 } from './category.controller';
+
+import {
+  getAllReviews,
+  getReview,
+  addReview,
+  updateReview,
+  deleteReview
+} from './review.controller';
 
 const authController = {
   register,
@@ -76,9 +86,18 @@ const productController = {
   productStats
 };
 
+const reviewController = {
+  getAllReviews,
+  getReview,
+  addReview,
+  updateReview,
+  deleteReview
+};
+
 export {
   authController,
   userController,
   productController,
-  categoryController
+  categoryController,
+  reviewController
 };
