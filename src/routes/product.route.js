@@ -1,7 +1,16 @@
 import express from 'express';
+
+// Controllers
 import { productController } from '../controllers/index';
+
+// Middlewares
 import auth from '../middlewares/auth';
+
+// Utils
 import { anyMulter } from '../utils/multer';
+
+// Routes
+import reviewRoute from './review.route';
 
 const {
   getAllProducts,
@@ -16,6 +25,8 @@ const {
 } = productController;
 
 const router = express.Router();
+
+router.use('/:id/reviews', reviewRoute);
 
 router.get('/top-5-cheap', top5Cheap, getAllProducts);
 router.get('/product-stats', productStats);
