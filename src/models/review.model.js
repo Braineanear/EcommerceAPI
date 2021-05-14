@@ -33,10 +33,16 @@ const reviewSchema = mongoose.Schema(
 reviewSchema.index({ product: 1, user: 1 }, { unique: true });
 
 reviewSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'user',
-    select: 'name image'
-  });
+  this.populate([
+    {
+      path: 'user',
+      select: 'name image'
+    },
+    {
+      path: 'product',
+      select: 'name description mainImage images price category quantity'
+    }
+  ]);
 
   next();
 });
