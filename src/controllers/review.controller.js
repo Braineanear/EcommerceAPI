@@ -16,11 +16,11 @@ import { reviewService, redisService } from '../services/index';
  */
 export const addReview = catchAsync(async (req, res, next) => {
   // 1) Allow nested routes
-  if (!req.body.product) req.body.product = req.params.productId;
+  if (!req.body.product) req.body.product = req.params.id;
   if (!req.body.user) req.body.user = req.user.id;
 
   // 2) Create Review
-  const review = reviewService.createReview(req.body);
+  const review = await reviewService.createReview(req.body);
 
   // 3) If Everything is OK, Send Review
   return res.status(200).json({
@@ -136,7 +136,7 @@ export const getReview = catchAsync(async (req, res, next) => {
  */
 export const updateReview = catchAsync(async (req, res, next) => {
   // 1) Update Review Using It's ID
-  const review = await reviewService.updateReview(req);
+  const review = await reviewService.updateReview(req.params.reviewId);
 
   // 2) If Everything is OK, Send Review
   return res.status(200).json({
@@ -155,7 +155,7 @@ export const updateReview = catchAsync(async (req, res, next) => {
  */
 export const deleteReview = catchAsync(async (req, res, next) => {
   // 1) Delete Review
-  await reviewService.deleteReview(req);
+  await reviewService.deleteReview(req.params.reviewId);
 
   // 2) If Everything Is OK, Send Message
   return res.status(200).json({
