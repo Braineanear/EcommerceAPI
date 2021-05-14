@@ -3,5 +3,6 @@ import User from './user.model';
 import Product from './product.model';
 import Category from './category.model';
 import Review from './review.model';
+import Cart from './cart.model';
 
-export { Token, User, Product, Category, Review };
+export { Token, User, Product, Category, Review, Cart };
