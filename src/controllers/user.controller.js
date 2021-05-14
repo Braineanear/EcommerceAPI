@@ -19,7 +19,7 @@ import { User } from '../models/index';
  */
 export const createUser = catchAsync(async (req, res, next) => {
   // 1) Create User Document
-  const user = await userService.createUser(req.body);
+  const user = await userService.createUser(req);
 
   // 2) If Everything is OK, Send User Data
   return res.status(201).json({
