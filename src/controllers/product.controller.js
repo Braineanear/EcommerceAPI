@@ -15,17 +15,18 @@ import { productService, redisService } from '../services/index';
  * @returns {JSON}
  */
 export const getAllProducts = catchAsync(async (req, res, next) => {
-  let { page, sortBy, limit } = req.query;
+  let { page, sort, limit, select } = req.query;
 
   // 1) Setting Default Params
   if (!page) page = 1;
-  if (!sortBy) sortBy = 'sortField:asc';
+  if (!sort) sort = '';
   if (!limit) limit = 10;
+  if (!select) select = '';
 
   // 2) Generating Redis key
   const key = redisService.generateCacheKey(
     'products',
-    `page:${page}-sortBy:${sortBy}-limit:${limit}`
+    `page:${page}-sortBy:${sort}-limit:${limit}-select:${select}`
   );
 
   // 3) Getting Cached Data From Redis
@@ -45,7 +46,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
     });
   }
 
-  // 6) Get All Users
+  // 6) Get All Products
   products = await productService.queryProducts(req);
 
   // 7) Put Data into Redis With a Specific Key
@@ -187,8 +188,10 @@ export const updateProductImages = catchAsync(async (req, res, next) => {
  * @return  {JSON}
  */
 export const deleteProduct = catchAsync(async (req, res, next) => {
+  // 1) Delete Review
   await productService.deleteProduct(req);
 
+  // 2) If Everything Is OK, Send Message
   return res.status(200).json({
     status: 'success',
     message: 'Product Deleted Successfully'
@@ -202,6 +205,9 @@ export const deleteProduct = catchAsync(async (req, res, next) => {
  * @param   {Object} next
  */
 export const top5Cheap = catchAsync(async (req, res, next) => {
+  // Limiting Products To Top 5 Products
+  // Sorting Products According to It's Price Asc and According To Ratings Average Des
+  // Selecting Name, Price and Ratings Average
   req.query.limit = '5';
   req.query.sort = '-ratingsAverage,price';
   req.query.select = 'name,price,ratingsAverage';
@@ -217,8 +223,10 @@ export const top5Cheap = catchAsync(async (req, res, next) => {
  * @return  {JSON}
  */
 export const productStats = catchAsync(async (req, res, next) => {
+  // 1) Get Product Stats
   const stats = await productService.getProductStats();
 
+  // 2) If Everything Is OK, Send Stats
   return res.status(200).json({
     status: 'success',
     message: 'Product Statics',
