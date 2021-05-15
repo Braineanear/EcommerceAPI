@@ -77,7 +77,7 @@ reviewSchema.statics.calcAverageRatings = async function (productId) {
 
 reviewSchema.post('save', function () {
   // this points to current review
-  this.constructor.calcAverageRatings(this.tour);
+  this.constructor.calcAverageRatings(this.product);
 });
 
 // findByIdAndUpdate
@@ -90,7 +90,7 @@ reviewSchema.pre(/^findOneAnd/, async function (next) {
 
 reviewSchema.post(/^findOneAnd/, async function () {
   // await this.findOne(); does NOT work here, query has already executed
-  await this.rev.constructor.calcAverageRatings(this.rev.tour);
+  await this.rev.constructor.calcAverageRatings(this.rev.product);
 });
 
 const Review = mongoose.model('Review', reviewSchema);
