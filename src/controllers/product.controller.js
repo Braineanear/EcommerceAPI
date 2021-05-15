@@ -11,10 +11,9 @@ import { productService, redisService } from '../services/index';
  * Get All Products
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const getAllProducts = catchAsync(async (req, res, next) => {
+export const getAllProducts = catchAsync(async (req, res) => {
   let { page, sort, limit, select } = req.query;
 
   // 1) Setting Default Params
@@ -64,10 +63,9 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
  * Get Product
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const getProduct = catchAsync(async (req, res, next) => {
+export const getProduct = catchAsync(async (req, res) => {
   const { id } = req.params;
 
   // 1) Generating Redis key
@@ -108,18 +106,17 @@ export const getProduct = catchAsync(async (req, res, next) => {
  * Create New Product
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const addProduct = catchAsync(async (req, res, next) => {
+export const addProduct = catchAsync(async (req, res) => {
   // 1) Create Product
-  const products = await productService.createProduct(req);
+  const product = await productService.createProduct(req);
 
   // 2) If Everything is OK, Send Data
   return res.status(200).json({
     status: 'success',
     message: 'Category Created Successfully',
-    products
+    product
   });
 });
 
@@ -127,10 +124,9 @@ export const addProduct = catchAsync(async (req, res, next) => {
  * Update Product Details
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const updateProductDetails = catchAsync(async (req, res, next) => {
+export const updateProductDetails = catchAsync(async (req, res) => {
   // 1) Update Product Using It's ID
   const product = await productService.updateProductDetails(req);
 
@@ -146,10 +142,9 @@ export const updateProductDetails = catchAsync(async (req, res, next) => {
  * Update Product Main Image
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const updateProductMainImage = catchAsync(async (req, res, next) => {
+export const updateProductMainImage = catchAsync(async (req, res) => {
   // 1) Update Product Using It's ID
   const product = await productService.updateProductMainImage(req);
 
@@ -165,10 +160,9 @@ export const updateProductMainImage = catchAsync(async (req, res, next) => {
  * Update Product Images
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const updateProductImages = catchAsync(async (req, res, next) => {
+export const updateProductImages = catchAsync(async (req, res) => {
   // 1) Update Product Using It's ID
   const product = await productService.updateProductImages(req);
 
@@ -184,11 +178,10 @@ export const updateProductImages = catchAsync(async (req, res, next) => {
  * Delete Product
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @return  {JSON}
  */
-export const deleteProduct = catchAsync(async (req, res, next) => {
-  // 1) Delete Review
+export const deleteProduct = catchAsync(async (req, res) => {
+  // 1) Delete Product
   await productService.deleteProduct(req);
 
   // 2) If Everything Is OK, Send Message
@@ -219,10 +212,9 @@ export const top5Cheap = catchAsync(async (req, res, next) => {
  * Get Products Statics
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @return  {JSON}
  */
-export const productStats = catchAsync(async (req, res, next) => {
+export const productStats = catchAsync(async (req, res) => {
   // 1) Get Product Stats
   const stats = await productService.getProductStats();
 
