@@ -18,7 +18,7 @@ export const createReview = catchAsync(async (body) => {
   }
 
   // 2) Create Review
-  const review = Review.create(body);
+  const review = await Review.create(body);
 
   // 3) If Everything is OK, Send Review
   return review;
