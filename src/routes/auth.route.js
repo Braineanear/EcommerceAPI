@@ -1,13 +1,19 @@
 import express from 'express';
+
+// Middlewares
 import auth from '../middlewares/auth';
 import validate from '../middlewares/validate';
 
+// Validations
 import { authValidation } from '../validations/index';
+
+// Controllers
 import { authController } from '../controllers/index';
 
+// Utils
+import { singleFile } from '../utils/multer';
+
 const {
-  registerAsUserValidate,
-  registerAsSellerValidate,
   loginValidate,
   logoutValidate,
   refreshTokensValidate,
@@ -17,10 +23,8 @@ const {
 } = authValidation;
 
 const {
-  registerAsUser,
-  registerAsSeller,
-  loginAsUser,
-  loginAsSeller,
+  register,
+  login,
   logout,
   refreshTokens,
   forgotPassword,
@@ -31,17 +35,9 @@ const {
 
 const router = express.Router();
 
-router.post('/user/register', validate(registerAsUserValidate), registerAsUser);
+router.post('/register', singleFile('image'), register);
 
-router.post('/user/login', validate(loginValidate), loginAsUser);
-
-router.post(
-  '/seller/register',
-  validate(registerAsSellerValidate),
-  registerAsSeller
-);
-
-router.post('/seller/login', validate(loginValidate), loginAsSeller);
+router.post('/login', validate(loginValidate), login);
 
 router.post('/logout', validate(logoutValidate), logout);
 
