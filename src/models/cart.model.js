@@ -3,40 +3,38 @@ import toJSON from './plugins/index';
 
 const cartSchema = mongoose.Schema(
   {
-    userId: {
-      type: mongoose.SchemaTypes.ObjectId,
-      ref: 'User',
-      required: true
+    email: {
+      type: String,
+      required: true,
+      match: [
+        /[\w]+?@[\w]+?\.[a-z]{2,4}/,
+        'The value of path {PATH} ({VALUE}) is not a valid email address.'
+      ]
     },
-    products: [
+    items: [
       {
-        productId: {
-          type: mongoose.SchemaType.ObjectId,
+        product: {
+          type: mongoose.Types.ObjectId,
           ref: 'Product',
           required: true
         },
-        productQuanitity: {
+        totalQuantity: {
+          type: Number,
+          required: true
+        },
+        totalPrice: {
           type: Number,
           required: true
         }
       }
     ],
-    totalQuantity: {
-      type: Number,
-      required: true
-    },
     totalPrice: {
       type: Number,
       required: true
     },
-    status: {
-      type: String,
-      required: true
-    },
-    numberOfItems: {
+    totalQuantity: {
       type: Number,
-      required: true,
-      default: 0
+      required: true
     }
   },
   { timestamps: true }
@@ -44,6 +42,16 @@ const cartSchema = mongoose.Schema(
 
 // add plugin that converts mongoose to json
 cartSchema.plugin(toJSON);
+
+cartSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'items.product',
+    select:
+      '-mainImageId -imagesId -color -size -slug -sold -quantity -ratingsAverage -ratingsQuantity -user'
+  });
+
+  next();
+});
 
 const Cart = mongoose.model('Cart', cartSchema);
 
