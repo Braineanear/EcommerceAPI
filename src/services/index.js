@@ -1,6 +1,5 @@
 import {
-  loginUserWithEmailAndPassword,
-  loginSellerWithEmailAndPassword,
+  loginWithEmailAndPassword,
   logout,
   refreshAuth,
   resetPassword,
@@ -35,8 +34,10 @@ import {
 import {
   createUser,
   queryUsers,
-  updateUserById,
-  deleteUserById
+  queryUser,
+  updateUserDetails,
+  updateUserProfileImage,
+  deleteUser
 } from './user.service';
 
 import {
@@ -70,19 +71,10 @@ import {
   deleteItem
 } from './cart.service';
 
-import {
-  createSeller,
-  querySellers,
-  updateSellerDetails,
-  updateSellerProfileImage,
-  deleteSeller
-} from './seller.service';
-
 import { set, get, generateCacheKey } from './redis.service';
 
 const authService = {
-  loginUserWithEmailAndPassword,
-  loginSellerWithEmailAndPassword,
+  loginWithEmailAndPassword,
   logout,
   refreshAuth,
   resetPassword,
@@ -117,8 +109,10 @@ const tokenService = {
 const userService = {
   createUser,
   queryUsers,
-  updateUserById,
-  deleteUserById
+  queryUser,
+  updateUserDetails,
+  updateUserProfileImage,
+  deleteUser
 };
 
 const categoryService = {
@@ -154,14 +148,6 @@ const cartService = {
   deleteItem
 };
 
-const sellerService = {
-  createSeller,
-  querySellers,
-  updateSellerDetails,
-  updateSellerProfileImage,
-  deleteSeller
-};
-
 export {
   authService,
   tokenService,
@@ -171,6 +157,5 @@ export {
   productService,
   redisService,
   reviewService,
-  cartService,
-  sellerService
+  cartService
 };
