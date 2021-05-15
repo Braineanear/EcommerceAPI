@@ -11,10 +11,8 @@ import {
 } from './product.controller';
 
 import {
-  registerAsUser,
-  registerAsSeller,
-  loginAsUser,
-  loginAsSeller,
+  register,
+  login,
   logout,
   refreshTokens,
   forgotPassword,
@@ -27,7 +25,8 @@ import {
   createUser,
   getUsers,
   getUser,
-  updateUser,
+  updateUserDetails,
+  updateUserProfileImage,
   deleteUser
 } from './user.controller';
 
@@ -58,19 +57,9 @@ import {
   deleteItem
 } from './cart.controller';
 
-import {
-  createSeller,
-  getAllSellers,
-  updateSellerDetails,
-  updateSellerProfileImage,
-  deleteSeller
-} from './seller.controller';
-
 const authController = {
-  registerAsUser,
-  registerAsSeller,
-  loginAsUser,
-  loginAsSeller,
+  register,
+  login,
   logout,
   refreshTokens,
   forgotPassword,
@@ -83,7 +72,8 @@ const userController = {
   createUser,
   getUsers,
   getUser,
-  updateUser,
+  updateUserDetails,
+  updateUserProfileImage,
   deleteUser
 };
 
@@ -126,20 +116,11 @@ const cartController = {
   deleteItem
 };
 
-const sellerController = {
-  createSeller,
-  getAllSellers,
-  updateSellerDetails,
-  updateSellerProfileImage,
-  deleteSeller
-};
-
 export {
   authController,
   userController,
   productController,
   categoryController,
   reviewController,
-  cartController,
-  sellerController
+  cartController
 };
