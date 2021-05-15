@@ -10,7 +10,11 @@ export const registerValidate = {
       .required()
       .custom(password),
     name: Joi.string().required(),
-    username: Joi.string().required()
+    username: Joi.string().required(),
+    role: Joi.string().required(),
+    companyName: Joi.string(),
+    address: Joi.string(),
+    phone: Joi.string()
   })
 };
 
