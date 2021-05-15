@@ -26,13 +26,6 @@ const userSchema = mongoose.Schema(
         }
       }
     },
-    image: {
-      type: String,
-      required: [true, 'Please select an image']
-    },
-    imageId: {
-      type: String
-    },
     password: {
       type: String,
       required: [true, 'Please provide a password'],
@@ -68,7 +61,24 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false
     },
-    passwordChangedAt: Date
+    passwordChangedAt: Date,
+    address: {
+      type: String
+    },
+    companyName: {
+      type: String
+    },
+    phone: {
+      type: String
+    },
+    profileImage: {
+      type: String,
+      required: true
+    },
+    profileImageId: {
+      type: String,
+      required: true
+    }
   },
   {
     timestamps: true
