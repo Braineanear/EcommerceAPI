@@ -51,7 +51,7 @@ const productSchema = mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Category'
     },
-    user: {
+    seller: {
       type: mongoose.Schema.ObjectId,
       ref: 'User'
     },
@@ -132,8 +132,8 @@ productSchema.pre('save', function (next) {
 productSchema.pre(/^find/, function (next) {
   this.populate([
     {
-      path: 'user',
-      select: 'name email role'
+      path: 'seller',
+      select: 'name email profileImage companyName address phone'
     },
     {
       path: 'category',
