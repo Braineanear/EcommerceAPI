@@ -46,6 +46,16 @@ import {
   deleteReview
 } from './review.controller';
 
+import {
+  addItemToCart,
+  subtractItemFromCart,
+  reduceByOne,
+  increaseByOne,
+  getCart,
+  deleteCart,
+  deleteItem
+} from './cart.controller';
+
 const authController = {
   register,
   login,
@@ -94,10 +104,21 @@ const reviewController = {
   deleteReview
 };
 
+const cartController = {
+  addItemToCart,
+  subtractItemFromCart,
+  reduceByOne,
+  increaseByOne,
+  getCart,
+  deleteCart,
+  deleteItem
+};
+
 export {
   authController,
   userController,
   productController,
   categoryController,
-  reviewController
+  reviewController,
+  cartController
 };
