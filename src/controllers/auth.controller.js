@@ -5,20 +5,28 @@ import catchAsync from '../utils/catchAsync';
 import {
   authService,
   userService,
+  sellerService,
   tokenService,
   emailService
 } from '../services/index';
 
 /**
- * Registeration
+ * Registeration As User
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const register = catchAsync(async (req, res, next) => {
+export const registerAsUser = catchAsync(async (req, res) => {
+  const { username, name, email, password, passwordConfirmation } = req.body;
+
   // 1) Create User
-  const user = await userService.createUser(req.body);
+  const user = await userService.createUser({
+    username,
+    name,
+    email,
+    password,
+    passwordConfirmation
+  });
 
   // 2) Generate Tokens [Access Token / Refresh Token]
   const tokens = await tokenService.generateAuthTokens(user);
@@ -39,15 +47,18 @@ export const register = catchAsync(async (req, res, next) => {
 });
 
 /**
- * Login
+ * Login As User
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const login = catchAsync(async (req, res, next) => {
+export const loginAsUser = catchAsync(async (req, res) => {
+  const { email, password } = req.body;
   // 1) Login User Email & Password
-  const user = await authService.loginUserWithEmailAndPassword(req.body);
+  const user = await authService.loginUserWithEmailAndPassword({
+    email,
+    password
+  });
 
   // 2) Generate Auth Tokens
   const tokens = await tokenService.generateAuthTokens(user);
@@ -62,20 +73,97 @@ export const login = catchAsync(async (req, res, next) => {
 });
 
 /**
+ * Registeration As Seller
+ * @param   {Object} req
+ * @param   {Object} res
+ * @returns {JSON}
+ */
+export const registerAsSeller = catchAsync(async (req, res) => {
+  const {
+    name,
+    username,
+    email,
+    password,
+    passwordConfirmation,
+    companyName,
+    phone,
+    address
+  } = req.body;
+
+  // 1) Create Seller
+  const seller = await sellerService.createSeller(
+    {
+      name,
+      username,
+      email,
+      password,
+      passwordConfirmation,
+      companyName,
+      phone,
+      address
+    },
+    req.file
+  );
+
+  // 2) Generate Tokens [Access Token / Refresh Token]
+  const tokens = await tokenService.generateAuthTokens(seller);
+
+  // 3) Generate Verification Email Token
+  const verifyEmailToken = await tokenService.generateVerifyEmailToken(seller);
+
+  // 4) Sending Verification Email
+  await emailService.sendVerificationEmail(seller.email, verifyEmailToken);
+
+  // 5) If Everything OK, Send Seller Data With Tokens
+  return res.status(200).json({
+    status: 'success',
+    message: 'Registeration Done Successfully & Email Verification Sent',
+    seller,
+    tokens
+  });
+});
+
+/**
+ * Login As Seller
+ * @param   {Object} req
+ * @param   {Object} res
+ * @returns {JSON}
+ */
+export const loginAsSeller = catchAsync(async (req, res) => {
+  const { email, password } = req.body;
+
+  // 1) Login Seller Email & Password
+  const seller = await authService.loginSellerWithEmailAndPassword({
+    email,
+    password
+  });
+
+  // 2) Generate Auth Tokens
+  const tokens = await tokenService.generateAuthTokens(seller);
+
+  // 3) If Everything is OK, Send Seller's Data & Tokens
+  return res.status(200).json({
+    status: 'success',
+    message: 'Seller Logged in Successfully',
+    seller,
+    tokens
+  });
+});
+
+/**
  * Logout
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const logout = catchAsync(async (req, res, next) => {
-  // 1) Logging Out User From System
+export const logout = catchAsync(async (req, res) => {
+  // 1) Logging Out User / Seller From System
   await authService.logout(req.body.refreshToken);
 
   // 2) If Everything is OK, Send Message
   return res.status(200).json({
     status: 'success',
-    message: 'User Logged out Successfully'
+    message: 'Account Logged out Successfully'
   });
 });
 
@@ -83,12 +171,13 @@ export const logout = catchAsync(async (req, res, next) => {
  * Generate Refresh Token
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const refreshTokens = catchAsync(async (req, res, next) => {
+export const refreshTokens = catchAsync(async (req, res) => {
+  const { refreshToken } = req.body;
+
   // 1) Generating Refresh Token
-  const tokens = await authService.refreshAuth(req.body.refreshToken);
+  const tokens = await authService.refreshAuth(refreshToken);
 
   // 2) If Everything is OK, Send Tokens
   return res.status(200).json({
@@ -102,17 +191,18 @@ export const refreshTokens = catchAsync(async (req, res, next) => {
  * Forgot Password
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const forgotPassword = catchAsync(async (req, res, next) => {
+export const forgotPassword = catchAsync(async (req, res) => {
+  const { email } = req.body;
+
   // 1) Generate Reset Password Token
   const resetPasswordToken = await tokenService.generateResetPasswordToken(
-    req.body.email
+    email
   );
 
   // 2) Sending Reset Link to User Email
-  await emailService.sendResetPasswordEmail(req.body.email, resetPasswordToken);
+  await emailService.sendResetPasswordEmail(email, resetPasswordToken);
 
   // 3) If Everything is OK, Send Message
   return res.status(200).json({
@@ -125,10 +215,9 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
  * Reset Password
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const resetPassword = catchAsync(async (req, res, next) => {
+export const resetPassword = catchAsync(async (req, res) => {
   const { password, passwordConfirmation } = req.body;
   const { token } = req.query;
 
@@ -146,17 +235,16 @@ export const resetPassword = catchAsync(async (req, res, next) => {
  * Send Verification Email
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const sendVerificationEmail = catchAsync(async (req, res, next) => {
+export const sendVerificationEmail = catchAsync(async (req, res) => {
+  const { user } = req;
+
   // 1) Generate Verification Token
-  const verifyEmailToken = await tokenService.generateVerifyEmailToken(
-    req.user
-  );
+  const verifyEmailToken = await tokenService.generateVerifyEmailToken(user);
 
   // 2) Sending Verification Email to User Email
-  await emailService.sendVerificationEmail(req.user.email, verifyEmailToken);
+  await emailService.sendVerificationEmail(user.email, verifyEmailToken);
 
   // 3) If Everything is OK, Send Message
   return res.status(200).json({
@@ -169,12 +257,13 @@ export const sendVerificationEmail = catchAsync(async (req, res, next) => {
  * Verify Email
  * @param   {Object} req
  * @param   {Object} res
- * @param   {Object} next
  * @returns {JSON}
  */
-export const verifyEmail = catchAsync(async (req, res, next) => {
+export const verifyEmail = catchAsync(async (req, res) => {
+  const { token } = req.query;
+
   // 1) Verifying User Email
-  await authService.verifyEmail(req.query.token);
+  await authService.verifyEmail(token);
 
   // 2) If Everything is OK, Send Message
   return res.status(200).json({
