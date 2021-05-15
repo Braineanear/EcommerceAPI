@@ -59,6 +59,16 @@ import {
   getProductStats
 } from './product.service';
 
+import {
+  addProductToCart,
+  subtractItemFromCart,
+  reduceByOne,
+  increaseByOne,
+  queryCart,
+  deleteCart,
+  deleteItem
+} from './cart.service';
+
 import { set, get, generateCacheKey } from './redis.service';
 
 const authService = {
@@ -124,6 +134,16 @@ const productService = {
 
 const redisService = { set, get, generateCacheKey };
 
+const cartService = {
+  addProductToCart,
+  subtractItemFromCart,
+  reduceByOne,
+  increaseByOne,
+  queryCart,
+  deleteCart,
+  deleteItem
+};
+
 export {
   authService,
   tokenService,
@@ -132,5 +152,6 @@ export {
   categoryService,
   productService,
   redisService,
-  reviewService
+  reviewService,
+  cartService
 };
