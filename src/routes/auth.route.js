@@ -6,7 +6,8 @@ import { authValidation } from '../validations/index';
 import { authController } from '../controllers/index';
 
 const {
-  registerValidate,
+  registerAsUserValidate,
+  registerAsSellerValidate,
   loginValidate,
   logoutValidate,
   refreshTokensValidate,
@@ -16,8 +17,10 @@ const {
 } = authValidation;
 
 const {
-  register,
-  login,
+  registerAsUser,
+  registerAsSeller,
+  loginAsUser,
+  loginAsSeller,
   logout,
   refreshTokens,
   forgotPassword,
@@ -28,20 +31,39 @@ const {
 
 const router = express.Router();
 
-router.post('/register', validate(registerValidate), register);
-router.post('/login', validate(loginValidate), login);
+router.post('/user/register', validate(registerAsUserValidate), registerAsUser);
+
+router.post('/user/login', validate(loginValidate), loginAsUser);
+
+router.post(
+  '/seller/register',
+  validate(registerAsSellerValidate),
+  registerAsSeller
+);
+
+router.post('/seller/login', validate(loginValidate), loginAsSeller);
+
 router.post('/logout', validate(logoutValidate), logout);
+
 router.post('/refresh-tokens', validate(refreshTokensValidate), refreshTokens);
+
 router.post(
   '/forgot-password',
   validate(forgotPasswordValidate),
   forgotPassword
 );
+
 router.post('/reset-password', validate(resetPasswordValidate), resetPassword);
-router.post('/send-verification-email', auth('user'), sendVerificationEmail);
+
+router.post(
+  '/send-verification-email',
+  auth('user', 'seller'),
+  sendVerificationEmail
+);
+
 router.post(
   '/verify-email',
-  auth('user'),
+  auth('user', 'seller'),
   validate(verifyEmailValidate),
   verifyEmail
 );
