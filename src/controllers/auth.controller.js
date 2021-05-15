@@ -1,11 +1,11 @@
 // Utils
 import catchAsync from '../utils/catchAsync';
+import AppError from '../utils/appError';
 
 // Services
 import {
   authService,
   userService,
-  sellerService,
   tokenService,
   emailService
 } from '../services/index';
@@ -14,19 +14,45 @@ import {
  * Registeration As User
  * @param   {Object} req
  * @param   {Object} res
+ * @param   {Object} next
  * @returns {JSON}
  */
-export const registerAsUser = catchAsync(async (req, res) => {
-  const { username, name, email, password, passwordConfirmation } = req.body;
-
-  // 1) Create User
-  const user = await userService.createUser({
+export const register = catchAsync(async (req, res, next) => {
+  const {
     username,
     name,
     email,
     password,
-    passwordConfirmation
-  });
+    passwordConfirmation,
+    address,
+    companyName,
+    phone,
+    role
+  } = req.body;
+
+  const profileImage = req.file;
+
+  if (role === 'admin') {
+    return next(
+      new AppError('Role Cannot Be Admin, Select [user | seller]', 400)
+    );
+  }
+
+  // 1) Create User
+  const user = await userService.createUser(
+    {
+      username,
+      name,
+      email,
+      password,
+      passwordConfirmation,
+      address,
+      companyName,
+      phone,
+      role
+    },
+    profileImage
+  );
 
   // 2) Generate Tokens [Access Token / Refresh Token]
   const tokens = await tokenService.generateAuthTokens(user);
@@ -47,15 +73,15 @@ export const registerAsUser = catchAsync(async (req, res) => {
 });
 
 /**
- * Login As User
+ * Login
  * @param   {Object} req
  * @param   {Object} res
  * @returns {JSON}
  */
-export const loginAsUser = catchAsync(async (req, res) => {
+export const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
   // 1) Login User Email & Password
-  const user = await authService.loginUserWithEmailAndPassword({
+  const user = await authService.loginWithEmailAndPassword({
     email,
     password
   });
@@ -68,84 +94,6 @@ export const loginAsUser = catchAsync(async (req, res) => {
     status: 'success',
     message: 'User Logged in Successfully',
     user,
-    tokens
-  });
-});
-
-/**
- * Registeration As Seller
- * @param   {Object} req
- * @param   {Object} res
- * @returns {JSON}
- */
-export const registerAsSeller = catchAsync(async (req, res) => {
-  const {
-    name,
-    username,
-    email,
-    password,
-    passwordConfirmation,
-    companyName,
-    phone,
-    address
-  } = req.body;
-
-  // 1) Create Seller
-  const seller = await sellerService.createSeller(
-    {
-      name,
-      username,
-      email,
-      password,
-      passwordConfirmation,
-      companyName,
-      phone,
-      address
-    },
-    req.file
-  );
-
-  // 2) Generate Tokens [Access Token / Refresh Token]
-  const tokens = await tokenService.generateAuthTokens(seller);
-
-  // 3) Generate Verification Email Token
-  const verifyEmailToken = await tokenService.generateVerifyEmailToken(seller);
-
-  // 4) Sending Verification Email
-  await emailService.sendVerificationEmail(seller.email, verifyEmailToken);
-
-  // 5) If Everything OK, Send Seller Data With Tokens
-  return res.status(200).json({
-    status: 'success',
-    message: 'Registeration Done Successfully & Email Verification Sent',
-    seller,
-    tokens
-  });
-});
-
-/**
- * Login As Seller
- * @param   {Object} req
- * @param   {Object} res
- * @returns {JSON}
- */
-export const loginAsSeller = catchAsync(async (req, res) => {
-  const { email, password } = req.body;
-
-  // 1) Login Seller Email & Password
-  const seller = await authService.loginSellerWithEmailAndPassword({
-    email,
-    password
-  });
-
-  // 2) Generate Auth Tokens
-  const tokens = await tokenService.generateAuthTokens(seller);
-
-  // 3) If Everything is OK, Send Seller's Data & Tokens
-  return res.status(200).json({
-    status: 'success',
-    message: 'Seller Logged in Successfully',
-    seller,
     tokens
   });
 });
