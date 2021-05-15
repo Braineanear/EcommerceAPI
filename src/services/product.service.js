@@ -2,7 +2,7 @@
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/appError';
 import dataUri from '../utils/datauri';
-import apiFeatures from '../utils/apiFeatures';
+import APIFeatures from '../utils/apiFeatures';
 import { uploadFile, destroyFile } from '../utils/cloudinary';
 
 // Model
@@ -15,9 +15,9 @@ import { Product } from '../models/index';
  */
 export const queryProducts = catchAsync(async (req) => {
   // 1) Get All Products
-  const products = await apiFeatures(req, Product, {
-    path: 'user',
-    select: 'name email role'
+  const products = await APIFeatures(req, Product, {
+    path: 'seller',
+    select: 'name email profileImage companyName address phone'
   });
 
   // 2) Check if Porducts Already Exist
@@ -58,15 +58,11 @@ export const createProduct = catchAsync(async (req) => {
     description,
     category,
     price,
-    oldPrice,
+    priceDiscount,
     color,
     size,
     quantity,
-    quality,
-    isPopular,
     sold,
-    offer,
-    status,
     isOutOfStock
   } = req.body;
 
@@ -93,15 +89,11 @@ export const createProduct = catchAsync(async (req) => {
     !description ||
     !category ||
     !price ||
-    !oldPrice ||
+    !priceDiscount ||
     !color ||
     !size ||
     !quantity ||
-    !quality ||
-    !isPopular ||
     !sold ||
-    !offer ||
-    !status ||
     !isOutOfStock ||
     mainImage.length === 0 ||
     images.length === 0
@@ -135,16 +127,12 @@ export const createProduct = catchAsync(async (req) => {
     description,
     category,
     price,
-    oldPrice,
+    priceDiscount,
     color,
     size,
-    user: req.user._id,
+    seller: req.user._id,
     quantity,
-    quality,
-    isPopular,
     sold,
-    offer,
-    status,
     isOutOfStock
   });
 
