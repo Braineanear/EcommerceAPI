@@ -1,6 +1,5 @@
 // Utils
 import catchAsync from '../utils/catchAsync';
-import AppError from '../utils/appError';
 import APIFeatures from '../utils/apiFeatures';
 import dataUri from '../utils/datauri';
 import { uploadFile, destroyFile } from '../utils/cloudinary';
@@ -10,8 +9,8 @@ import { Category } from '../models/index';
 
 /**
  * Create New Category
- * @param {Object} body
- * @returns {Promise<Category>}
+ * @param   {Object} body
+ * @returns {Object<type|message|statusCode|category>}
  */
 export const createCategory = catchAsync(async (req) => {
   const { name, description, status } = req.body;
@@ -19,7 +18,11 @@ export const createCategory = catchAsync(async (req) => {
 
   // 1) Check If The User Entered All Fields
   if (!name || !description || !status || !image) {
-    throw new AppError('All fields are required', 400);
+    return {
+      type: 'Error',
+      message: 'All Fields Are Required',
+      statusCode: 400
+    };
   }
 
   // 2) Specifiy Folder Name Where The Images Are Going To Be Uploaded In Cloudinary
@@ -44,13 +47,18 @@ export const createCategory = catchAsync(async (req) => {
   const category = await Category.create(body);
 
   // 8) If Everything is OK, Send Data
-  return category;
+  return {
+    type: 'Success',
+    message: 'Category Created Successfully',
+    statusCode: 201,
+    category
+  };
 });
 
 /**
  * Query users
- * @param {Object} request
- * @returns {Promise<Categories>}
+ * @param   {Object} request
+ * @returns {Object<type|message|statusCode|categories>}
  */
 export const queryCategories = catchAsync(async (req) => {
   // 1) Get All Categories
@@ -58,16 +66,25 @@ export const queryCategories = catchAsync(async (req) => {
 
   // 2) Check If Category Already Exist
   if (categories.length === 0) {
-    throw new AppError('No Categories Found', 404);
+    return {
+      type: 'Error',
+      message: 'No Categories Found',
+      statusCode: 404
+    };
   }
   // 3) If Everything is OK, Send Categories
-  return categories;
+  return {
+    type: 'Success',
+    message: 'Found Categories Successfully',
+    statusCode: 200,
+    categories
+  };
 });
 
 /**
  * Query Category Using It's Name
- * @param {String} name
- * @returns {Promise<Category>}
+ * @param   {String} name
+ * @returns {Object<type|message|statusCode|category>}
  */
 export const getCategoryByName = catchAsync(async (name) => {
   // 1) Get Category From Database
@@ -75,11 +92,20 @@ export const getCategoryByName = catchAsync(async (name) => {
 
   // 2) Check If Category Already Exist
   if (!category) {
-    throw new AppError(`No Category Found With This Name: ${name}`, 404);
+    return {
+      type: 'Error',
+      message: `No Category Found With This Name: ${name}`,
+      statusCode: 404
+    };
   }
 
   // 3) If Everything is OK, Send Category
-  return category;
+  return {
+    type: 'Success',
+    message: 'Category Found Successfully',
+    statusCode: 200,
+    category
+  };
 });
 
 /**
@@ -93,18 +119,27 @@ export const getCategoryById = catchAsync(async (id) => {
 
   // 2) Check If Category Already Exist
   if (!category) {
-    throw new AppError(`No Category Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No Category Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 3) If Everything is OK, Send Category
-  return category;
+  return {
+    type: 'Success',
+    message: 'Category Found Successfully',
+    statusCode: 200,
+    category
+  };
 });
 
 /**
  * Update Category Details
- * @param {String} id
- * @param {Object} body
- * @returns {Promise<Category>}
+ * @param   {String} id
+ * @param   {Object} body
+ * @returns {Object<type|message|statusCode|category>}
  */
 export const updateCategoryDetails = catchAsync(async (id, body) => {
   // 1) Find Category Document
@@ -112,7 +147,11 @@ export const updateCategoryDetails = catchAsync(async (id, body) => {
 
   // 2) Check If Category Already Exist
   if (!category) {
-    throw new AppError(`No Category Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No Category Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 3) Update Category
@@ -122,13 +161,18 @@ export const updateCategoryDetails = catchAsync(async (id, body) => {
   });
 
   // 3) If Everything is OK, Send Result
-  return result;
+  return {
+    type: 'Success',
+    message: 'Category Details Updated Successfully',
+    statusCode: 200,
+    result
+  };
 });
 
 /**
  * Update Category Image
- * @param {Object} image
- * @returns {Promise<Category>}
+ * @param   {Object} image
+ * @returns {Object<type|message|statusCode|category>}
  */
 export const updateCategoryImage = catchAsync(async (id, image) => {
   // 1) Get Category Data
@@ -136,7 +180,11 @@ export const updateCategoryImage = catchAsync(async (id, image) => {
 
   // 2) Check If Category Already Exist
   if (!category) {
-    throw new AppError(`No Category Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No Category Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 3) Destroy Category Current Image From Cloudinary
@@ -160,11 +208,17 @@ export const updateCategoryImage = catchAsync(async (id, image) => {
   });
 
   // 7) If Everything is OK, Send Result
-  return result;
+  return {
+    type: 'Success',
+    message: 'Category Image Updated Successfully',
+    statusCode: 200,
+    result
+  };
 });
 /**
  * Delete Category
- * @param {String} id
+ * @param   {ObjectId} id
+ * @returns {Object<type|message|statusCode>}
  */
 export const deleteCategoryById = catchAsync(async (id) => {
   // 1) Find Category Document
@@ -172,9 +226,20 @@ export const deleteCategoryById = catchAsync(async (id) => {
 
   // 2) Check If Category Already Exist
   if (!category) {
-    throw new AppError(`No Category Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No Category Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 3) Delete Category
   await Category.findByIdAndDelete(id);
+
+  // 4) If Everything is OK, Send Message
+  return {
+    type: 'Success',
+    message: 'Category Deleted Successfully',
+    statusCode: 200
+  };
 });
