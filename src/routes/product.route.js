@@ -28,17 +28,17 @@ const router = express.Router();
 
 router.use('/:id/reviews', reviewRoute);
 
-router.get('/top-5-cheap', top5Cheap, getAllProducts);
-router.get('/product-stats', productStats);
 router.get('/', getAllProducts);
 router.get('/:id', getProduct);
+router.get('/top-5-cheap', top5Cheap, getAllProducts);
+router.get('/product-stats', productStats);
+
+router.use(auth('admin', 'seller'));
+
+router.post('/', anyMulter(), addProduct);
 router.patch('/:id/details', updateProductDetails);
 router.patch('/:id/main-image', anyMulter(), updateProductMainImage);
 router.patch('/:id/images', anyMulter(), updateProductImages);
 router.delete('/:id', deleteProduct);
-
-router.use(auth('admin', 'seller'));
-
-router.route('/').post(anyMulter(), addProduct);
 
 export default router;
