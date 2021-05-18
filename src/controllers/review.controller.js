@@ -20,12 +20,21 @@ export const addReview = catchAsync(async (req, res, next) => {
   if (!req.body.user) req.body.user = req.user.id;
 
   // 2) Create Review
-  const review = await reviewService.createReview(req.body);
+  const { type, message, statusCode, review } =
+    await reviewService.createReview(req.body);
 
-  // 3) If Everything is OK, Send Review
-  return res.status(200).json({
-    status: 'success',
-    message: 'Review Created Successfully',
+  // 3) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 4) If Everything is OK, Send Review
+  return res.status(statusCode).json({
+    type,
+    message,
     review
   });
 });
@@ -53,32 +62,43 @@ export const getAllReviews = catchAsync(async (req, res, next) => {
   );
 
   // 3) Getting Cached Data From Redis
-  let reviews = await redisService.get(key);
+  let cached = await redisService.get(key);
 
   // 4) Check If Cached Data Already Exist
-  if (!reviews) {
+  if (!cached) {
     logger.error('No Caching Data');
   }
 
-  reviews = JSON.parse(reviews);
+  cached = JSON.parse(cached);
 
   // 5) If Cached Data Exit Return it
-  if (reviews) {
+  if (cached) {
     return res.status(200).json({
-      reviews
+      type: 'Success',
+      message: 'Reviews Found Successfully',
+      cached
     });
   }
 
   // 6) Get All Reviews
-  reviews = await reviewService.queryReviews(req);
+  const { type, message, statusCode, reviews } =
+    await reviewService.queryReviews(req);
 
-  // 7) Put Data into Redis With a Specific Key
+  // 8) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 8) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(reviews), 'EX', 60);
 
-  // 8) If Everything is OK, Send Data
-  return res.status(200).json({
-    status: 'success',
-    message: 'Found Reviews',
+  // 9) If Everything is OK, Send Data
+  return res.status(statusCode).json({
+    type,
+    message,
     reviews
   });
 });
@@ -97,32 +117,43 @@ export const getReview = catchAsync(async (req, res, next) => {
   const key = redisService.generateCacheKey('review', `id:${reviewId}`);
 
   // 2) Getting Cached Data From Redis
-  let review = await redisService.get(key);
+  let cached = await redisService.get(key);
 
   // 3) Check If Cached Data Already Exist
-  if (!review) {
+  if (!cached) {
     logger.error('No Caching Data');
   }
 
-  review = JSON.parse(review);
+  cached = JSON.parse(cached);
 
   // 4) If Cached Data Exit Return it
-  if (review) {
+  if (cached) {
     return res.status(200).json({
-      review
+      type: 'Success',
+      message: 'Review Found Successfully',
+      cached
     });
   }
 
   // 5) Get Review Using It's ID
-  review = await reviewService.queryReviewById(reviewId);
+  const { type, message, statusCode, review } =
+    await reviewService.queryReviewById(reviewId);
 
-  // 6) Put Data into Redis With a Specific Key
+  // 6) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 7) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(review), 'EX', 60);
 
-  // 7) If Everything is OK, Send Review
-  return res.status(200).json({
-    status: 'success',
-    message: 'Found Review',
+  // 8) If Everything is OK, Send Review
+  return res.status(statusCode).json({
+    type,
+    message,
     review
   });
 });
@@ -136,12 +167,21 @@ export const getReview = catchAsync(async (req, res, next) => {
  */
 export const updateReview = catchAsync(async (req, res, next) => {
   // 1) Update Review Using It's ID
-  const review = await reviewService.updateReview(req.params.reviewId);
+  const { type, message, statusCode, review } =
+    await reviewService.updateReview(req.params.reviewId);
 
-  // 2) If Everything is OK, Send Review
-  return res.status(200).json({
-    status: 'success',
-    message: 'Review Updated Successfully',
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send Review
+  return res.status(statusCode).json({
+    type,
+    message,
     review
   });
 });
@@ -155,11 +195,21 @@ export const updateReview = catchAsync(async (req, res, next) => {
  */
 export const deleteReview = catchAsync(async (req, res, next) => {
   // 1) Delete Review
-  await reviewService.deleteReview(req.params.reviewId);
+  const { type, message, statusCode } = await reviewService.deleteReview(
+    req.params.reviewId
+  );
 
-  // 2) If Everything Is OK, Send Message
-  return res.status(200).json({
-    status: 'success',
-    message: 'Review Deleted Successfully'
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything Is OK, Send Message
+  return res.status(statusCode).json({
+    type,
+    message
   });
 });
