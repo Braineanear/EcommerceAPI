@@ -10,10 +10,10 @@ const { createOrder, getAllOrders, getOrder, cancelOrder } = orderController;
 
 const router = express.Router();
 
-router.post('/', auth('user', 'admin', 'seller'), createOrder);
-router.get('/', auth('user', 'admin', 'seller'), getAllOrders);
+router.use(auth('user', 'admin', 'seller'));
 
-router.get('/:id', auth('user', 'admin', 'seller'), getOrder);
-router.delete('/:id', auth('user', 'admin', 'seller'), cancelOrder);
+router.route('/').post(createOrder).get(getAllOrders);
+
+router.route('/:id').get(getOrder).delete(cancelOrder);
 
 export default router;
