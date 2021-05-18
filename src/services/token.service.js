@@ -7,7 +7,6 @@ import config from '../config/config';
 import tokenTypes from '../config/tokens';
 
 // Utils
-import AppError from '../utils/appError';
 import catchAsync from '../utils/catchAsync';
 
 // Models
@@ -59,9 +58,9 @@ export const saveToken = catchAsync(async (token, id, expires, type) => {
 
 /**
  * Verify token and return token doc (or throw an error if it is not valid)
- * @param {string} token
- * @param {string} type
- * @returns {Promise<Token>}
+ * @param   {String} token
+ * @param   {String} type
+ * @returns {Object<type|message|statusCode|token>}
  */
 export const verifyToken = catchAsync(async (token, type) => {
   // 1) Verify Token
@@ -76,17 +75,26 @@ export const verifyToken = catchAsync(async (token, type) => {
 
   // 3) Check if Token Already Exist or not
   if (!tokenDoc) {
-    throw new AppError('No Token Found', 404);
+    return {
+      type: 'Error',
+      message: 'Token Not Found',
+      statusCode: 404
+    };
   }
 
   // 4) If Everything is OK, Send Token
-  return tokenDoc;
+  return {
+    type: 'Success',
+    message: 'Token Verified Successfully',
+    statusCode: 200,
+    tokenDoc
+  };
 });
 
 /**
  * Generate auth tokens
- * @param {User} user
- * @returns {Promise<Object>}
+ * @param   {User} user
+ * @returns {Object<tokens>}
  */
 export const generateAuthTokens = catchAsync(async (user) => {
   // 1) Set Access Token Expire Time
@@ -138,32 +146,27 @@ export const generateAuthTokens = catchAsync(async (user) => {
 
 /**
  * Generate reset password token
- * @param {string} email
- * @returns {Promise<string>}
+ * @param   {String} email
+ * @returns {Object<type|message|statusCode|>}
  */
 export const generateResetPasswordToken = catchAsync(async (email) => {
   // 1) Get User's Data
   const user = await User.findOne({ email });
 
-  // 2) Check if User Exist or not
-  if (!user) {
-    throw new AppError(`No users found with this email: ${email}`, 404);
-  }
-
-  // 3) Set Reset Token Expire Time
+  // 2) Set Reset Token Expire Time
   const resetTokenExpires = moment().add(
     config.jwt.resetPasswordExpirationMinutes,
     'minutes'
   );
 
-  // 4) Generate Reset Token
+  // 3) Generate Reset Token
   const resetPasswordToken = generateToken(
     user.id,
     resetTokenExpires,
     tokenTypes.RESET_PASSWORD
   );
 
-  // 5) Save Reset Token
+  // 4) Save Reset Token
   await saveToken(
     resetPasswordToken,
     user.id,
@@ -171,16 +174,16 @@ export const generateResetPasswordToken = catchAsync(async (email) => {
     tokenTypes.RESET_PASSWORD
   );
 
-  // 6) If Everything is OK, Send Reset Password Token
+  // 5) If Everything is OK, Send Reset Password Token
   return resetPasswordToken;
 });
 
 /**
  * Generate verify email token
- * @param {string} email
- * @returns {Promise<string>}
+ * @param   {String} email
+ * @returns {Object<token>}
  */
-export const generateVerifyEmailToken = catchAsync(async (user) => {
+export const generateVerifyEmailToken = catchAsync(async (id) => {
   // 1) Set Verify Email Token Expire Time
   const verifyEmailTokenExpires = moment().add(
     config.jwt.verifyEmailExpirationMinutes,
@@ -189,7 +192,7 @@ export const generateVerifyEmailToken = catchAsync(async (user) => {
 
   // 2) Generate Verify Email Token
   const verifyEmailToken = generateToken(
-    user.id,
+    id,
     verifyEmailTokenExpires,
     tokenTypes.VERIFY_EMAIL
   );
@@ -197,7 +200,7 @@ export const generateVerifyEmailToken = catchAsync(async (user) => {
   // 3) Save Verify Email Token
   await saveToken(
     verifyEmailToken,
-    user.id,
+    id,
     verifyEmailTokenExpires,
     tokenTypes.VERIFY_EMAIL
   );
