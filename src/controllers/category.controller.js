@@ -29,34 +29,43 @@ export const getAllCategories = catchAsync(async (req, res, next) => {
   );
 
   // 3) Getting Cached Data From Redis
-  let categories = await redisService.get(key);
+  let cached = await redisService.get(key);
 
   // 4) Check If Cached Data Already Exist
-  if (!categories) {
+  if (!cached) {
     logger.error('No Caching Data');
   }
 
-  categories = JSON.parse(categories);
+  cached = JSON.parse(cached);
 
   // 5) If Cached Data Exit Return it
-  if (categories) {
+  if (cached) {
     return res.status(200).json({
-      status: 'success',
-      message: 'Categories Found',
-      categories
+      type: 'Success',
+      message: 'Categories Found Successfully',
+      cached
     });
   }
 
   // 6) Get All Users
-  categories = await categoryService.queryCategories(req);
+  const { type, message, statusCode, categories } =
+    await categoryService.queryCategories(req);
 
-  // 7) Put Data into Redis With a Specific Key
+  // 7) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 8) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(categories), 'EX', 60);
 
-  // 8) If Everything is OK, Send Data
-  return res.status(200).json({
-    status: 'success',
-    message: 'Categories Found',
+  // 9) If Everything is OK, Send Data
+  return res.status(statusCode).json({
+    type,
+    message,
     categories
   });
 });
@@ -75,34 +84,43 @@ export const getCategory = catchAsync(async (req, res, next) => {
   const key = redisService.generateCacheKey('category', `id:${id}`);
 
   // 2) Getting Cached Data From Redis
-  let category = await redisService.get(key);
+  let cached = await redisService.get(key);
 
   // 3) Check If Cached Data Already Exist
-  if (!category) {
+  if (!cached) {
     logger.error('No Caching Data');
   }
 
-  category = JSON.parse(category);
+  cached = JSON.parse(cached);
 
   // 4) If Cached Data Exit Return it
-  if (category) {
+  if (cached) {
     return res.status(200).json({
-      status: 'success',
-      message: 'Category Found',
-      category
+      type: 'Success',
+      message: 'Category Found Successfully',
+      cached
     });
   }
 
   // 5) Get All Users
-  category = await categoryService.getCategoryById(id);
+  const { type, message, statusCode, category } =
+    await categoryService.getCategoryById(id);
 
-  // 6) Put Data into Redis With a Specific Key
+  // 6) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 7) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(category), 'EX', 60);
 
   // 7) If Everything is OK, Send Category
-  return res.status(200).json({
-    status: 'success',
-    message: 'Found Category Successfully',
+  return res.status(statusCode).json({
+    type,
+    message,
     category
   });
 });
@@ -116,13 +134,22 @@ export const getCategory = catchAsync(async (req, res, next) => {
  */
 export const addCategory = catchAsync(async (req, res, next) => {
   // 1) Insert Data into The Database
-  const result = await categoryService.createCategory(req);
+  const { type, message, statusCode, category } =
+    await categoryService.createCategory(req);
 
-  // 2) If Everything is OK, Send Result
-  return res.status(201).json({
-    status: 'success',
-    message: 'Category Created Successfully',
-    result
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send Result
+  return res.status(statusCode).json({
+    type,
+    message,
+    category
   });
 });
 
@@ -137,13 +164,22 @@ export const updateCategoryDetails = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
   // 1) Update Category
-  const result = await categoryService.updateCategoryDetails(id, req.body);
+  const { type, message, statusCode, category } =
+    await categoryService.updateCategoryDetails(id, req.body);
 
-  // 2) If Everything is OK, Send Category Data
-  return res.status(200).json({
-    status: 'success',
-    message: 'Category Updated Successfully',
-    result
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send Category Data
+  return res.status(statusCode).json({
+    type,
+    message,
+    category
   });
 });
 
@@ -159,13 +195,22 @@ export const updateCategoryImage = catchAsync(async (req, res, next) => {
   let image = req.file;
 
   // 1) Update Category
-  const result = await categoryService.updateCategoryImage(id, image);
+  const { type, message, statusCode, category } =
+    await categoryService.updateCategoryImage(id, image);
 
-  // 2) If Everything is OK, Send Category Data
-  return res.status(200).json({
-    status: 'success',
-    message: 'Category Updated Successfully',
-    result
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send Category Data
+  return res.status(statusCode).json({
+    type,
+    message,
+    category
   });
 });
 
@@ -180,11 +225,20 @@ export const deleteCategory = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
   // 1) Find Category By ID & Delete It
-  await categoryService.deleteCategoryById(id);
+  const { type, message, statusCode } =
+    await categoryService.deleteCategoryById(id);
 
-  // 2) If Everything is OK, Send Message
-  return res.status(200).json({
-    status: 'success',
-    message: 'Category Deleted Successfully'
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send Message
+  return res.status(statusCode).json({
+    type,
+    message
   });
 });
