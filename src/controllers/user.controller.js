@@ -15,12 +15,23 @@ import { userService, redisService } from '../services/index';
  */
 export const createUser = catchAsync(async (req, res) => {
   // 1) Create User Document
-  const user = await userService.createUser(req.body, req.file);
+  const { type, message, statusCode, user } = await userService.createUser(
+    req.body,
+    req.file
+  );
 
-  // 2) If Everything is OK, Send User Data
-  return res.status(201).json({
-    status: 'success',
-    message: 'Account Created Successfully',
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send User Data
+  return res.status(statusCode).json({
+    type,
+    message,
     user
   });
 });
@@ -47,33 +58,45 @@ export const getUsers = catchAsync(async (req, res) => {
   );
 
   // 3) Getting Cached Data From Redis
-  let data = await redisService.get(key);
+  let cached = await redisService.get(key);
 
   // 4) Check If Cached Data Already Exist
-  if (!data) {
+  if (!cached) {
     logger.error('No Caching Data');
   }
 
-  data = JSON.parse(data);
+  cached = JSON.parse(cached);
 
   // 5) If Cached Data Exit Return it
-  if (data) {
+  if (cached) {
     return res.status(200).json({
-      data
+      type: 'Success',
+      message: 'Users Found Successfully',
+      cached
     });
   }
 
   // 6) Get All Users
-  data = await userService.queryUsers(req);
+  const { type, message, statusCode, users } = await userService.queryUsers(
+    req
+  );
 
-  // 7) Put Data into Redis With a Specific Key
-  redisService.set(key, JSON.stringify(data), 'EX', 60);
+  // 7) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
 
-  // 8) If Everything is OK, Send Data
-  return res.status(200).json({
-    status: 'success',
-    message: 'Found Users',
-    data
+  // 8) Put Data into Redis With a Specific Key
+  redisService.set(key, JSON.stringify(users), 'EX', 60);
+
+  // 9) If Everything is OK, Send Data
+  return res.status(statusCode).json({
+    type,
+    message,
+    users
   });
 });
 
@@ -89,31 +112,44 @@ export const getUser = catchAsync(async (req, res) => {
   const key = redisService.generateCacheKey('user', userId);
 
   // 2) Getting Cached Data From Redis
-  let user = await redisService.get(key);
+  let cached = await redisService.get(key);
 
   // 3) Check If Cached Data Already Exist
-  if (!user) {
+  if (!cached) {
     logger.error('No Caching Data');
   }
 
-  user = JSON.parse(user);
+  cached = JSON.parse(cached);
 
   // 4) If Cached Data Exit Return it
-  if (user) {
+  if (cached) {
     return res.status(200).json({
-      user
+      type: 'Success',
+      message: 'User Found Successfully',
+      cached
     });
   }
 
   // 5) Find User Document By It's ID
-  user = await userService.queryUser(req.params.id);
+  const { type, message, statusCode, user } = await userService.queryUser(
+    req.params.id
+  );
 
-  // 6) Put Data into Redis With a Specific Key
+  // 6) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 7) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(user), 'EX', 60);
 
-  // 7) If Everything is OK, Send User's Data
-  return res.status(200).json({
-    status: 'success',
+  // 8) If Everything is OK, Send User's Data
+  return res.status(statusCode).json({
+    type,
+    message,
     user
   });
 });
@@ -126,12 +162,21 @@ export const getUser = catchAsync(async (req, res) => {
  */
 export const updateUserDetails = catchAsync(async (req, res) => {
   // 1) Find User Document and Update it
-  const user = await userService.updateUserDetails(req.params.id, req.body);
+  const { type, message, statusCode, user } =
+    await userService.updateUserDetails(req.params.id, req.body);
 
-  // 2) If Everything is OK, Send User's Data
-  return res.status(200).json({
-    status: 'success',
-    message: 'User Account Updated Successfully',
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send User's Data
+  return res.status(statusCode).json({
+    type,
+    message,
     user
   });
 });
@@ -144,12 +189,21 @@ export const updateUserDetails = catchAsync(async (req, res) => {
  */
 export const updateUserProfileImage = catchAsync(async (req, res) => {
   // 1) Find User Document and Update it
-  const user = await userService.updateUserDetails(req.params.id, req.file);
+  const { type, message, statusCode, user } =
+    await userService.updateUserDetails(req.params.id, req.file);
 
-  // 2) If Everything is OK, Send User's Data
-  return res.status(200).json({
-    status: 'success',
-    message: 'User Account Updated Successfully',
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send User's Data
+  return res.status(statusCode).json({
+    type,
+    message,
     user
   });
 });
@@ -162,11 +216,21 @@ export const updateUserProfileImage = catchAsync(async (req, res) => {
  */
 export const deleteUser = catchAsync(async (req, res) => {
   // 1) Find User Document and Delete it
-  await userService.deleteUserById(req.params.id);
+  const { type, message, statusCode } = await userService.deleteUserById(
+    req.params.id
+  );
 
-  // 2) If Everything is OK, Send Message
-  return res.status(200).json({
-    status: 'success',
-    message: 'User Account Deleted Successfully'
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send Message
+  return res.status(statusCode).json({
+    type,
+    message
   });
 });
