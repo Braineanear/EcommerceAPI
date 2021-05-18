@@ -1,5 +1,9 @@
 import express from 'express';
 
+// Middlewares
+import auth from '../middlewares/auth';
+
+// Controllers
 import { cartController } from '../controllers/index';
 
 const {
@@ -13,6 +17,8 @@ const {
 } = cartController;
 
 const router = express.Router();
+
+router.use(auth('user', 'admin', 'seller'));
 
 router.post('/', addItemToCart);
 router.patch('/', subtractItemFromCart);
