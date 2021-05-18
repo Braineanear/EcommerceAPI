@@ -57,6 +57,13 @@ import {
   deleteItem
 } from './cart.controller';
 
+import {
+  createOrder,
+  getAllOrders,
+  getOrder,
+  cancelOrder
+} from './order.controller';
+
 const authController = {
   register,
   login,
@@ -116,11 +123,19 @@ const cartController = {
   deleteItem
 };
 
+const orderController = {
+  createOrder,
+  getAllOrders,
+  getOrder,
+  cancelOrder
+};
+
 export {
   authController,
   userController,
   productController,
   categoryController,
   reviewController,
-  cartController
+  cartController,
+  orderController
 };
