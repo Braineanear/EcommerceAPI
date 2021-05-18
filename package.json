@@ -42,6 +42,7 @@
     "redis": "^3.1.2",
     "sharp": "^0.28.2",
     "slugify": "^1.5.3",
+    "stripe": "^8.148.0",
     "validator": "^13.6.0",
     "winston": "^3.3.3",
     "xss-clean": "^0.1.1"
