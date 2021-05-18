@@ -1,6 +1,5 @@
 // Utils
 import catchAsync from '../utils/catchAsync';
-import AppError from '../utils/appError';
 
 // Models
 import { Cart, Product } from '../models/index';
@@ -10,15 +9,23 @@ import { Cart, Product } from '../models/index';
  * @param     {String}    email
  * @param     {ObjectId}  productId
  * @param     {Number}    quantity
- * @returns   {Promise<Cart>}
+ * @returns   {Object<type|message|statusCode|cart>}
  */
 export const addProductToCart = catchAsync(
-  async (email, productId, quantity) => {
+  async (user, productId, quantity) => {
     // 1) Get Cart Using User Email
-    let cart = await Cart.findOne({ email });
+    let cart = await Cart.findOne({ email: user.email });
 
     // 2) Get Product Using It's ID
     const product = await Product.findById(productId);
+
+    if (!product) {
+      return {
+        type: 'Error',
+        message: `No Product Found With This ID: ${productId}`,
+        statusCode: 404
+      };
+    }
 
     // 3) Get Product Price
     const { price } = product;
@@ -50,19 +57,28 @@ export const addProductToCart = catchAsync(
         cart.totalQuantity += quantity;
         cart.totalPrice += price * quantity;
       } else {
-        throw new AppError('Invalid request', 400);
+        return {
+          type: 'Error',
+          message: 'Invalid request',
+          statusCode: 400
+        };
       }
 
       // 3) Save Cart Data
       cart = await cart.save();
 
       // 4) If Everything is OK, Send Cart
-      return cart;
+      return {
+        type: 'Success',
+        message: 'Item Added To Cart Successfully',
+        statusCode: 200,
+        cart
+      };
     }
 
     // 5) In Case User Doesn't Have Cart, Then Create New Cart For The User
     const cartData = {
-      email,
+      email: user.email,
       items: [
         {
           product: productId,
@@ -81,7 +97,12 @@ export const addProductToCart = catchAsync(
     cart = await Cart.findById(cart._id);
 
     // 8) If Everything is OK, Send Cart
-    return cart;
+    return {
+      type: 'Success',
+      message: 'Item Added To Cart Successfully',
+      statusCode: 200,
+      cart
+    };
   }
 );
 
@@ -90,7 +111,7 @@ export const addProductToCart = catchAsync(
  * @param     {String}    email
  * @param     {ObjectId}  productId
  * @param     {Number}    quantity
- * @returns   {Promise<Cart>}
+ * @returns   {Object<type|message|statusCode|cart>}
  */
 export const subtractItemFromCart = catchAsync(
   async (email, productId, quantity) => {
@@ -105,14 +126,20 @@ export const subtractItemFromCart = catchAsync(
 
     // 4) Check If Quantity Less Than Or Equal To Zero
     if (quantity <= 0) {
-      throw new AppError('Quantity cannot be less than or equal to zero', 400);
+      return {
+        type: 'Error',
+        message: 'Quantity cannot be less than or equal to zero',
+        statusCode: 400
+      };
     }
 
     // 5) Check If Cart Already Exist
     if (!cart) {
-      throw new AppError(
-        (`No Cart Found For User With The Email: ${email}`, 404)
-      );
+      return {
+        type: 'Error',
+        message: `No Cart Found For User With The Email: ${email}`,
+        statusCode: 404
+      };
     }
 
     // 6) Find Product Index Inside Cart
@@ -122,10 +149,11 @@ export const subtractItemFromCart = catchAsync(
 
     // 7) Check If Product Doesn't Exist In The Cart
     if (indexFound === -1) {
-      throw new AppError(
-        `No Product Found With This ID: ${productId} In The Cart`,
-        404
-      );
+      return {
+        type: 'Error',
+        message: `No Product Found With This ID: ${productId} In The Cart`,
+        statusCode: 404
+      };
     }
 
     // 8) Update Cart & Product Data
@@ -152,7 +180,12 @@ export const subtractItemFromCart = catchAsync(
     cart = await Cart.findById(cart._id);
 
     // 11) If Everything is OK, Send Cart
-    return cart;
+    return {
+      type: 'Success',
+      message: 'Item Subtracted From Cart Successfully',
+      statusCode: 200,
+      cart
+    };
   }
 );
 
@@ -160,7 +193,7 @@ export const subtractItemFromCart = catchAsync(
  * Reduce Product Quantity By One
  * @param     {String}    email
  * @param     {ObjectId}  productId
- * @returns   {Promise<Cart>}
+ * @returns   {Object<type|message|statusCode|cart>}
  */
 export const reduceByOne = catchAsync(async (email, productId) => {
   // 1) Find Cart Using User Email
@@ -174,9 +207,11 @@ export const reduceByOne = catchAsync(async (email, productId) => {
 
   // 4) Check If Cart Already Exist
   if (!cart) {
-    throw new AppError(
-      (`No Cart Found For User With The Email: ${email}`, 404)
-    );
+    return {
+      type: 'Error',
+      message: `No Cart Found For User With The Email: ${email}`,
+      statusCode: 404
+    };
   }
 
   // 5) Find Product Index Inside Cart
@@ -186,10 +221,11 @@ export const reduceByOne = catchAsync(async (email, productId) => {
 
   // 6) Check If Product Doesn't Exist In The Cart
   if (indexFound === -1) {
-    throw new AppError(
-      `No Product Found With This ID: ${productId} In The Cart`,
-      404
-    );
+    return {
+      type: 'Error',
+      message: `No Product Found With This ID: ${productId} In The Cart`,
+      statusCode: 404
+    };
   }
 
   // 7) Update Cart & Product Data
@@ -214,14 +250,19 @@ export const reduceByOne = catchAsync(async (email, productId) => {
   cart = await Cart.findById(cart._id);
 
   // 10) If Everything is OK, Send Cart
-  return cart;
+  return {
+    type: 'Success',
+    message: 'Item Reduced By One From Cart Successfully',
+    statusCode: 200,
+    cart
+  };
 });
 
 /**
  * Increase Product Quantity By One
  * @param     {String}    email
  * @param     {ObjectId}  productId
- * @returns   {Promise<Cart>}
+ * @returns   {Object<type|message|statusCode|cart>}
  */
 export const increaseByOne = catchAsync(async (email, productId) => {
   // 1) Find Cart Using User Email
@@ -235,9 +276,11 @@ export const increaseByOne = catchAsync(async (email, productId) => {
 
   // 4) Check If Cart Already Exist
   if (!cart) {
-    throw new AppError(
-      (`No Cart Found For User With The Email: ${email}`, 404)
-    );
+    return {
+      type: 'Error',
+      message: `No Cart Found For User With The Email: ${email}`,
+      statusCode: 404
+    };
   }
 
   // 5) Find Product Index Inside Cart
@@ -247,10 +290,11 @@ export const increaseByOne = catchAsync(async (email, productId) => {
 
   // 6) Check If Product Doesn't Exist In The Cart
   if (indexFound === -1) {
-    throw new AppError(
-      `No Product Found With This ID: ${productId} In The Cart`,
-      404
-    );
+    return {
+      type: 'Error',
+      message: `No Product Found With This ID: ${productId} In The Cart`,
+      statusCode: 404
+    };
   }
 
   // 7) Update Cart & Product Data
@@ -275,13 +319,18 @@ export const increaseByOne = catchAsync(async (email, productId) => {
   cart = await Cart.findById(cart._id);
 
   // 10) If Everything is OK, Send Cart
-  return cart;
+  return {
+    type: 'Success',
+    message: 'Item Increased By One In Cart Successfully',
+    statusCode: 200,
+    cart
+  };
 });
 
 /**
  * Get Cart
  * @param     {String}    email
- * @returns   {Promise<Cart>}
+ * @returns   {Object<type|message|statusCode|cart>}
  */
 export const queryCart = catchAsync(async (email) => {
   // 1) Find Cart Using User Email
@@ -289,19 +338,26 @@ export const queryCart = catchAsync(async (email) => {
 
   // 2) Check If Cart Doesn't Exist
   if (!cart) {
-    throw new AppError(
-      `No Cart Found For The User With This Email: ${email}`,
-      404
-    );
+    return {
+      type: 'Error',
+      message: `No Cart Found For The User With This Email: ${email}`,
+      statusCode: 404
+    };
   }
 
   // 3) If Everything is OK, Send Cart
-  return cart;
+  return {
+    type: 'Success',
+    message: 'Cart Found Successfully',
+    statusCode: 200,
+    cart
+  };
 });
 
 /**
  * Delete Cart
  * @param     {String}    email
+ * @return    {Object<type|message|statusCode>}
  */
 export const deleteCart = catchAsync(async (email) => {
   // 1) Get Cart Using User Email
@@ -309,21 +365,29 @@ export const deleteCart = catchAsync(async (email) => {
 
   // 2) Check If Cart Doesn't Exist
   if (!cart) {
-    throw new AppError(
-      `No Cart Found For The User With This Email: ${email}`,
-      404
-    );
+    return {
+      type: 'Error',
+      message: `No Cart Found For The User With This Email: ${email}`,
+      statusCode: 404
+    };
   }
 
   // 3) Delete Cart
   await Cart.findOneAndDelete({ email });
+
+  // 4) If Everything is OK, Send Message
+  return {
+    type: 'Success',
+    message: 'Cart Deleted Successfully',
+    statusCode: 200
+  };
 });
 
 /**
  * Delete Cart Item
  * @param     {String}    email
  * @param     {String}    productId
- * @returns   {Promise<Cart>}
+ * @returns   {Object<type|message|statusCode|cart>}
  */
 export const deleteItem = catchAsync(async (email, productId) => {
   // 1) Get Cart Using User Email
@@ -331,10 +395,11 @@ export const deleteItem = catchAsync(async (email, productId) => {
 
   // 2) Check If Cart Doesn't Exist
   if (!cart) {
-    throw new AppError(
-      `No Cart Found For The User With This Email: ${email}`,
-      404
-    );
+    return {
+      type: 'Error',
+      message: `No Cart Found For The User With This Email: ${email}`,
+      statusCode: 404
+    };
   }
 
   // 3) Get Product Using It's ID
@@ -342,7 +407,11 @@ export const deleteItem = catchAsync(async (email, productId) => {
 
   // 4) Check If Product Doesn't Exist
   if (!product) {
-    throw new AppError(`No Product Found With This ID: ${productId}`, 404);
+    return {
+      type: 'Error',
+      message: `No Product Found With This ID: ${productId}`,
+      statusCode: 404
+    };
   }
 
   const indexFound = cart.items.findIndex(
@@ -365,5 +434,10 @@ export const deleteItem = catchAsync(async (email, productId) => {
   );
 
   // 6) If Everything is OK, Send Cart
-  return cart;
+  return {
+    type: 'Success',
+    message: 'Item Deleted From Cart Successfully',
+    statusCode: 200,
+    cart
+  };
 });
