@@ -29,32 +29,43 @@ export const getAllProducts = catchAsync(async (req, res) => {
   );
 
   // 3) Getting Cached Data From Redis
-  let products = await redisService.get(key);
+  let cached = await redisService.get(key);
 
   // 4) Check If Cached Data Already Exist
-  if (!products) {
+  if (!cached) {
     logger.error('No Caching Data');
   }
 
-  products = JSON.parse(products);
+  cached = JSON.parse(cached);
 
   // 5) If Cached Data Exit Return it
-  if (products) {
+  if (cached) {
     return res.status(200).json({
-      products
+      type: 'Success',
+      message: 'Products Found Successfully',
+      cached
     });
   }
 
   // 6) Get All Products
-  products = await productService.queryProducts(req);
+  const { type, message, statusCode, products } =
+    await productService.queryProducts(req);
 
-  // 7) Put Data into Redis With a Specific Key
+  // 7) Check If Thers is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 8) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(products), 'EX', 60);
 
-  // 8) If Everything is OK, Send Data
-  return res.status(200).json({
-    status: 'success',
-    message: 'Found Products',
+  // 9) If Everything is OK, Send Data
+  return res.status(statusCode).json({
+    type,
+    message,
     products
   });
 });
@@ -72,32 +83,43 @@ export const getProduct = catchAsync(async (req, res) => {
   const key = redisService.generateCacheKey('product', `id:${id}`);
 
   // 2) Getting Cached Data From Redis
-  let product = await redisService.get(key);
+  let cached = await redisService.get(key);
 
   // 3) Check If Cached Data Already Exist
-  if (!product) {
+  if (!cached) {
     logger.error('No Caching Data');
   }
 
-  product = JSON.parse(product);
+  cached = JSON.parse(cached);
 
   // 4) If Cached Data Exit Return it
-  if (product) {
+  if (cached) {
     return res.status(200).json({
-      product
+      type: 'Success',
+      message: 'Product Found Successfully',
+      cached
     });
   }
 
   // 5) Get Product Using It's ID
-  product = await productService.queryProductById(id);
+  const { type, message, statusCode, product } =
+    await productService.queryProductById(id);
 
-  // 6) Put Data into Redis With a Specific Key
+  // 6) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 7) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(product), 'EX', 60);
 
-  // 7) If Everything is OK, Send Product
-  return res.status(200).json({
-    status: 'success',
-    message: 'Found Product',
+  // 8) If Everything is OK, Send Product
+  return res.status(statusCode).json({
+    type,
+    message,
     product
   });
 });
@@ -110,12 +132,21 @@ export const getProduct = catchAsync(async (req, res) => {
  */
 export const addProduct = catchAsync(async (req, res) => {
   // 1) Create Product
-  const product = await productService.createProduct(req);
+  const { type, message, statusCode, product } =
+    await productService.createProduct(req);
 
-  // 2) If Everything is OK, Send Data
-  return res.status(200).json({
-    status: 'success',
-    message: 'Category Created Successfully',
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send Category
+  return res.status(statusCode).json({
+    type,
+    message,
     product
   });
 });
@@ -128,12 +159,21 @@ export const addProduct = catchAsync(async (req, res) => {
  */
 export const updateProductDetails = catchAsync(async (req, res) => {
   // 1) Update Product Using It's ID
-  const product = await productService.updateProductDetails(req);
+  const { type, message, statusCode, product } =
+    await productService.updateProductDetails(req);
 
-  // 2) If Everything is OK, Send Product
-  return res.status(200).json({
-    status: 'success',
-    message: 'Product Updated Successfully',
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send Product
+  return res.status(statusCode).json({
+    type,
+    message,
     product
   });
 });
@@ -146,12 +186,20 @@ export const updateProductDetails = catchAsync(async (req, res) => {
  */
 export const updateProductMainImage = catchAsync(async (req, res) => {
   // 1) Update Product Using It's ID
-  const product = await productService.updateProductMainImage(req);
+  const { type, message, statusCode, product } =
+    await productService.updateProductMainImage(req);
 
-  // 2) If Everything is OK, Send Product
-  return res.status(200).json({
-    status: 'success',
-    message: 'Product Updated Successfully',
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+  // 3) If Everything is OK, Send Product
+  return res.status(statusCode).json({
+    type,
+    message,
     product
   });
 });
@@ -164,12 +212,21 @@ export const updateProductMainImage = catchAsync(async (req, res) => {
  */
 export const updateProductImages = catchAsync(async (req, res) => {
   // 1) Update Product Using It's ID
-  const product = await productService.updateProductImages(req);
+  const { type, message, statusCode, product } =
+    await productService.updateProductImages(req);
 
-  // 2) If Everything is OK, Send Product
-  return res.status(200).json({
-    status: 'success',
-    message: 'Product Updated Successfully',
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send Product
+  return res.status(statusCode).json({
+    type,
+    message,
     product
   });
 });
@@ -182,12 +239,20 @@ export const updateProductImages = catchAsync(async (req, res) => {
  */
 export const deleteProduct = catchAsync(async (req, res) => {
   // 1) Delete Product
-  await productService.deleteProduct(req);
+  const { type, message, statusCode } = await productService.deleteProduct(req);
 
-  // 2) If Everything Is OK, Send Message
-  return res.status(200).json({
-    status: 'success',
-    message: 'Product Deleted Successfully'
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything Is OK, Send Message
+  return res.status(statusCode).json({
+    type,
+    message
   });
 });
 
