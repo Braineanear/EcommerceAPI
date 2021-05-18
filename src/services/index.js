@@ -71,6 +71,13 @@ import {
   deleteItem
 } from './cart.service';
 
+import {
+  createOrder,
+  queryOrders,
+  queryOrder,
+  cancelOrder
+} from './order.service';
+
 import { set, get, generateCacheKey } from './redis.service';
 
 const authService = {
@@ -148,6 +155,13 @@ const cartService = {
   deleteItem
 };
 
+const orderService = {
+  createOrder,
+  queryOrders,
+  queryOrder,
+  cancelOrder
+};
+
 export {
   authService,
   tokenService,
@@ -157,5 +171,6 @@ export {
   productService,
   redisService,
   reviewService,
-  cartService
+  cartService,
+  orderService
 };
