@@ -1,5 +1,4 @@
 // Utils
-import AppError from '../utils/appError';
 import catchAsync from '../utils/catchAsync';
 import APIFeatures from '../utils/apiFeatures';
 
@@ -8,26 +7,42 @@ import { Review } from '../models/index';
 
 /**
  * Create New Review
- * @param {Object} body
- * @returns {Promise<Review>}
+ * @param   {Object} body
+ * @returns {Object<type|message|statusCode|review>}
  */
 export const createReview = catchAsync(async (body) => {
-  // 1) Check All Fields Provieded
-  if (!body.product || !body.user || !body.review || !body.rating) {
-    throw new AppError('All fields are required', 400);
+  const { product, user, review, rating } = body;
+
+  // 1) Check If User Entered All Fields
+  if (!product || !user || !review || !rating) {
+    return {
+      type: 'Error',
+      message: 'All Fields Are Required',
+      statusCode: 400
+    };
   }
 
   // 2) Create Review
-  const review = await Review.create(body);
+  const newReview = await Review.create({
+    product,
+    user,
+    review,
+    rating
+  });
 
   // 3) If Everything is OK, Send Review
-  return review;
+  return {
+    type: 'Success',
+    message: 'Review Created Successfully',
+    statusCode: 201,
+    newReview
+  };
 });
 
 /**
  * Query All Reviews
- * @param {Object} req
- * @returns {Promise<Reviews>}
+ * @param   {Object} req
+ * @returns {Object<type|message|statusCode|reviews>}
  */
 export const queryReviews = catchAsync(async (req) => {
   // 1) Get All Reviews
@@ -42,46 +57,68 @@ export const queryReviews = catchAsync(async (req) => {
     }
   ]);
 
-  // 2) Check if Reviews Already Exist
+  // 2) Check if Reviews Doesn't Exist
   if (reviews.length === 0) {
-    throw new AppError('No Reviews Found', 404);
+    return {
+      type: 'Error',
+      message: 'No Reviews Found',
+      statusCode: 404
+    };
   }
 
   // 3) If Everything is OK, Send Reviews
-  return reviews;
+  return {
+    type: 'Success',
+    message: 'Reviews Found Successfully',
+    statusCode: 200,
+    reviews
+  };
 });
 
 /**
  * Query Review Using It's ID
- * @param {String} id
- * @returns {Promise<Review>}
+ * @param   {ObjectId} id
+ * @returns {Object<type|message|statusCode|review>}
  */
 export const queryReviewById = catchAsync(async (id) => {
   // 1) Get Review Using It's ID
   const review = await Review.findById(id);
 
-  // 2) Check If Review Already Exist
+  // 2) Check If Review Doesn't Exist
   if (!review) {
-    throw new AppError(`No Review Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No Review Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 3) If Everything is OK, Send Review
-  return review;
+  return {
+    type: 'Success',
+    message: 'Review Found Successfully',
+    statusCode: 200,
+    review
+  };
 });
 
 /**
  * Update Review Using It's ID
- * @param {String} id
- * @param {Object} body
- * @returns {Promise<Review>}
+ * @param   {ObjectId} id
+ * @param   {Object} body
+ * @returns {Object<type|message|statusCode|review>}
  */
 export const updateReview = catchAsync(async (id, body) => {
   // 1) Get Review Document Using It's ID
   const review = await Review.findById(id);
 
-  // 2) Check If Review Already Exist
+  // 2) Check If Review Doesn't Exist
   if (!review) {
-    throw new AppError(`No Review Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No Review Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 3) Update Review
@@ -91,12 +128,18 @@ export const updateReview = catchAsync(async (id, body) => {
   });
 
   // 4) If Everything is OK, Send Result
-  return result;
+  return {
+    type: 'Success',
+    message: 'Review Updated Successfully',
+    statusCode: 200,
+    result
+  };
 });
 
 /**
  * Delete Review Using It's ID'
- * @param {String} id
+ * @param   {ObjectId} id
+ * @returns   {Object<type|message|statusCode>}
  */
 export const deleteReview = catchAsync(async (id) => {
   // 1) Get Review Using It's ID
@@ -104,9 +147,20 @@ export const deleteReview = catchAsync(async (id) => {
 
   // 2) Check If Review Already Exist
   if (!review) {
-    throw new AppError(`No Review Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No Review Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 3) Delete Review
   await Review.findByIdAndDelete(id);
+
+  // 4) If Everything is OK, Send Message
+  return {
+    type: 'Success',
+    message: 'Review Deleted Successfully',
+    statusCode: 200
+  };
 });
