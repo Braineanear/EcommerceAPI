@@ -12,22 +12,30 @@ import { cartService, redisService } from '../services/index';
  * @param     {Object} req
  * @param     {Object} res
  * @param     {Object} next
- * @property  {String} req.body.email
  * @property  {String} req.body.productId
  * @property  {Number} req.body.quantity
  * @returns   {JSON<Cart>}
  */
-export const addItemToCart = catchAsync(async (req, res, next) => {
-  // 1) Get email & productId & quantity From Body
-  const { email, productId, quantity } = req.body;
+export const addItemToCart = catchAsync(async (req, res) => {
+  // 1) Get productId & quantity From Body
+  const { productId, quantity } = req.body;
 
   // 2) Add Product To Cart
-  const cart = await cartService.addProductToCart(email, productId, quantity);
+  const { type, message, statusCode, cart } =
+    await cartService.addProductToCart(req.user, productId, quantity);
 
-  // 3) If Everything is OK, Send Cart
-  return res.status(200).json({
-    status: 'success',
-    message: 'Product Added To Cart Successfully',
+  // 3) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 4) If Everything is OK, Send Cart
+  return res.status(statusCode).json({
+    type,
+    message,
     cart
   });
 });
@@ -37,26 +45,30 @@ export const addItemToCart = catchAsync(async (req, res, next) => {
  * @param     {Obejct} req
  * @param     {Object} res
  * @param     {Object} next
- * @property  {String} req.body.email
  * @property  {String} req.body.productId
  * @property  {Number} req.body.quantity
  * @returns   {JSON<Cart>}
  */
-export const subtractItemFromCart = catchAsync(async (req, res, next) => {
-  // 1) Get email & productId & quanitity From Body
-  const { email, productId, quantity } = req.body;
+export const subtractItemFromCart = catchAsync(async (req, res) => {
+  // 1) Get productId & quanitity From Body
+  const { productId, quantity } = req.body;
 
   // 2) Subtract Product From Cart
-  const cart = await cartService.subtractItemFromCart(
-    email,
-    productId,
-    quantity
-  );
+  const { type, message, statusCode, cart } =
+    await cartService.subtractItemFromCart(productId, quantity);
 
-  // 3) If Everything is OK, Send Cart
-  return res.status(200).json({
-    status: 'success',
-    message: 'Process Done Successfully',
+  // 3) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 4) If Everything is OK, Send Cart
+  return res.status(statusCode).json({
+    type,
+    message,
     cart
   });
 });
@@ -66,21 +78,27 @@ export const subtractItemFromCart = catchAsync(async (req, res, next) => {
  * @param     {Object} req
  * @param     {Object} res
  * @param     {Object} next
- * @property  {String} req.body.email
  * @property  {String} req.body.productId
  * @returns   {JSON<Cart>}
  */
 export const reduceByOne = catchAsync(async (req, res, next) => {
-  // 1) Get Email & Product ID From Body
-  const { email, productId } = req.body;
+  // 1) Reduce Product Quantity By One From Cart
+  const { type, message, statusCode, cart } = await cartService.reduceByOne(
+    req.body.productId
+  );
 
-  // 2) Reduce Product Quantity By One From Cart
-  const cart = await cartService.reduceByOne(email, productId);
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
 
   // 3) If Everything is OK, Send Cart
-  return res.status(200).json({
-    status: 'success',
-    message: 'Proccess Done Successfully',
+  return res.status(statusCode).json({
+    type,
+    message,
     cart
   });
 });
@@ -90,21 +108,27 @@ export const reduceByOne = catchAsync(async (req, res, next) => {
  * @param     {Object} req
  * @param     {Object} res
  * @param     {Object} next
- * @property  {String} req.body.email
  * @property  {String} req.body.productId
  * @returns   {JSON<Cart>}
  */
 export const increaseByOne = catchAsync(async (req, res, next) => {
-  // 1) Get Email & Product ID From Body
-  const { email, productId } = req.body;
+  // 1) Increase Product By One
+  const { type, message, statusCode, cart } = await cartService.increaseByOne(
+    req.body.productId
+  );
 
-  // 2) Increase Product By One
-  const cart = await cartService.increaseByOne(email, productId);
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
 
   // 3) If Everything is OK, Send Cart
-  return res.status(200).json({
-    status: 'success',
-    message: 'Proccess Done Successfully',
+  return res.status(statusCode).json({
+    type,
+    message,
     cart
   });
 });
@@ -124,34 +148,44 @@ export const getCart = catchAsync(async (req, res, next) => {
   const key = redisService.generateCacheKey('cart', `email:${email}`);
 
   // 2) Getting Cached Data From Redis
-  let cart = await redisService.get(key);
+  let cached = await redisService.get(key);
 
   // 4) Check If Cached Data Already Exist
-  if (!cart) {
+  if (!cached) {
     logger.error('No Caching Data');
   }
 
-  cart = JSON.parse(cart);
+  cached = JSON.parse(cached);
 
   // 5) If Cached Data Exit Return it
-  if (cart) {
+  if (cached) {
     return res.status(200).json({
       status: 'success',
-      message: 'Proccess Done Successfully',
-      cart
+      message: 'Cart Found Successfully',
+      cached
     });
   }
 
   // 6) Get Cart Using User Email
-  cart = await cartService.queryCart(email);
+  const { type, message, statusCode, cart } = await cartService.queryCart(
+    email
+  );
 
-  // 7) Put Data into Redis With a Specific Key
+  // 7) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 8) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(cart), 'EX', 60);
 
-  // 8) If Everything is OK, Send Cart
-  return res.status(200).json({
-    status: 'success',
-    message: 'Proccess Done Successfully',
+  // 9) If Everything is OK, Send Cart
+  return res.status(statusCode).json({
+    type,
+    message,
     cart
   });
 });
@@ -167,11 +201,21 @@ export const getCart = catchAsync(async (req, res, next) => {
 export const deleteCart = catchAsync(async (req, res, next) => {
   const { email } = req.query;
 
-  await cartService.deleteCart(email);
+  // 1) Delete Cart Using User Email
+  const { type, message, statusCode } = await cartService.deleteCart(email);
 
-  return res.status(200).json({
-    status: 'success',
-    message: 'Proccess Done Successfully'
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send Message
+  return res.status(statusCode).json({
+    type,
+    message
   });
 });
 
@@ -189,12 +233,23 @@ export const deleteItem = catchAsync(async (req, res, next) => {
   const { productId } = req.params;
 
   // 1) Delete Product From Cart
-  const cart = await cartService.deleteItem(email, productId);
+  const { type, message, statusCode, cart } = await cartService.deleteItem(
+    email,
+    productId
+  );
 
-  // 2) If Everything is OK, Send Cart
-  return res.status(200).json({
-    status: 'success',
-    message: 'Proccess Done Successfully',
+  // 2) Check If There is an Error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If Everything is OK, Send Cart
+  return res.status(statusCode).json({
+    type,
+    message,
     cart
   });
 });
