@@ -1,6 +1,5 @@
 // Utils
 import catchAsync from '../utils/catchAsync';
-import AppError from '../utils/appError';
 import dataUri from '../utils/datauri';
 import APIFeatures from '../utils/apiFeatures';
 import { uploadFile, destroyFile } from '../utils/cloudinary';
@@ -10,8 +9,8 @@ import { Product } from '../models/index';
 
 /**
  * Query products
- * @param {Object} request
- * @returns {Promise<Products>}
+ * @param   {Object} request
+ * @returns {Object<type|message|statusCode|products>}
  */
 export const queryProducts = catchAsync(async (req) => {
   // 1) Get All Products
@@ -22,17 +21,26 @@ export const queryProducts = catchAsync(async (req) => {
 
   // 2) Check if Porducts Already Exist
   if (!products) {
-    throw new AppError('No Products Found', 404);
+    return {
+      type: 'Error',
+      message: 'No Products Found',
+      statusCode: 404
+    };
   }
 
   // 3) If Everything is OK, Send Products Data
-  return products;
+  return {
+    type: 'Success',
+    message: 'Products Found Successfully',
+    statusCode: 200,
+    products
+  };
 });
 
 /**
  * Query Product Using It's ID
- * @param {String} productId
- * @returns {Promise<Product>}
+ * @param   {ObjectId} productId
+ * @returns {Object<type|message|statusCode|product>}
  */
 export const queryProductById = catchAsync(async (productId) => {
   // 1) Get Product Using It's ID
@@ -40,17 +48,26 @@ export const queryProductById = catchAsync(async (productId) => {
 
   // 2) Check if Product Already Exist
   if (!product) {
-    throw new AppError(`No Product Found With This ID: ${productId}`, 404);
+    return {
+      type: 'Error',
+      message: `No Product Found With This ID: ${productId}`,
+      statusCode: 404
+    };
   }
 
   // 3) If Everything is OK, Send Product
-  return product;
+  return {
+    type: 'Success',
+    message: 'Product Found Successfully',
+    statusCode: 200,
+    product
+  };
 });
 
 /**
  * Create new product
- * @param {Object} request
- * @returns {Promise<Product>}
+ * @param   {Object} request
+ * @returns {Object<type|message|statusCode|product>}
  */
 export const createProduct = catchAsync(async (req) => {
   const {
@@ -98,7 +115,11 @@ export const createProduct = catchAsync(async (req) => {
     mainImage.length === 0 ||
     images.length === 0
   ) {
-    throw new AppError('All fields are required', 400);
+    return {
+      type: 'Error',
+      message: 'All Fields Are Required',
+      statusCode: 400
+    };
   }
 
   // 7) Upload Images To Cloudinary
@@ -137,13 +158,18 @@ export const createProduct = catchAsync(async (req) => {
   });
 
   // 10) If Everything is OK, Send Data
-  return product;
+  return {
+    type: 'Success',
+    message: 'Products Created Successfully',
+    statusCode: 201,
+    product
+  };
 });
 
 /**
  * Update Product Details
- * @param {Object} request
- * @returns {Promise<Product>}
+ * @param   {Object} request
+ * @returns {Object<type|message|statusCode|product>}
  */
 export const updateProductDetails = catchAsync(async (req) => {
   const { id } = req.params;
@@ -152,7 +178,11 @@ export const updateProductDetails = catchAsync(async (req) => {
 
   // 1) Check If Product Already Exist
   if (!product) {
-    throw new AppError(`No Product Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No Product Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 2) Update Product By It's ID
@@ -162,13 +192,18 @@ export const updateProductDetails = catchAsync(async (req) => {
   });
 
   // 3) If Everything is OK, Send Result
-  return result;
+  return {
+    type: 'Success',
+    message: 'Product Detials Updated Successfully',
+    statusCode: 200,
+    result
+  };
 });
 
 /**
  * Update Product Main Image
- * @param {Object} request
- * @returns {Promise<Product>}
+ * @param   {Object} request
+ * @returns {Object<type|message|statusCode|product>}
  */
 export const updateProductMainImage = catchAsync(async (req) => {
   let mainImage = req.files;
@@ -176,14 +211,22 @@ export const updateProductMainImage = catchAsync(async (req) => {
 
   // 1) Check If Image Provided
   if (mainImage.length === 0) {
-    throw new AppError(`Please Insert an Image`, 400);
+    return {
+      type: 'Error',
+      message: 'Please Select an Image',
+      statusCode: 400
+    };
   }
 
   // 2) Check If Product Already Exist
   const product = await Product.findById(id);
 
   if (!product) {
-    throw new AppError(`No Product Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No Product Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 3) Make Array Of Main Image (Single Image)
@@ -212,13 +255,18 @@ export const updateProductMainImage = catchAsync(async (req) => {
   });
 
   // 9) If Everything is OK, Send Result
-  return result;
+  return {
+    type: 'Success',
+    message: 'Product Main Image Updated Successfully',
+    statusCode: 200,
+    result
+  };
 });
 
 /**
  * Update Product Images
- * @param {Object} request
- * @returns {Promise<Product>}
+ * @param   {Object} request
+ * @returns {Object<type|message|statusCode|product>}
  */
 export const updateProductImages = catchAsync(async (req) => {
   let images = req.files;
@@ -226,14 +274,22 @@ export const updateProductImages = catchAsync(async (req) => {
 
   // 1) Check If Images Provided
   if (images.length === 0) {
-    throw new AppError('Please Insert one image or more', 400);
+    return {
+      type: 'Error',
+      message: 'Please Select One or More Image',
+      statusCode: 400
+    };
   }
 
   // 2) Check If Product Already Exist
   const product = await Product.findById(id);
 
   if (!product) {
-    throw new AppError(`No Product Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No Product Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 3) Make Array Of Images
@@ -278,12 +334,17 @@ export const updateProductImages = catchAsync(async (req) => {
   });
 
   // 12) If Everything is OK, Send Result
-  return result;
+  return {
+    type: 'Success',
+    message: 'Product Sub Images Updated Successfully',
+    statusCode: 200,
+    result
+  };
 });
 
 /**
  * Delete Product Using It's ID
- * @param {Object} request
+ * @param   {Object} request
  */
 export const deleteProduct = catchAsync(async (req) => {
   const { id } = req.params;
@@ -292,16 +353,27 @@ export const deleteProduct = catchAsync(async (req) => {
 
   // 1) Check If Product Already Exist
   if (!product) {
-    throw new AppError(`No Product Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No Product Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 2) Delete Product Using It's ID
   await Product.findByIdAndDelete(id);
+
+  // 3) If Everything is OK, Send Message
+  return {
+    type: 'Success',
+    message: 'Product Deleted Successfully',
+    statusCode: 200
+  };
 });
 
 /**
  * Get Products Statics
- * @return {Array<Stats>}
+ * @return  {Array<Stats>}
  */
 export const getProductStats = catchAsync(async () => {
   const stats = await Product.aggregate([
