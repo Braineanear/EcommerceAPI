@@ -1,6 +1,5 @@
 // Utils
 import catchAsync from '../utils/catchAsync';
-import AppError from '../utils/appError';
 
 // Services
 import {
@@ -33,13 +32,14 @@ export const register = catchAsync(async (req, res, next) => {
   const profileImage = req.file;
 
   if (role === 'admin') {
-    return next(
-      new AppError('Role Cannot Be Admin, Select [user | seller]', 400)
-    );
+    return res.status(400).json({
+      type: 'Error',
+      message: 'Role Cannot Be Admin, Select [user | seller]'
+    });
   }
 
   // 1) Create User
-  const user = await userService.createUser(
+  const { type, message, statusCode, user } = await userService.createUser(
     {
       username,
       name,
@@ -64,9 +64,9 @@ export const register = catchAsync(async (req, res, next) => {
   await emailService.sendVerificationEmail(user.email, verifyEmailToken);
 
   // 5) If Everything OK, Send User Data With Tokens
-  return res.status(200).json({
-    status: 'success',
-    message: 'Registeration Done Successfully & Email Verification Sent',
+  return res.status(statusCode).json({
+    type,
+    message,
     user,
     tokens
   });
@@ -81,18 +81,19 @@ export const register = catchAsync(async (req, res, next) => {
 export const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
   // 1) Login User Email & Password
-  const user = await authService.loginWithEmailAndPassword({
-    email,
-    password
-  });
+  const { type, message, statusCode, user } =
+    await authService.loginWithEmailAndPassword({
+      email,
+      password
+    });
 
   // 2) Generate Auth Tokens
   const tokens = await tokenService.generateAuthTokens(user);
 
   // 3) If Everything is OK, Send User's Data & Tokens
-  return res.status(200).json({
-    status: 'success',
-    message: 'User Logged in Successfully',
+  return res.status(statusCode).json({
+    type,
+    message,
     user,
     tokens
   });
@@ -106,12 +107,14 @@ export const login = catchAsync(async (req, res) => {
  */
 export const logout = catchAsync(async (req, res) => {
   // 1) Logging Out User / Seller From System
-  await authService.logout(req.body.refreshToken);
+  const { type, message, statusCode } = await authService.logout(
+    req.body.refreshToken
+  );
 
   // 2) If Everything is OK, Send Message
-  return res.status(200).json({
-    status: 'success',
-    message: 'Account Logged out Successfully'
+  return res.status(statusCode).json({
+    type,
+    message
   });
 });
 
@@ -125,12 +128,14 @@ export const refreshTokens = catchAsync(async (req, res) => {
   const { refreshToken } = req.body;
 
   // 1) Generating Refresh Token
-  const tokens = await authService.refreshAuth(refreshToken);
+  const { type, message, statusCode, tokens } = await authService.refreshAuth(
+    refreshToken
+  );
 
   // 2) If Everything is OK, Send Tokens
-  return res.status(200).json({
-    status: 'success',
-    message: 'Refresh Token Generated Successfully',
+  return res.status(statusCode).json({
+    type,
+    message,
     ...tokens
   });
 });
@@ -154,7 +159,7 @@ export const forgotPassword = catchAsync(async (req, res) => {
 
   // 3) If Everything is OK, Send Message
   return res.status(200).json({
-    status: 'success',
+    type: 'Success',
     message: 'Reset Password Link Sent Successfully'
   });
 });
@@ -170,12 +175,16 @@ export const resetPassword = catchAsync(async (req, res) => {
   const { token } = req.query;
 
   // 1) Reseting Password
-  await authService.resetPassword(token, password, passwordConfirmation);
+  const { type, message, statusCode } = await authService.resetPassword(
+    token,
+    password,
+    passwordConfirmation
+  );
 
   // 2) If Everything is OK, Send Message
-  return res.status(200).json({
-    status: 'success',
-    message: 'Password Reset Successfully'
+  return res.status(statusCode).json({
+    type,
+    message
   });
 });
 
@@ -196,7 +205,7 @@ export const sendVerificationEmail = catchAsync(async (req, res) => {
 
   // 3) If Everything is OK, Send Message
   return res.status(200).json({
-    status: 'success',
+    type: 'Success',
     message: 'Verification Email Sent Successfully'
   });
 });
@@ -211,11 +220,11 @@ export const verifyEmail = catchAsync(async (req, res) => {
   const { token } = req.query;
 
   // 1) Verifying User Email
-  await authService.verifyEmail(token);
+  const { type, message, statusCode } = await authService.verifyEmail(token);
 
   // 2) If Everything is OK, Send Message
-  return res.status(200).json({
-    status: 'success',
-    message: 'Email Verified Successfully'
+  return res.status(statusCode).json({
+    type,
+    message
   });
 });
