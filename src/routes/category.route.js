@@ -1,6 +1,12 @@
 import express from 'express';
+
+// Middlewares
 import auth from '../middlewares/auth';
+
+// Controllers
 import { categoryController } from '../controllers/index';
+
+// Utils
 import { singleFile } from '../utils/multer';
 
 const {
