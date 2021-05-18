@@ -1,6 +1,5 @@
 // Utils
 import catchAsync from '../utils/catchAsync';
-import AppError from '../utils/appError';
 import APIFeatures from '../utils/apiFeatures';
 import dataUri from '../utils/datauri';
 import { uploadFile, destroyFile } from '../utils/cloudinary';
@@ -12,28 +11,17 @@ import { User } from '../models/index';
  * Create New User
  * @param     {Object} body
  * @param     {Object} profileImage
- * @returns   {Promise<User>}
+ * @returns   {Object<type|message|statusCode|user>}
  */
 export const createUser = catchAsync(async (body, profileImage) => {
   const { name, username, email, password, passwordConfirmation, role } = body;
-  let address, companyName, phone;
-  if (body.companyName === '') {
-    companyName = '';
-  } else {
-    companyName = body.companyName;
-  }
+  let { companyName, address, phone } = body;
 
-  if (body.address === '') {
-    address = '';
-  } else {
-    address = body.address;
-  }
+  if (!companyName) companyName = '';
 
-  if (body.phone === '') {
-    phone = '';
-  } else {
-    phone = body.phone;
-  }
+  if (!address) address = '';
+
+  if (!phone) phone = '';
 
   if (
     !name ||
@@ -44,7 +32,11 @@ export const createUser = catchAsync(async (body, profileImage) => {
     !role ||
     profileImage.length === 0
   ) {
-    throw new AppError('All fields are required', 400);
+    return {
+      type: 'Error',
+      message: 'All Fields Are Required',
+      statusCode: 400
+    };
   }
 
   // 1) Check if The Email Already Taken
@@ -52,7 +44,11 @@ export const createUser = catchAsync(async (body, profileImage) => {
 
   // 2) If The Email Taken
   if (isEmailTaken) {
-    throw new AppError('Email already taken', 400);
+    return {
+      type: 'Error',
+      message: `Email Is Already Taken: ${email}`,
+      statusCode: 409
+    };
   }
 
   // 3) Specifiy Folder Name Where The Images Are Going To Be Uploaded In Cloudinary
@@ -81,31 +77,45 @@ export const createUser = catchAsync(async (body, profileImage) => {
   });
 
   // 4) If Everything is OK, Send User Data
-  return user;
+  return {
+    type: 'Success',
+    message: 'Account Created Successfully',
+    statusCode: 201,
+    user
+  };
 });
 
 /**
  * Query Users
  * @param     {Object} req - Request
- * @returns   {Promise<Users>}
+ * @returns   {Object<type|message|statusCode|users>}
  */
 export const queryUsers = catchAsync(async (req) => {
   // 1) Get All Users
   const users = await APIFeatures(req, User);
 
-  // 2) Check if No Users
+  // 2) Check If Users Doesn't Exist'
   if (users.length === 0) {
-    throw new AppError('Users Not Found', 404);
+    return {
+      type: 'Error',
+      message: 'No Users Found',
+      statusCode: 404
+    };
   }
 
   // 3) If Everything is OK, Send Users Data
-  return users;
+  return {
+    type: 'Success',
+    message: 'Users Found Successfully',
+    statusCode: 200,
+    users
+  };
 });
 
 /**
  * Query User
  * @param     {Object} id - User ID
- * @return    {Promise<User>}
+ * @return    {Object<type|message|statusCode|user>}
  */
 export const queryUser = catchAsync(async (id) => {
   // 1) Get User Using It's ID
@@ -113,32 +123,58 @@ export const queryUser = catchAsync(async (id) => {
 
   // 2) Check If User Doesn't Exist
   if (!user) {
-    throw new AppError(`No User Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No User Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 3) If Everything is OK, Send User Data;
-  return user;
+  return {
+    type: 'Success',
+    message: 'Found User Successfully',
+    statusCode: 200,
+    user
+  };
 });
 
 /**
  * Update User Details Using It's ID
  * @param     {ObjectId}  id - User ID
  * @param     {Object}    body - Updated Body
- * @returns   {Promise<User>}
+ * @returns   {Object<type|message|statusCode|user>}
  */
 export const updateUserDetails = catchAsync(async (id, body) => {
   let user = await User.findById(id);
 
   // 1) Check If User Doesn't Exist
   if (!user) {
-    throw new AppError(`No User Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No User Found With This ID: ${id}`,
+      statusCode: 404
+    };
+  }
+
+  if (body.password || body.passwordConfirmation) {
+    return {
+      type: 'Error',
+      message:
+        'Cannot Update Password From Here, Please Go To Update Passwor Route',
+      statusCode: 400
+    };
   }
 
   // 2) Check if Email Taken Or Not
   const isEmailTaken = await User.isEmailTaken(body.email, id);
 
   if (body.email && isEmailTaken) {
-    throw new AppError('Email already taken', 400);
+    return {
+      type: 'Error',
+      message: `This Email Is Already Taken: ${body.email}`,
+      statusCode: 409
+    };
   }
 
   // 3) Find User Document and Update it
@@ -148,21 +184,30 @@ export const updateUserDetails = catchAsync(async (id, body) => {
   });
 
   // 4) If Everything is OK, Send User Data
-  return user;
+  return {
+    type: 'Success',
+    message: 'User Details Updated Successfully',
+    statusCode: 200,
+    user
+  };
 });
 
 /**
  * Update User Profile Image Using It's ID
  * @param     {ObjectId}  id - User ID
  * @param     {Object}    profileImage - Updated Profile Image
- * @returns   {Promise<User>}
+ * @returns   {Object<type|message|statusCode|user>}
  */
 export const updateUserProfileImage = catchAsync(async (id, profileImage) => {
   let user = await User.findById(id);
 
   // 1) Check If User Doesn't Exist
   if (!user) {
-    throw new AppError(`No User Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No User Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 2) Specifiy Folder Name Where The Profile Image Is Going To Be Uploaded In Cloudinary
@@ -192,12 +237,17 @@ export const updateUserProfileImage = catchAsync(async (id, profileImage) => {
   );
 
   // 6) If Everything is OK, Send User Data
-  return user;
+  return {
+    type: 'Success',
+    message: 'User Image Updated Successfully',
+    statusCode: 200
+  };
 });
 
 /**
  * Delete Using It's ID
- * @param     {ObjectId} id - User ID
+ * @param     {ObjectId} id - User ID,
+ * @returns   {Object<type|message|statusCode>}
  */
 export const deleteUser = catchAsync(async (id) => {
   // 1) Find User Document and Delete it
@@ -205,9 +255,20 @@ export const deleteUser = catchAsync(async (id) => {
 
   // 2) Check if User Already Exist
   if (!user) {
-    throw new AppError(`Not User Found With This ID: ${id}`, 404);
+    return {
+      type: 'Error',
+      message: `No User Found With This ID: ${id}`,
+      statusCode: 404
+    };
   }
 
   // 3) Delete User Profile Image
   destroyFile(user.profileImageId);
+
+  // 4) If Everything is OK, Send Message
+  return {
+    type: 'Success',
+    message: 'Account Deleted Successfully',
+    statusCode: 200
+  };
 });
