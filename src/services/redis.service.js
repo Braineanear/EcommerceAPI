@@ -3,7 +3,7 @@ import client from '../config/redis';
 
 /**
  * Get Cached Data For a Specific Key From Memory
- * @param {String} key
+ * @param   {String} key
  * @returns {Object}
  */
 const get = (key) =>
@@ -20,10 +20,10 @@ const get = (key) =>
 
 /**
  * Set Cached Data With a Specific Key in Memory
- * @param {String} key
- * @param {JSON} data
- * @param {String} timeunit [EX: seconds, PX: milliseconds]
- * @param {Number} timeout
+ * @param   {String} key
+ * @param   {JSON} data
+ * @param   {String} timeunit [EX: seconds, PX: milliseconds]
+ * @param   {Number} timeout
  * @returns {Object}
  */
 const set = (key, data, timeunit, timeout) =>
@@ -31,7 +31,7 @@ const set = (key, data, timeunit, timeout) =>
 
 /**
  * Generate Caching Key
- * @param {Array} params
+ * @param   {Array} params
  * @returns {String}
  */
 const generateCacheKey = (...params) => params.join('-').trim();
