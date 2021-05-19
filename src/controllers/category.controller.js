@@ -9,12 +9,15 @@ import { categoryService, redisService } from '../services/index';
 
 /**
  * Get All Categories Data
- * @param   {Object} req
- * @param   {Object} res
- * @param   {Object} next
+ * @param     {Object} req
+ * @param     {Object} res
+ * @property  {String} req.query.sort
+ * @property  {String} req.query.select
+ * @property  {Number} req.query.page
+ * @property  {Number} req.query.limit
  * @returns {JSON}
  */
-export const getAllCategories = catchAsync(async (req, res, next) => {
+export const getAllCategories = catchAsync(async (req, res) => {
   let { page, sort, limit, select } = req.query;
   // 1) Setting Default Params
   if (!page) page = 1;
@@ -43,7 +46,7 @@ export const getAllCategories = catchAsync(async (req, res, next) => {
     return res.status(200).json({
       type: 'Success',
       message: 'Categories Found Successfully',
-      cached
+      categories: cached
     });
   }
 
@@ -72,12 +75,12 @@ export const getAllCategories = catchAsync(async (req, res, next) => {
 
 /**
  * Get Category Using It's ID
- * @param   {Object} req
- * @param   {Object} res
- * @param   {Object} next
- * @returns {JSON}
+ * @param     {Object} req
+ * @param     {Object} res
+ * @property  {ObjectID} req.params.id
+ * @returns   {JSON}
  */
-export const getCategory = catchAsync(async (req, res, next) => {
+export const getCategory = catchAsync(async (req, res) => {
   const { id } = req.params;
 
   // 1) Generating Redis key
@@ -98,13 +101,13 @@ export const getCategory = catchAsync(async (req, res, next) => {
     return res.status(200).json({
       type: 'Success',
       message: 'Category Found Successfully',
-      cached
+      category: cached
     });
   }
 
   // 5) Get All Users
   const { type, message, statusCode, category } =
-    await categoryService.getCategoryById(id);
+    await categoryService.queryCategory(id);
 
   // 6) Check If There is an Error
   if (type === 'Error') {
@@ -117,7 +120,7 @@ export const getCategory = catchAsync(async (req, res, next) => {
   // 7) Put Data into Redis With a Specific Key
   redisService.set(key, JSON.stringify(category), 'EX', 60);
 
-  // 7) If Everything is OK, Send Category
+  // 8) If Everything is OK, Send Category
   return res.status(statusCode).json({
     type,
     message,
@@ -127,15 +130,20 @@ export const getCategory = catchAsync(async (req, res, next) => {
 
 /**
  * Create New Category
- * @param   {Object} req
- * @param   {Object} res
- * @param   {Object} next
- * @returns {JSON}
+ * @param     {Object} req
+ * @param     {Object} res
+ * @property  {String} req.body.name
+ * @property  {String} req.body.description
+ * @property  {Object} req.file
+ * @returns   {JSON}
  */
-export const addCategory = catchAsync(async (req, res, next) => {
+export const addCategory = catchAsync(async (req, res) => {
+  const { name, description } = req.body;
+  const { file } = req;
+
   // 1) Insert Data into The Database
   const { type, message, statusCode, category } =
-    await categoryService.createCategory(req);
+    await categoryService.createCategory({ name, description }, file);
 
   // 2) Check If There is an Error
   if (type === 'Error') {
@@ -155,12 +163,13 @@ export const addCategory = catchAsync(async (req, res, next) => {
 
 /**
  * Update Category Details
- * @param   {Object} req
- * @param   {Object} res
- * @param   {Object} next
- * @returns {JSON}
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @property  {ObjectId}  req.params.id
+ * @property  {Object}    req.body
+ * @returns   {JSON}
  */
-export const updateCategoryDetails = catchAsync(async (req, res, next) => {
+export const updateCategoryDetails = catchAsync(async (req, res) => {
   const { id } = req.params;
 
   // 1) Update Category
@@ -185,12 +194,13 @@ export const updateCategoryDetails = catchAsync(async (req, res, next) => {
 
 /**
  * Update Category Image
- * @param   {Object} req
- * @param   {Object} res
- * @param   {Object} next
- * @returns {JSON}
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @property  {ObjectId}  req.params.id
+ * @property  {Object}    req.file
+ * @returns   {JSON}
  */
-export const updateCategoryImage = catchAsync(async (req, res, next) => {
+export const updateCategoryImage = catchAsync(async (req, res) => {
   const { id } = req.params;
   let image = req.file;
 
@@ -216,12 +226,12 @@ export const updateCategoryImage = catchAsync(async (req, res, next) => {
 
 /**
  * Delete Category
- * @param   {Object} req
- * @param   {Object} res
- * @param   {Object} next
- * @returns {JSON}
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @property  {ObjectId}  req.params.id
+ * @returns   {JSON}
  */
-export const deleteCategory = catchAsync(async (req, res, next) => {
+export const deleteCategory = catchAsync(async (req, res) => {
   const { id } = req.params;
 
   // 1) Find Category By ID & Delete It
