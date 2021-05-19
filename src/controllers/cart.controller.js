@@ -11,7 +11,6 @@ import { cartService, redisService } from '../services/index';
  * Add Product To Cart.
  * @param     {Object} req
  * @param     {Object} res
- * @param     {Object} next
  * @property  {String} req.body.productId
  * @property  {Number} req.body.quantity
  * @returns   {JSON<Cart>}
@@ -44,7 +43,6 @@ export const addItemToCart = catchAsync(async (req, res) => {
  * Subtract Quantity From Product In Cart.
  * @param     {Obejct} req
  * @param     {Object} res
- * @param     {Object} next
  * @property  {String} req.body.productId
  * @property  {Number} req.body.quantity
  * @returns   {JSON<Cart>}
@@ -77,11 +75,10 @@ export const subtractItemFromCart = catchAsync(async (req, res) => {
  * Reduce Product By One.
  * @param     {Object} req
  * @param     {Object} res
- * @param     {Object} next
  * @property  {String} req.body.productId
  * @returns   {JSON<Cart>}
  */
-export const reduceByOne = catchAsync(async (req, res, next) => {
+export const reduceByOne = catchAsync(async (req, res) => {
   // 1) Reduce Product Quantity By One From Cart
   const { type, message, statusCode, cart } = await cartService.reduceByOne(
     req.body.productId
@@ -107,11 +104,10 @@ export const reduceByOne = catchAsync(async (req, res, next) => {
  * Increase Product By One.
  * @param     {Object} req
  * @param     {Object} res
- * @param     {Object} next
  * @property  {String} req.body.productId
  * @returns   {JSON<Cart>}
  */
-export const increaseByOne = catchAsync(async (req, res, next) => {
+export const increaseByOne = catchAsync(async (req, res) => {
   // 1) Increase Product By One
   const { type, message, statusCode, cart } = await cartService.increaseByOne(
     req.body.productId
@@ -137,11 +133,10 @@ export const increaseByOne = catchAsync(async (req, res, next) => {
  * Get Cart By User Email.
  * @param     {Object} req
  * @param     {Object} res
- * @param     {Object} next
  * @property  {String} req.query.email
  * @returns   {JSON<Cart>}
  */
-export const getCart = catchAsync(async (req, res, next) => {
+export const getCart = catchAsync(async (req, res) => {
   const { email } = req.query;
 
   // 1) Generating Redis key
@@ -162,7 +157,7 @@ export const getCart = catchAsync(async (req, res, next) => {
     return res.status(200).json({
       status: 'success',
       message: 'Cart Found Successfully',
-      cached
+      cart: cached
     });
   }
 
@@ -194,11 +189,10 @@ export const getCart = catchAsync(async (req, res, next) => {
  * Delete Cart By User Email.
  * @param     {Object} req
  * @param     {Object} res
- * @param     {Object} next
  * @property  {String} req.query.email
  * @returns   {JSON<Cart>}
  */
-export const deleteCart = catchAsync(async (req, res, next) => {
+export const deleteCart = catchAsync(async (req, res) => {
   const { email } = req.query;
 
   // 1) Delete Cart Using User Email
@@ -223,12 +217,11 @@ export const deleteCart = catchAsync(async (req, res, next) => {
  * Delete Product From Cart
  * @param     {Object} req
  * @param     {Object} res
- * @param     {Object} next
  * @property  {String} req.params.productId
  * @property  {String} req.query.email
  * @returns   {JSON<Cart>}
  */
-export const deleteItem = catchAsync(async (req, res, next) => {
+export const deleteItem = catchAsync(async (req, res) => {
   const { email } = req.query;
   const { productId } = req.params;
 
