@@ -9,9 +9,13 @@ import { productService, redisService } from '../services/index';
 
 /**
  * Get All Products
- * @param   {Object} req
- * @param   {Object} res
- * @returns {JSON}
+ * @param     {Object} req
+ * @param     {Object} res
+ * @property  {String} req.query.sort
+ * @property  {String}  req.query.select
+ * @property  {Number}  req.query.page
+ * @property  {Number}  req.query.limit
+ * @returns   {JSON}
  */
 export const getAllProducts = catchAsync(async (req, res) => {
   let { page, sort, limit, select } = req.query;
@@ -43,7 +47,7 @@ export const getAllProducts = catchAsync(async (req, res) => {
     return res.status(200).json({
       type: 'Success',
       message: 'Products Found Successfully',
-      cached
+      products: cached
     });
   }
 
@@ -71,10 +75,11 @@ export const getAllProducts = catchAsync(async (req, res) => {
 });
 
 /**
- * Get Product
- * @param   {Object} req
- * @param   {Object} res
- * @returns {JSON}
+ * Get Product Using It's ID
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @property  {ObjectId}  req.params.id
+ * @returns   {JSON}
  */
 export const getProduct = catchAsync(async (req, res) => {
   const { id } = req.params;
@@ -97,7 +102,7 @@ export const getProduct = catchAsync(async (req, res) => {
     return res.status(200).json({
       type: 'Success',
       message: 'Product Found Successfully',
-      cached
+      product: cached
     });
   }
 
@@ -126,14 +131,18 @@ export const getProduct = catchAsync(async (req, res) => {
 
 /**
  * Create New Product
- * @param   {Object} req
- * @param   {Object} res
- * @returns {JSON}
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @property  {Object}    req.body
+ * @property  {Object}    req.files
+ * @property  {ObjectId}  req.user._id
+ * @returns   {JSON}
  */
 export const addProduct = catchAsync(async (req, res) => {
+  const { body, files, user } = req;
   // 1) Create Product
   const { type, message, statusCode, product } =
-    await productService.createProduct(req);
+    await productService.createProduct(body, files, user._id);
 
   // 2) Check If There is an Error
   if (type === 'Error') {
@@ -153,14 +162,14 @@ export const addProduct = catchAsync(async (req, res) => {
 
 /**
  * Update Product Details
- * @param   {Object} req
- * @param   {Object} res
- * @returns {JSON}
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @returns   {JSON}
  */
 export const updateProductDetails = catchAsync(async (req, res) => {
   // 1) Update Product Using It's ID
   const { type, message, statusCode, product } =
-    await productService.updateProductDetails(req);
+    await productService.updateProductDetails(req.params.id, req.body);
 
   // 2) Check If There is an Error
   if (type === 'Error') {
@@ -180,14 +189,16 @@ export const updateProductDetails = catchAsync(async (req, res) => {
 
 /**
  * Update Product Main Image
- * @param   {Object} req
- * @param   {Object} res
- * @returns {JSON}
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @property  {Object}    req.files
+ * @property  {ObjectId}  req.params.id
+ * @returns   {JSON}
  */
 export const updateProductMainImage = catchAsync(async (req, res) => {
   // 1) Update Product Using It's ID
   const { type, message, statusCode, product } =
-    await productService.updateProductMainImage(req);
+    await productService.updateProductMainImage(req.params.id, req.files);
 
   // 2) Check If There is an Error
   if (type === 'Error') {
@@ -206,14 +217,16 @@ export const updateProductMainImage = catchAsync(async (req, res) => {
 
 /**
  * Update Product Images
- * @param   {Object} req
- * @param   {Object} res
- * @returns {JSON}
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @property  {Object}    req.files
+ * @property  {ObjectId}  req.params.id
+ * @returns   {JSON}
  */
 export const updateProductImages = catchAsync(async (req, res) => {
   // 1) Update Product Using It's ID
   const { type, message, statusCode, product } =
-    await productService.updateProductImages(req);
+    await productService.updateProductImages(req.params.id, req.files);
 
   // 2) Check If There is an Error
   if (type === 'Error') {
@@ -233,13 +246,16 @@ export const updateProductImages = catchAsync(async (req, res) => {
 
 /**
  * Delete Product
- * @param   {Object} req
- * @param   {Object} res
- * @return  {JSON}
+ * @param     {Object}     req
+ * @param     {Object}     res
+ * @property  {ObjectId}   req.params.id
+ * @return    {JSON}
  */
 export const deleteProduct = catchAsync(async (req, res) => {
   // 1) Delete Product
-  const { type, message, statusCode } = await productService.deleteProduct(req);
+  const { type, message, statusCode } = await productService.deleteProduct(
+    req.params.id
+  );
 
   // 2) Check If There is an Error
   if (type === 'Error') {
