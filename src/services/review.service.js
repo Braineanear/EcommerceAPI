@@ -10,11 +10,11 @@ import { Review } from '../models/index';
  * @param   {Object} body
  * @returns {Object<type|message|statusCode|review>}
  */
-export const createReview = catchAsync(async (body) => {
-  const { product, user, review, rating } = body;
+export const createReview = catchAsync(async (product, user, body) => {
+  const { review, rating } = body;
 
   // 1) Check If User Entered All Fields
-  if (!product || !user || !review || !rating) {
+  if (!review || !rating) {
     return {
       type: 'Error',
       message: 'All Fields Are Required',
