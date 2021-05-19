@@ -43,8 +43,7 @@ import {
 import {
   createCategory,
   queryCategories,
-  getCategoryByName,
-  getCategoryById,
+  queryCategory,
   updateCategoryDetails,
   updateCategoryImage,
   deleteCategoryById
@@ -125,8 +124,7 @@ const userService = {
 const categoryService = {
   createCategory,
   queryCategories,
-  getCategoryByName,
-  getCategoryById,
+  queryCategory,
   updateCategoryDetails,
   updateCategoryImage,
   deleteCategoryById
