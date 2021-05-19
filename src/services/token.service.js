@@ -105,7 +105,7 @@ export const generateAuthTokens = catchAsync(async (user) => {
 
   // 2) Generate Access Token
   const accessToken = generateToken(
-    user.id,
+    user._id,
     accessTokenExpires,
     tokenTypes.ACCESS
   );
@@ -118,7 +118,7 @@ export const generateAuthTokens = catchAsync(async (user) => {
 
   // 4) Generate Refresh Token
   const refreshToken = generateToken(
-    user.id,
+    user._id,
     refreshTokenExpires,
     tokenTypes.REFRESH
   );
@@ -126,7 +126,7 @@ export const generateAuthTokens = catchAsync(async (user) => {
   // 5) Save Tokens
   await saveToken(
     refreshToken,
-    user.id,
+    user._id,
     refreshTokenExpires,
     tokenTypes.REFRESH
   );
