@@ -11,6 +11,8 @@ import { userService, redisService } from '../services/index';
  * Create New User
  * @param     {Object} req
  * @param     {Object} res
+ * @property  {Object} req.body
+ * @property  {Object} req.file
  * @returns   {JSON}
  */
 export const createUser = catchAsync(async (req, res) => {
@@ -38,8 +40,12 @@ export const createUser = catchAsync(async (req, res) => {
 
 /**
  * Get All Users
- * @param     {Object} req
- * @param     {Object} res
+ * @param     {Object}  req
+ * @param     {Object}  res
+ * @property  {String}  req.query.sort
+ * @property  {String}  req.query.select
+ * @property  {Number}  req.query.page
+ * @property  {Number}  req.query.limit
  * @returns   {JSON}
  */
 export const getUsers = catchAsync(async (req, res) => {
@@ -72,7 +78,7 @@ export const getUsers = catchAsync(async (req, res) => {
     return res.status(200).json({
       type: 'Success',
       message: 'Users Found Successfully',
-      cached
+      users: cached
     });
   }
 
@@ -102,14 +108,16 @@ export const getUsers = catchAsync(async (req, res) => {
 
 /**
  * Get User Data Using It's ID
- * @param     {Object} req
- * @param     {Object} res
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @property  {ObjectId}  req.params.id
  * @returns   {JSON}
  */
 export const getUser = catchAsync(async (req, res) => {
-  const { userId } = req.params;
+  const { id } = req.params;
+
   // 1) Generating Redis key
-  const key = redisService.generateCacheKey('user', userId);
+  const key = redisService.generateCacheKey('user', id);
 
   // 2) Getting Cached Data From Redis
   let cached = await redisService.get(key);
@@ -126,14 +134,12 @@ export const getUser = catchAsync(async (req, res) => {
     return res.status(200).json({
       type: 'Success',
       message: 'User Found Successfully',
-      cached
+      user: cached
     });
   }
 
   // 5) Find User Document By It's ID
-  const { type, message, statusCode, user } = await userService.queryUser(
-    req.params.id
-  );
+  const { type, message, statusCode, user } = await userService.queryUser(id);
 
   // 6) Check If There is an Error
   if (type === 'Error') {
@@ -156,8 +162,10 @@ export const getUser = catchAsync(async (req, res) => {
 
 /**
  * Update User Details
- * @param     {Object} req
- * @param     {Object} res
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @property  {Object}    req.body
+ * @property  {ObjectId}  req.params.id
  * @returns   {JSON}
  */
 export const updateUserDetails = catchAsync(async (req, res) => {
@@ -183,8 +191,10 @@ export const updateUserDetails = catchAsync(async (req, res) => {
 
 /**
  * Update User Profile Image
- * @param     {Object} req
- * @param     {Object} res
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @property  {Object}    req.file
+ * @property  {ObjectId}  req.params.id
  * @returns   {JSON}
  */
 export const updateUserProfileImage = catchAsync(async (req, res) => {
@@ -210,9 +220,10 @@ export const updateUserProfileImage = catchAsync(async (req, res) => {
 
 /**
  * Delete User's Data
- * @param   {Object} req
- * @param   {Object} res
- * @returns {JSON}
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @property  {ObjectId}  req.params.id
+ * @returns   {JSON}
  */
 export const deleteUser = catchAsync(async (req, res) => {
   // 1) Find User Document and Delete it
