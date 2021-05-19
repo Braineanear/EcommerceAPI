@@ -66,10 +66,12 @@ export const queryProductById = catchAsync(async (productId) => {
 
 /**
  * Create new product
- * @param   {Object} request
+ * @param   {Object}   body
+ * @param   {Object}   files
+ * @param   {ObjectId} seller
  * @returns {Object<type|message|statusCode|product>}
  */
-export const createProduct = catchAsync(async (req) => {
+export const createProduct = catchAsync(async (body, files, seller) => {
   const {
     name,
     description,
@@ -81,15 +83,13 @@ export const createProduct = catchAsync(async (req) => {
     quantity,
     sold,
     isOutOfStock
-  } = req.body;
+  } = body;
 
   // 1) Make Array Of Main Image (Single Image)
-  const mainImage = req.files.filter(
-    (image) => image.fieldname === 'mainImage'
-  );
+  const mainImage = files.filter((image) => image.fieldname === 'mainImage');
 
   // 2) Make Array Of Product Images
-  const images = req.files.filter((image) => image.fieldname === 'images');
+  const images = files.filter((image) => image.fieldname === 'images');
 
   // 3) Cloudinary Folder Name
   const folderName = `Products/${name.trim().split(' ').join('')}`;
@@ -151,7 +151,7 @@ export const createProduct = catchAsync(async (req) => {
     priceDiscount,
     color,
     size,
-    seller: req.user._id,
+    seller,
     quantity,
     sold,
     isOutOfStock
@@ -168,12 +168,11 @@ export const createProduct = catchAsync(async (req) => {
 
 /**
  * Update Product Details
- * @param   {Object} request
+ * @param   {Object}    body
+ * @param   {ObjectId}  id
  * @returns {Object<type|message|statusCode|product>}
  */
-export const updateProductDetails = catchAsync(async (req) => {
-  const { id } = req.params;
-
+export const updateProductDetails = catchAsync(async (id, body) => {
   const product = await Product.findById(id);
 
   // 1) Check If Product Already Exist
@@ -186,7 +185,7 @@ export const updateProductDetails = catchAsync(async (req) => {
   }
 
   // 2) Update Product By It's ID
-  const result = await Product.findByIdAndUpdate(id, req.body, {
+  const result = await Product.findByIdAndUpdate(id, body, {
     new: true,
     runValidators: true
   });
@@ -202,15 +201,13 @@ export const updateProductDetails = catchAsync(async (req) => {
 
 /**
  * Update Product Main Image
- * @param   {Object} request
+ * @param   {Object}    body
+ * @param   {ObjectId}  id
  * @returns {Object<type|message|statusCode|product>}
  */
-export const updateProductMainImage = catchAsync(async (req) => {
-  let mainImage = req.files;
-  const { id } = req.params;
-
+export const updateProductMainImage = catchAsync(async (id, image) => {
   // 1) Check If Image Provided
-  if (mainImage.length === 0) {
+  if (image.length === 0) {
     return {
       type: 'Error',
       message: 'Please Select an Image',
@@ -219,7 +216,7 @@ export const updateProductMainImage = catchAsync(async (req) => {
   }
 
   // 2) Check If Product Already Exist
-  const product = await Product.findById(id);
+  let product = await Product.findById(id);
 
   if (!product) {
     return {
@@ -230,7 +227,7 @@ export const updateProductMainImage = catchAsync(async (req) => {
   }
 
   // 3) Make Array Of Main Image (Single Image)
-  mainImage = req.files.filter((image) => image.fieldname === 'mainImage');
+  let mainImage = image.filter((img) => img.fieldname === 'mainImage');
 
   // 4) Specifiy Folder Name Where The Images Are Going To Be Uploaded In Cloudinary
   const folderName = `Products/${product.name.trim().split(' ').join('')}`;
@@ -249,29 +246,27 @@ export const updateProductMainImage = catchAsync(async (req) => {
   };
 
   // 8) Update Product Using It's ID
-  const result = await Product.findByIdAndUpdate(id, productBody, {
+  product = await Product.findByIdAndUpdate(id, productBody, {
     new: true,
     runValidators: true
   });
 
-  // 9) If Everything is OK, Send Result
+  // 9) If Everything is OK, Send Product
   return {
     type: 'Success',
     message: 'Product Main Image Updated Successfully',
     statusCode: 200,
-    result
+    product
   };
 });
 
 /**
  * Update Product Images
- * @param   {Object} request
+ * @param   {Object}    images
+ * @param   {ObjectId}  id
  * @returns {Object<type|message|statusCode|product>}
  */
-export const updateProductImages = catchAsync(async (req) => {
-  let images = req.files;
-  const { id } = req.params;
-
+export const updateProductImages = catchAsync(async (id, images) => {
   // 1) Check If Images Provided
   if (images.length === 0) {
     return {
@@ -282,7 +277,7 @@ export const updateProductImages = catchAsync(async (req) => {
   }
 
   // 2) Check If Product Already Exist
-  const product = await Product.findById(id);
+  let product = await Product.findById(id);
 
   if (!product) {
     return {
@@ -328,7 +323,7 @@ export const updateProductImages = catchAsync(async (req) => {
   };
 
   // 11) Update Product Using It's ID
-  const result = await Product.findByIdAndUpdate(id, productBody, {
+  product = await Product.findByIdAndUpdate(id, productBody, {
     new: true,
     runValidators: true
   });
@@ -338,20 +333,20 @@ export const updateProductImages = catchAsync(async (req) => {
     type: 'Success',
     message: 'Product Sub Images Updated Successfully',
     statusCode: 200,
-    result
+    product
   };
 });
 
 /**
  * Delete Product Using It's ID
- * @param   {Object} request
+ * @param   {ObjectId} id
+ * @returns {Object<type|message|statusCode>}
  */
-export const deleteProduct = catchAsync(async (req) => {
-  const { id } = req.params;
-
+export const deleteProduct = catchAsync(async (id) => {
+  // 1) Find Product Using It's ID
   const product = await Product.findById(id);
 
-  // 1) Check If Product Already Exist
+  // 2) Check If Product Doesn't Exist
   if (!product) {
     return {
       type: 'Error',
@@ -360,10 +355,10 @@ export const deleteProduct = catchAsync(async (req) => {
     };
   }
 
-  // 2) Delete Product Using It's ID
+  // 3) Delete Product Using It's ID
   await Product.findByIdAndDelete(id);
 
-  // 3) If Everything is OK, Send Message
+  // 4) If Everything is OK, Send Message
   return {
     type: 'Success',
     message: 'Product Deleted Successfully',
