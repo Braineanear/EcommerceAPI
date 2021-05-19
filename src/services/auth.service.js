@@ -32,11 +32,20 @@ export const loginWithEmailAndPassword = catchAsync(async (body) => {
 
   // 4) If Email or Passwords isn't Correct
   if (!user || !isMatch) {
-    throw new AppError('Incorrect email or password', 403);
+    return {
+      type: 'Error',
+      message: 'Incorrect Email or Password',
+      statusCode: 403
+    };
   }
 
   // 5) If Everything OK, Send User
-  return user;
+  return {
+    type: 'Success',
+    message: 'User Logged In Successfully',
+    statusCode: 200,
+    user
+  };
 });
 
 /**
