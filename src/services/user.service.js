@@ -14,6 +14,13 @@ import { User } from '../models/index';
  * @returns   {Object<type|message|statusCode|user>}
  */
 export const createUser = catchAsync(async (body, profileImage) => {
+  if (profileImage === undefined) {
+    return {
+      type: 'Error',
+      message: 'Profile Image Is Required, Please Upload an Image',
+      statusCode: 400
+    };
+  }
   const { name, username, email, password, passwordConfirmation, role } = body;
   let { companyName, address, phone } = body;
 
