@@ -47,6 +47,7 @@
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
+    "chai": "^4.3.4",
     "eslint": "^7.26.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
