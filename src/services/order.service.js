@@ -17,7 +17,7 @@ const stripe = STRIPE_SDK(config.stripe.secret_key);
  * Create New Order
  * @param   {Object} body
  * @param   {Object} user
- * @returns {Promise<Order>}
+ * @returns {Object<type|message|statusCode|order>}
  */
 export const createOrder = catchAsync(async (body, user) => {
   // 1) Extract Data From Parameters
