@@ -19,10 +19,6 @@ const categorySchema = mongoose.Schema(
     imageId: {
       type: String,
       required: true
-    },
-    status: {
-      type: String,
-      required: true
     }
   },
   {
