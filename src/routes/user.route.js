@@ -30,7 +30,11 @@ const router = express.Router();
 
 router
   .route('/')
-  .post(auth('admin'), validate(createUserValidate), createUser)
+  .post(
+    auth('admin'),
+    singleFile('image'),
+    createUser
+  )
   .get(validate(getUsersValidate), getUsers);
 
 router
