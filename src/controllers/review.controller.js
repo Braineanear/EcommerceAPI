@@ -9,21 +9,18 @@ import { reviewService, redisService } from '../services/index';
 
 /**
  * Create New Review
- * @param   {Object} req
- * @param   {Object} res
- * @param   {Object} next
- * @returns {JSON}
+ * @param       {Object}    req
+ * @param       {Object}    res
+ * @property    {ObjectId}  req.params.id
+ * @property    {ObjectId}  req.user.id
+ * @returns     {JSON}
  */
-export const addReview = catchAsync(async (req, res, next) => {
-  // 1) Allow nested routes
-  if (!req.body.product) req.body.product = req.params.id;
-  if (!req.body.user) req.body.user = req.user.id;
-
-  // 2) Create Review
+export const addReview = catchAsync(async (req, res) => {
+  // 1) Create Review
   const { type, message, statusCode, review } =
-    await reviewService.createReview(req.body);
+    await reviewService.createReview(req.params.id, req.user.id, req.body);
 
-  // 3) Check If There is an Error
+  // 2) Check If There is an Error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -31,7 +28,7 @@ export const addReview = catchAsync(async (req, res, next) => {
     });
   }
 
-  // 4) If Everything is OK, Send Review
+  // 3) If Everything is OK, Send Review
   return res.status(statusCode).json({
     type,
     message,
@@ -41,12 +38,15 @@ export const addReview = catchAsync(async (req, res, next) => {
 
 /**
  * Get All Reviews
- * @param   {Object} req
- * @param   {Object} res
- * @param   {Object} next
- * @return  {JSON}
+ * @param     {Object}  req
+ * @param     {Object}  res
+ * @property  {String}  req.query.sort
+ * @property  {String}  req.query.select
+ * @property  {Number}  req.query.page
+ * @property  {Number}  req.query.limit
+ * @return    {JSON}
  */
-export const getAllReviews = catchAsync(async (req, res, next) => {
+export const getAllReviews = catchAsync(async (req, res) => {
   let { page, sort, limit, select } = req.query;
 
   // 1) Setting Default Params
@@ -76,7 +76,7 @@ export const getAllReviews = catchAsync(async (req, res, next) => {
     return res.status(200).json({
       type: 'Success',
       message: 'Reviews Found Successfully',
-      cached
+      reviews: cached
     });
   }
 
@@ -105,12 +105,12 @@ export const getAllReviews = catchAsync(async (req, res, next) => {
 
 /**
  * Get Review Using It's ID
- * @param   {Object} req
- * @param   {Object} res
- * @param   {Object} next
- * @return  {JSON}
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @property  {ObjectId}  req.params.reviewId
+ * @return    {JSON}
  */
-export const getReview = catchAsync(async (req, res, next) => {
+export const getReview = catchAsync(async (req, res) => {
   const { reviewId } = req.params;
 
   // 1) Generating Redis key
@@ -131,7 +131,7 @@ export const getReview = catchAsync(async (req, res, next) => {
     return res.status(200).json({
       type: 'Success',
       message: 'Review Found Successfully',
-      cached
+      review: cached
     });
   }
 
@@ -160,15 +160,15 @@ export const getReview = catchAsync(async (req, res, next) => {
 
 /**
  * Update Review
- * @param   {Object} req
- * @param   {Object} res
- * @param   {Object} next
- * @return  {JSON}
+ * @param     {Object}    req
+ * @param     {Object}    res
+ * @property  {ObjectId}  req.params.reviewId
+ * @return    {JSON}
  */
-export const updateReview = catchAsync(async (req, res, next) => {
+export const updateReview = catchAsync(async (req, res) => {
   // 1) Update Review Using It's ID
   const { type, message, statusCode, review } =
-    await reviewService.updateReview(req.params.reviewId);
+    await reviewService.updateReview(req.params.reviewId, req.body);
 
   // 2) Check If There is an Error
   if (type === 'Error') {
@@ -188,12 +188,12 @@ export const updateReview = catchAsync(async (req, res, next) => {
 
 /**
  * Delete Review
- * @param   {Object} req
- * @param   {Object} res
- * @param   {Object} next
+ * @param   {Object}    req
+ * @param   {Object}    res
+ * @param   {ObjectId}  req.params.reviewId
  * @return  {JSON}
  */
-export const deleteReview = catchAsync(async (req, res, next) => {
+export const deleteReview = catchAsync(async (req, res) => {
   // 1) Delete Review
   const { type, message, statusCode } = await reviewService.deleteReview(
     req.params.reviewId
