@@ -55,7 +55,7 @@ export const createCategory = catchAsync(async (body, file) => {
 });
 
 /**
- * Query users
+ * Query Categories
  * @param   {Object} req
  * @returns {Object<type|message|statusCode|categories>}
  */
@@ -81,7 +81,7 @@ export const queryCategories = catchAsync(async (req) => {
 });
 
 /**
- * Query Category Using It's Id
+ * Query Category Using It's ID
  * @param   {String} id
  * @returns {Object<type|message|statusCode|category>}
  */

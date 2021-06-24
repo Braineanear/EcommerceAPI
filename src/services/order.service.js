@@ -154,7 +154,7 @@ export const queryOrders = catchAsync(async (req) => {
 });
 
 /**
- * Query Order
+ * Query Order Using It's ID
  * @param   {ObjectId} id - Order ID
  * @returns {Object<type|message|statusCode|order>}
  */
