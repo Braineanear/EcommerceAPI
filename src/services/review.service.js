@@ -137,7 +137,7 @@ export const updateReview = catchAsync(async (id, body) => {
 });
 
 /**
- * Delete Review Using It's ID'
+ * Delete Review Using It's ID
  * @param   {ObjectId} id
  * @returns   {Object<type|message|statusCode>}
  */

@@ -120,7 +120,7 @@ export const queryUsers = catchAsync(async (req) => {
 });
 
 /**
- * Query User
+ * Query User Using It's ID
  * @param     {Object} id - User ID
  * @return    {Object<type|message|statusCode|user>}
  */
@@ -252,7 +252,7 @@ export const updateUserProfileImage = catchAsync(async (id, profileImage) => {
 });
 
 /**
- * Delete Using It's ID
+ * Delete User Using It's ID
  * @param     {ObjectId} id - User ID,
  * @returns   {Object<type|message|statusCode>}
  */
