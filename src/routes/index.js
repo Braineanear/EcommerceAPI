@@ -1,7 +1,7 @@
 import express from 'express';
 
-import userRoute from './user.route';
 import authRoute from './auth.route';
+import userRoute from './user.route';
 import productRoute from './product.route';
 import categoryRoute from './category.route';
 import cartRoute from './cart.route';

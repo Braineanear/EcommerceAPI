@@ -5,7 +5,7 @@ import catchAsync from '../utils/catchAsync';
 import logger from '../config/logger';
 
 // Services
-import { categoryService, redisService } from '../services/index';
+import { categoryService } from '../services/index';
 
 /**
  * Get All Categories Data
@@ -25,36 +25,11 @@ export const getAllCategories = catchAsync(async (req, res) => {
   if (!limit) limit = 10;
   if (!select) select = '';
 
-  // 2) Generating Redis key
-  const key = redisService.generateCacheKey(
-    'categories',
-    `page:${page}-sort:${sort}-limit:${limit}-select:${select}`
-  );
-
-  // 3) Getting Cached Data From Redis
-  let cached = await redisService.get(key);
-
-  // 4) Check If Cached Data Already Exist
-  if (!cached) {
-    logger.error('No Caching Data');
-  }
-
-  cached = JSON.parse(cached);
-
-  // 5) If Cached Data Exit Return it
-  if (cached) {
-    return res.status(200).json({
-      type: 'Success',
-      message: 'Categories Found Successfully',
-      categories: cached
-    });
-  }
-
-  // 6) Get All Users
+  // 2) Get All Users
   const { type, message, statusCode, categories } =
     await categoryService.queryCategories(req);
 
-  // 7) Check If There is an Error
+  // 3) Check If There is an Error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -62,10 +37,7 @@ export const getAllCategories = catchAsync(async (req, res) => {
     });
   }
 
-  // 8) Put Data into Redis With a Specific Key
-  redisService.set(key, JSON.stringify(categories), 'EX', 60);
-
-  // 9) If Everything is OK, Send Data
+  // 4) If Everything is OK, Send Data
   return res.status(statusCode).json({
     type,
     message,
@@ -83,33 +55,11 @@ export const getAllCategories = catchAsync(async (req, res) => {
 export const getCategory = catchAsync(async (req, res) => {
   const { id } = req.params;
 
-  // 1) Generating Redis key
-  const key = redisService.generateCacheKey('category', `id:${id}`);
-
-  // 2) Getting Cached Data From Redis
-  let cached = await redisService.get(key);
-
-  // 3) Check If Cached Data Already Exist
-  if (!cached) {
-    logger.error('No Caching Data');
-  }
-
-  cached = JSON.parse(cached);
-
-  // 4) If Cached Data Exit Return it
-  if (cached) {
-    return res.status(200).json({
-      type: 'Success',
-      message: 'Category Found Successfully',
-      category: cached
-    });
-  }
-
-  // 5) Get All Users
+  // 1) Get All Users
   const { type, message, statusCode, category } =
     await categoryService.queryCategory(id);
 
-  // 6) Check If There is an Error
+  // 2) Check If There is an Error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -117,10 +67,7 @@ export const getCategory = catchAsync(async (req, res) => {
     });
   }
 
-  // 7) Put Data into Redis With a Specific Key
-  redisService.set(key, JSON.stringify(category), 'EX', 60);
-
-  // 8) If Everything is OK, Send Category
+  // 3) If Everything is OK, Send Category
   return res.status(statusCode).json({
     type,
     message,

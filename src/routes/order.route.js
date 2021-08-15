@@ -4,13 +4,11 @@ import express from 'express';
 import { orderController } from '../controllers/index';
 
 // Middlewares
-import auth from '../middlewares/auth';
 
 const { createOrder, getAllOrders, getOrder, cancelOrder } = orderController;
 
 const router = express.Router();
 
-router.use(auth('user', 'admin', 'seller'));
 
 router.route('/').post(createOrder).get(getAllOrders);
 

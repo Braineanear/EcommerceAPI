@@ -1,7 +1,6 @@
 import express from 'express';
 
 // Middlewares
-import auth from '../middlewares/auth';
 
 // Controllers
 import { categoryController } from '../controllers/index';
@@ -19,8 +18,6 @@ const {
 } = categoryController;
 
 const router = express.Router();
-
-router.use(auth('admin'));
 
 router.route('/').get(getAllCategories).post(singleFile('image'), addCategory);
 

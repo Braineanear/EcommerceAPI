@@ -1,9 +1,5 @@
 import {
-  loginWithEmailAndPassword,
-  logout,
-  refreshAuth,
-  resetPassword,
-  verifyEmail
+  token
 } from './auth.service';
 
 import {
@@ -13,15 +9,6 @@ import {
   updateReview,
   deleteReview
 } from './review.service';
-
-import {
-  generateToken,
-  saveToken,
-  verifyToken,
-  generateAuthTokens,
-  generateResetPasswordToken,
-  generateVerifyEmailToken
-} from './token.service';
 
 import {
   transport,
@@ -77,14 +64,8 @@ import {
   cancelOrder
 } from './order.service';
 
-import { set, get, generateCacheKey } from './redis.service';
-
 const authService = {
-  loginWithEmailAndPassword,
-  logout,
-  refreshAuth,
-  resetPassword,
-  verifyEmail
+  token
 };
 
 const reviewService = {
@@ -101,15 +82,6 @@ const emailService = {
   sendResetPasswordEmail,
   sendAfterResetPasswordMessage,
   sendVerificationEmail
-};
-
-const tokenService = {
-  generateToken,
-  saveToken,
-  verifyToken,
-  generateAuthTokens,
-  generateResetPasswordToken,
-  generateVerifyEmailToken
 };
 
 const userService = {
@@ -141,8 +113,6 @@ const productService = {
   getProductStats
 };
 
-const redisService = { set, get, generateCacheKey };
-
 const cartService = {
   addProductToCart,
   subtractItemFromCart,
@@ -162,12 +132,10 @@ const orderService = {
 
 export {
   authService,
-  tokenService,
   userService,
   emailService,
   categoryService,
   productService,
-  redisService,
   reviewService,
   cartService,
   orderService
