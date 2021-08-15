@@ -9,22 +9,8 @@ const envVarsSchema = Joi.object()
       .valid('production', 'development', 'test')
       .required(),
     PORT: Joi.number().default(3000),
-    REDIS_PORT: Joi.number().default(6397),
     DATABASE_CONNECTION: Joi.string().required().description('MongoDB URL'),
     DATABASE_PASSWORD: Joi.string().required().description('MongoDB Password'),
-    JWT_SECRET: Joi.string().required().description('JWT Secret Key'),
-    JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
-      .default(30)
-      .description('Minutes After Which Access Tokens Expire'),
-    JWT_REFRESH_EXPIRATION_DAYS: Joi.number()
-      .default(30)
-      .description('Days After Which Refresh Tokens Expire'),
-    JWT_RESET_PASSWORD_EXPIRATION_MINUTES: Joi.number()
-      .default(10)
-      .description('Minutes After Which Reset Password Token Expires'),
-    JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: Joi.number()
-      .default(10)
-      .description('Minutes After Which Verify Email Token Expires'),
     SMTP_HOST: Joi.string().description('Server That Will Send The Emails'),
     SMTP_PORT: Joi.number().description('Port to Connect to The Email Server'),
     SMTP_USERNAME: Joi.string().description('Username For Email Server'),
@@ -36,7 +22,6 @@ const envVarsSchema = Joi.object()
     CLOUD_API_KEY: Joi.string().description('Cloudinary Api Key'),
     CLOUD_API_SECRET: Joi.string().description('Cloudinary Api Secret'),
     CLOUD_PROJECT: Joi.string().description('Projct Folder'),
-    STRIPE_SECRET_KEY: Joi.string().description('Stripe Secret Key')
   })
   .unknown();
 
@@ -53,24 +38,9 @@ const config = {
   server: {
     port: envVars.PORT
   },
-  redis: {
-    port: envVars.REDIS_PORT
-  },
-  url: {
-    production: envVars.SERVER_URL_PROD,
-    development: envVars.SERVER_URL_DEV
-  },
   db: {
     url: envVars.DATABASE_CONNECTION,
     password: envVars.DATABASE_PASSWORD
-  },
-  jwt: {
-    secret: envVars.JWT_SECRET,
-    accessExpirationMinutes: envVars.JWT_ACCESS_EXPIRATION_MINUTES,
-    refreshExpirationDays: envVars.JWT_REFRESH_EXPIRATION_DAYS,
-    resetPasswordExpirationMinutes:
-      envVars.JWT_RESET_PASSWORD_EXPIRATION_MINUTES,
-    verifyEmailExpirationMinutes: envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES
   },
   email: {
     smtp: {
@@ -88,9 +58,6 @@ const config = {
     api_key: envVars.CLOUD_API_KEY,
     api_secret: envVars.CLOUD_API_SECRET,
     project: envVars.CLOUD_PROJECT
-  },
-  stripe: {
-    secret_key: envVars.STRIPE_SECRET_KEY
   }
 };
 
