@@ -7,6 +7,5 @@ import catchAsync from '../utils/catchAsync';
 
 export const token = catchAsync(async (token, secret) => {
   const decoded = await promisify(jwt.verify)(token, secret);
-
-  return decoded.id;
+  return decoded;
 });
