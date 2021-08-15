@@ -5,7 +5,7 @@ import logger from '../config/logger';
 import catchAsync from '../utils/catchAsync';
 
 // Services
-import { productService, redisService } from '../services/index';
+import { productService } from '../services/index';
 
 /**
  * Get All Products
@@ -26,36 +26,11 @@ export const getAllProducts = catchAsync(async (req, res) => {
   if (!limit) limit = 10;
   if (!select) select = '';
 
-  // 2) Generating Redis key
-  const key = redisService.generateCacheKey(
-    'products',
-    `page:${page}-sortBy:${sort}-limit:${limit}-select:${select}`
-  );
-
-  // 3) Getting Cached Data From Redis
-  let cached = await redisService.get(key);
-
-  // 4) Check If Cached Data Already Exist
-  if (!cached) {
-    logger.error('No Caching Data');
-  }
-
-  cached = JSON.parse(cached);
-
-  // 5) If Cached Data Exit Return it
-  if (cached) {
-    return res.status(200).json({
-      type: 'Success',
-      message: 'Products Found Successfully',
-      products: cached
-    });
-  }
-
-  // 6) Get All Products
+  // 1) Get All Products
   const { type, message, statusCode, products } =
     await productService.queryProducts(req);
 
-  // 7) Check If Thers is an Error
+  // 2) Check If Thers is an Error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -63,10 +38,7 @@ export const getAllProducts = catchAsync(async (req, res) => {
     });
   }
 
-  // 8) Put Data into Redis With a Specific Key
-  redisService.set(key, JSON.stringify(products), 'EX', 60);
-
-  // 9) If Everything is OK, Send Data
+  // 3) If Everything is OK, Send Data
   return res.status(statusCode).json({
     type,
     message,
@@ -84,33 +56,11 @@ export const getAllProducts = catchAsync(async (req, res) => {
 export const getProduct = catchAsync(async (req, res) => {
   const { id } = req.params;
 
-  // 1) Generating Redis key
-  const key = redisService.generateCacheKey('product', `id:${id}`);
-
-  // 2) Getting Cached Data From Redis
-  let cached = await redisService.get(key);
-
-  // 3) Check If Cached Data Already Exist
-  if (!cached) {
-    logger.error('No Caching Data');
-  }
-
-  cached = JSON.parse(cached);
-
-  // 4) If Cached Data Exit Return it
-  if (cached) {
-    return res.status(200).json({
-      type: 'Success',
-      message: 'Product Found Successfully',
-      product: cached
-    });
-  }
-
-  // 5) Get Product Using It's ID
+  // 1) Get Product Using It's ID
   const { type, message, statusCode, product } =
     await productService.queryProductById(id);
 
-  // 6) Check If There is an Error
+  // 2) Check If There is an Error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -118,10 +68,7 @@ export const getProduct = catchAsync(async (req, res) => {
     });
   }
 
-  // 7) Put Data into Redis With a Specific Key
-  redisService.set(key, JSON.stringify(product), 'EX', 60);
-
-  // 8) If Everything is OK, Send Product
+  // 3) If Everything is OK, Send Product
   return res.status(statusCode).json({
     type,
     message,

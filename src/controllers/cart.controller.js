@@ -5,7 +5,7 @@ import logger from '../config/logger';
 import catchAsync from '../utils/catchAsync';
 
 // Services
-import { cartService, redisService } from '../services/index';
+import { cartService } from '../services/index';
 
 /**
  * Add Product To Cart.
@@ -139,43 +139,18 @@ export const increaseByOne = catchAsync(async (req, res) => {
 export const getCart = catchAsync(async (req, res) => {
   const { email } = req.query;
 
-  // 1) Generating Redis key
-  const key = redisService.generateCacheKey('cart', `email:${email}`);
-
-  // 2) Getting Cached Data From Redis
-  let cached = await redisService.get(key);
-
-  // 4) Check If Cached Data Already Exist
-  if (!cached) {
-    logger.error('No Caching Data');
-  }
-
-  cached = JSON.parse(cached);
-
-  // 5) If Cached Data Exit Return it
-  if (cached) {
-    return res.status(200).json({
-      status: 'success',
-      message: 'Cart Found Successfully',
-      cart: cached
-    });
-  }
-
-  // 6) Get Cart Using User Email
+  // 1) Get Cart Using User Email
   const { type, message, statusCode, cart } = await cartService.queryCart(
     email
   );
 
-  // 7) Check If There is an Error
+  // 2) Check If There is an Error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
       message
     });
   }
-
-  // 8) Put Data into Redis With a Specific Key
-  redisService.set(key, JSON.stringify(cart), 'EX', 60);
 
   // 9) If Everything is OK, Send Cart
   return res.status(statusCode).json({

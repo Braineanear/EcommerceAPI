@@ -1,7 +1,6 @@
 import express from 'express';
 
 // Middlewares
-import auth from '../middlewares/auth';
 import validate from '../middlewares/validate';
 
 // Validations
@@ -31,7 +30,6 @@ const router = express.Router();
 router
   .route('/')
   .post(
-    auth('admin'),
     singleFile('image'),
     createUser
   )
@@ -40,17 +38,15 @@ router
 router
   .route('/:id')
   .get(validate(getUserValidate), getUser)
-  .delete(auth('admin'), validate(deleteUserValidate), deleteUser);
+  .delete(validate(deleteUserValidate), deleteUser);
 
 router.patch(
   '/:id/details',
-  auth('admin'),
   validate(updateUserValidate),
   updateUserDetails
 );
 router.patch(
   '/:id/profile-image',
-  auth('admin'),
   singleFile('image'),
   updateUserProfileImage
 );

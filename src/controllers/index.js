@@ -1,4 +1,8 @@
 import {
+  token
+} from './auth.controller';
+
+import {
   getAllProducts,
   getProduct,
   addProduct,
@@ -9,17 +13,6 @@ import {
   top5Cheap,
   productStats
 } from './product.controller';
-
-import {
-  register,
-  login,
-  logout,
-  refreshTokens,
-  forgotPassword,
-  resetPassword,
-  sendVerificationEmail,
-  verifyEmail
-} from './auth.controller';
 
 import {
   createUser,
@@ -65,14 +58,7 @@ import {
 } from './order.controller';
 
 const authController = {
-  register,
-  login,
-  logout,
-  refreshTokens,
-  forgotPassword,
-  resetPassword,
-  sendVerificationEmail,
-  verifyEmail
+  token
 };
 
 const userController = {

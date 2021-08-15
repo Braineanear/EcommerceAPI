@@ -6,7 +6,7 @@ import config from './config/config';
 // Connect to MongoDB
 connectDB();
 
-const serverPort = config.server.port || 3000;
+const serverPort = config.server.port;
 
 const server = app.listen(serverPort, () => {
   logger.info(`

@@ -4,7 +4,6 @@ import express from 'express';
 import { productController } from '../controllers/index';
 
 // Middlewares
-import auth from '../middlewares/auth';
 
 // Utils
 import { anyMulter } from '../utils/multer';
@@ -32,8 +31,6 @@ router.get('/', getAllProducts);
 router.get('/:id', getProduct);
 router.get('/top-5-cheap', top5Cheap, getAllProducts);
 router.get('/product-stats', productStats);
-
-router.use(auth('admin', 'seller'));
 
 router.post('/', anyMulter(), addProduct);
 router.patch('/:id/details', updateProductDetails);
