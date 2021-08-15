@@ -22,6 +22,7 @@ const envVarsSchema = Joi.object()
     CLOUD_API_KEY: Joi.string().description('Cloudinary Api Key'),
     CLOUD_API_SECRET: Joi.string().description('Cloudinary Api Secret'),
     CLOUD_PROJECT: Joi.string().description('Projct Folder'),
+    STRIPE_SECRET_KEY: Joi.string().description('Stripe Secret Key')
   })
   .unknown();
 
@@ -58,6 +59,9 @@ const config = {
     api_key: envVars.CLOUD_API_KEY,
     api_secret: envVars.CLOUD_API_SECRET,
     project: envVars.CLOUD_PROJECT
+  },
+  stripe: {
+    secret_key: envVars.STRIPE_SECRET_KEY
   }
 };
 
