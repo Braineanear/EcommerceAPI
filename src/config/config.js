@@ -11,6 +11,19 @@ const envVarsSchema = Joi.object()
     PORT: Joi.number().default(3000),
     DATABASE_CONNECTION: Joi.string().required().description('MongoDB URL'),
     DATABASE_PASSWORD: Joi.string().required().description('MongoDB Password'),
+    JWT_SECRET: Joi.string().required().description('JWT Secret Key'),
+    JWT_ACCESS_EXPIRATION_MINUTES: Joi.number()
+      .default(30)
+      .description('Minutes After Which Access Tokens Expire'),
+    JWT_REFRESH_EXPIRATION_DAYS: Joi.number()
+      .default(30)
+      .description('Days After Which Refresh Tokens Expire'),
+    JWT_RESET_PASSWORD_EXPIRATION_MINUTES: Joi.number()
+      .default(10)
+      .description('Minutes After Which Reset Password Token Expires'),
+    JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: Joi.number()
+      .default(10)
+      .description('Minutes After Which Verify Email Token Expires'),
     SMTP_HOST: Joi.string().description('Server That Will Send The Emails'),
     SMTP_PORT: Joi.number().description('Port to Connect to The Email Server'),
     SMTP_USERNAME: Joi.string().description('Username For Email Server'),
@@ -42,6 +55,14 @@ const config = {
   db: {
     url: envVars.DATABASE_CONNECTION,
     password: envVars.DATABASE_PASSWORD
+  },
+  jwt: {
+    secret: envVars.JWT_SECRET,
+    accessExpirationMinutes: envVars.JWT_ACCESS_EXPIRATION_MINUTES,
+    refreshExpirationDays: envVars.JWT_REFRESH_EXPIRATION_DAYS,
+    resetPasswordExpirationMinutes:
+      envVars.JWT_RESET_PASSWORD_EXPIRATION_MINUTES,
+    verifyEmailExpirationMinutes: envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES
   },
   email: {
     smtp: {
