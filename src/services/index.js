@@ -1,6 +1,17 @@
 import {
-  token
+  signin,
+  signup,
+  logout,
+  refreshAuth,
+  resetPassword,
+  verifyEmail
 } from './auth.service';
+
+import {
+  generateAuthTokens,
+  generateResetPasswordToken,
+  generateVerifyEmailToken
+} from './token.service';
 
 import {
   createReview,
@@ -65,7 +76,18 @@ import {
 } from './order.service';
 
 const authService = {
-  token
+  signin,
+  signup,
+  logout,
+  refreshAuth,
+  resetPassword,
+  verifyEmail
+};
+
+const tokenService = {
+  generateAuthTokens,
+  generateResetPasswordToken,
+  generateVerifyEmailToken
 };
 
 const reviewService = {
@@ -132,6 +154,7 @@ const orderService = {
 
 export {
   authService,
+  tokenService,
   userService,
   emailService,
   categoryService,
