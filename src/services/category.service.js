@@ -207,6 +207,8 @@ export const deleteCategoryById = catchAsync(async (id) => {
     };
   }
 
+  destroyFile(category.imageId);
+
   // 3) Delete Category
   await Category.findByIdAndDelete(id);
 
