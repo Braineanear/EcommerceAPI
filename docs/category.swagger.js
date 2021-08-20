@@ -1,4 +1,7 @@
 export const getAllCategories = {
+  security: {
+    jwt: []
+  },
   tags: ['Category'],
   description: 'This route allow to get all categories',
   opeationId: 'getAllCategories',
@@ -99,6 +102,9 @@ export const getAllCategories = {
 };
 
 export const getCategory = {
+  security: {
+    jwt: []
+  },
   tags: ['Category'],
   description: "This route allow to get category using it's ID",
   opeationId: 'getCategory',
@@ -177,9 +183,6 @@ export const addCategory = {
   tags: ['Category'],
   description: 'This route allow only admin to add new category',
   opeationId: 'addCategory',
-  security: {
-    bearerAuth: []
-  },
   requestBody: {
     required: true,
     content: {
