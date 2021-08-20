@@ -1,4 +1,11 @@
-import { signUp } from './auth.swagger';
+import {
+  signUp,
+  signIn,
+  logout,
+  generateTokens,
+  forgotPassword,
+  resetPassword
+} from './auth.swagger';
 
 const docs = {
   openapi: '3.0.3',
@@ -23,7 +30,6 @@ const docs = {
     }
   ],
   components: {
-    schemas: {},
     securitySchemes: {
       bearerAuth: {
         type: 'http',
@@ -33,8 +39,23 @@ const docs = {
     }
   },
   paths: {
-    '/auth': {
+    '/auth/login': {
+      post: signIn
+    },
+    '/auth/register': {
       post: signUp
+    },
+    '/auth/logout': {
+      post: logout
+    },
+    '/auth/tokens': {
+      post: generateTokens
+    },
+    '/auth/forgot-password': {
+      post: forgotPassword
+    },
+    '/auth/reset-password': {
+      post: resetPassword
     },
     '/user': {},
     '/category': {},
