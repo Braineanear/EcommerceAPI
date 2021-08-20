@@ -30,17 +30,17 @@ const router = express.Router();
 
 router.use('/:id/reviews', reviewRoute);
 
+// Get Top 5 Cheapeast Products Route
+router.get('/top-5-cheap', top5Cheap);
+
+// Get Product Stats Route
+router.get('/product-stats', productStats);
+
 // Get ALl Products Route
 router.get('/', getAllProducts);
 
 // Get Product Route
 router.get('/:id', getProduct);
-
-// Get Top 5 Cheapeast Products Route
-router.get('/top-5-cheap', top5Cheap, getAllProducts);
-
-// Get Product Stats Route
-router.get('/product-stats', productStats);
 
 // Protect All Next Routes
 router.use(protect);
