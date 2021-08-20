@@ -1,6 +1,8 @@
+// Packages
 import express from 'express';
 
 // Middlewares
+import protect from '../middlewares/protect';
 
 // Controllers
 import { cartController } from '../controllers/index';
@@ -15,14 +17,30 @@ const {
   deleteItem
 } = cartController;
 
+// Router Initialization
 const router = express.Router();
 
+// Protect All Routes
+router.use(protect);
 
-router.post('/', addItemToCart);
-router.patch('/', subtractItemFromCart);
-router.get('/', getCart);
-router.delete('/', deleteCart);
+// Get Cart Route
+// Add Item To Cart Route
+// Subtract Item From Cart Route
+// Delete Cart Route
+router
+  .route('/')
+  .get(getCart)
+  .post(addItemToCart)
+  .patch(subtractItemFromCart)
+  .delete(deleteCart);
+
+// Reduce One Route
 router.patch('/reduce-one', reduceByOne);
+
+// Increase One Route
 router.patch('/increase-one', increaseByOne);
+
+// Delete Product Route
 router.delete('/:productId', deleteItem);
+
 export default router;
