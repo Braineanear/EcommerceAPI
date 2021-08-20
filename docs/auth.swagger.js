@@ -1,4 +1,7 @@
 export const signUp = {
+  security: {
+    jwt: []
+  },
   tags: ['Auth'],
   description: 'This route allow to sign up into the api',
   opeationId: 'signUp',
@@ -147,6 +150,9 @@ export const signUp = {
 };
 
 export const signIn = {
+  security: {
+    jwt: []
+  },
   tags: ['Auth'],
   description: 'This route allow to login into the api',
   opeationId: 'signIn',
@@ -261,6 +267,9 @@ export const signIn = {
 };
 
 export const logout = {
+  security: {
+    jwt: []
+  },
   tags: ['Auth'],
   description: 'This route allow to log out of the api',
   opeationId: 'logout',
@@ -305,6 +314,9 @@ export const logout = {
 };
 
 export const generateTokens = {
+  security: {
+    jwt: []
+  },
   tags: ['Auth'],
   description:
     'This route allow the user with a refresh token to regenerate tokens when the access token expires',
@@ -365,6 +377,9 @@ export const generateTokens = {
 };
 
 export const forgotPassword = {
+  security: {
+    jwt: []
+  },
   tags: ['Auth'],
   description:
     'This route allow you to send email with the reset password link to reset the password you forgot',
@@ -410,6 +425,9 @@ export const forgotPassword = {
 };
 
 export const resetPassword = {
+  security: {
+    jwt: []
+  },
   tags: ['Auth'],
   description:
     'This route allow you to reset you password using the token you received in you email',
