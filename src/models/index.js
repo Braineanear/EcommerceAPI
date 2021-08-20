@@ -4,5 +4,6 @@ import Category from './category.model';
 import Review from './review.model';
 import Cart from './cart.model';
 import Order from './order.model';
+import Token from './token.model';
 
-export { User, Product, Category, Review, Cart, Order };
+export { User, Product, Category, Review, Cart, Order, Token };
