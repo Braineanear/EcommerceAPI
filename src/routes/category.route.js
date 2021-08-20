@@ -1,6 +1,8 @@
+// Packages
 import express from 'express';
 
 // Middlewares
+import protect from '../middlewares/protect';
 
 // Controllers
 import { categoryController } from '../controllers/index';
@@ -17,16 +19,26 @@ const {
   deleteCategory
 } = categoryController;
 
+// Router Initialization
 const router = express.Router();
 
-router.route('/').get(getAllCategories).post(singleFile('image'), addCategory);
+// Get All Categories Route
+router.get('/', getAllCategories);
 
-router
-  .route('/:id')
-  .get(getCategory)
-  .delete(deleteCategory)
-  .patch(updateCategoryDetails);
+// Get Category Route
+router.get('/:id', getCategory);
 
+// Protect All Next Routes
+router.use(protect);
+
+// Add Category (Multer Middleware) Route
+router.post('/', singleFile('image'), addCategory);
+
+// Update Category details Route
+// Delete Category Route
+router.route('/:id').patch(updateCategoryDetails).delete(deleteCategory);
+
+// Update Category Image (Multer Middleware) Route
 router.patch('/:id/image', singleFile('image'), updateCategoryImage);
 
 export default router;
