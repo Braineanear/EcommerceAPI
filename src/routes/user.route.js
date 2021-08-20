@@ -1,17 +1,9 @@
+// Packages
 import express from 'express';
 
 // Middlewares
-import validate from '../middlewares/validate';
-
-// Validations
-import {
-  createUserValidate,
-  getUsersValidate,
-  getUserValidate,
-  updateUserValidate,
-  deleteUserValidate
-} from '../validations/user.validation';
-
+import protect from '../middlewares/protect';
+import restrictedTo from '../middlewares/restrictedTo';
 // Controllers
 import {
   createUser,
@@ -25,29 +17,28 @@ import {
 // Utils
 import { singleFile } from '../utils/multer';
 
+// Router Initialization
 const router = express.Router();
 
-router
-  .route('/')
-  .post(
-    singleFile('image'),
-    createUser
-  )
-  .get(validate(getUsersValidate), getUsers);
+// Get All Users Route
+router.get('/', getUsers);
 
-router
-  .route('/:id')
-  .get(validate(getUserValidate), getUser)
-  .delete(validate(deleteUserValidate), deleteUser);
+// Get User Route
+router.get('/:id', getUser);
 
-router.patch(
-  '/:id/details',
-  validate(updateUserValidate),
-  updateUserDetails
-);
-router.patch(
-  '/:id/profile-image',
-  singleFile('image'),
-  updateUserProfileImage
-);
+// Protect All Next Routes
+router.use(protect);
+
+// Create New User (Multer Middleware) Route
+router.post('/', restrictedTo('admin'), singleFile('image'), createUser);
+
+// Update User Details Route
+router.patch('/:id/details', updateUserDetails);
+
+// Update User Profile Image (Multer Middleware) Route
+router.patch('/:id/profile-image', singleFile('image'), updateUserProfileImage);
+
+// Delete User Route
+router.delete('/:id', deleteUser);
+
 export default router;
