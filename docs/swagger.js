@@ -23,12 +23,12 @@ const docs = {
   },
   servers: [
     {
-      url: 'http://localhost:8000/api',
-      description: 'Development Server'
-    },
-    {
       url: 'https://e-commerce-a-p-i.herokuapp.com',
       description: 'Production Server'
+    },
+    {
+      url: 'http://localhost:8000/api',
+      description: 'Development Server'
     }
   ],
   components: {
@@ -36,10 +36,16 @@ const docs = {
       bearerAuth: {
         type: 'http',
         scheme: 'bearer',
+        in: 'header',
         bearerFormat: 'JWT'
       }
     }
   },
+  security: [
+    {
+      jwt: []
+    }
+  ],
   paths: {
     '/auth/login': {
       post: signIn
