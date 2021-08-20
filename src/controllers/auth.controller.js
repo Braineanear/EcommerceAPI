@@ -142,7 +142,6 @@ export const forgotPassword = catchAsync(async (req, res) => {
 
   // 3) If everything is OK, send data
   return res.status(200).json({
-    status: 'success',
     type: 'Success',
     message: 'Reset Password Link Sent Successfully'
   });
