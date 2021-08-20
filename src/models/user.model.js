@@ -132,6 +132,18 @@ userSchema.pre('save', function (next) {
   next();
 });
 
+// Check if user changed password after the token was issued
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+    return JWTTimestamp < changedTimestamp;
+  }
+  return false;
+};
+
 /**
  * @typedef User
  */
