@@ -1,5 +1,12 @@
 import {
-  token
+  signin,
+  signup,
+  logout,
+  refreshTokens,
+  forgotPassword,
+  resetPassword,
+  verifyEmail,
+  sendVerificationEmail
 } from './auth.controller';
 
 import {
@@ -58,7 +65,14 @@ import {
 } from './order.controller';
 
 const authController = {
-  token
+  signin,
+  signup,
+  logout,
+  refreshTokens,
+  forgotPassword,
+  resetPassword,
+  verifyEmail,
+  sendVerificationEmail
 };
 
 const userController = {
