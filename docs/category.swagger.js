@@ -97,3 +97,78 @@ export const getAllCategories = {
     }
   }
 };
+
+export const getCategory = {
+  tags: ['Category'],
+  description: "This route allow to get category using it's ID",
+  opeationId: 'getCategory',
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      type: 'integer',
+      description: 'Category ID'
+    }
+  ],
+  responses: {
+    200: {
+      description: "Get category using it's ID",
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Category Found Successfully.'
+              },
+              catagory: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    _id: {
+                      type: 'string',
+                      example: '611ed9117ae59e944d27920d'
+                    },
+                    name: {
+                      type: 'string',
+                      example: 'Makeup'
+                    },
+                    description: {
+                      type: 'string',
+                      example:
+                        'This category contains all products related to makeup.'
+                    },
+                    image: {
+                      type: 'string',
+                      example:
+                        'https://res.cloudinary.com/dknma8cck/image/upload/v1629411601/EcommerceAPI/Category/Makeup/wnxfwht979aao486afll.webp'
+                    },
+                    imageId: {
+                      type: 'string',
+                      example:
+                        'EcommerceAPI/Category/Makeup/wnxfwht979aao486afll'
+                    },
+                    createdAt: {
+                      type: 'string',
+                      example: '2021-08-19T22:20:01.688Z'
+                    },
+                    updatedAt: {
+                      type: 'string',
+                      example: '2021-08-19T22:20:01.688Z'
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
