@@ -1,6 +1,3 @@
-// Config
-import logger from '../config/logger';
-
 // Utils
 import catchAsync from '../utils/catchAsync';
 
@@ -8,29 +5,29 @@ import catchAsync from '../utils/catchAsync';
 import { productService } from '../services/index';
 
 /**
- * Get All Products
- * @param     {Object} req
- * @param     {Object} res
- * @property  {String} req.query.sort
- * @property  {String}  req.query.select
- * @property  {Number}  req.query.page
- * @property  {Number}  req.query.limit
- * @returns   {JSON}
+ * Get All Products Controller
+ * @param     { Object } req
+ * @param     { Object } res
+ * @property  { String } req.query.sort
+ * @property  { String }  req.query.select
+ * @property  { Number }  req.query.page
+ * @property  { Number }  req.query.limit
+ * @returns   { JSON }
  */
 export const getAllProducts = catchAsync(async (req, res) => {
   let { page, sort, limit, select } = req.query;
 
-  // 1) Setting Default Params
+  // 1) Setting default params
   if (!page) page = 1;
   if (!sort) sort = '';
   if (!limit) limit = 10;
   if (!select) select = '';
 
-  // 1) Get All Products
+  // 1) Get all products
   const { type, message, statusCode, products } =
     await productService.queryProducts(req);
 
-  // 2) Check If Thers is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -38,7 +35,7 @@ export const getAllProducts = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Data
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -47,20 +44,20 @@ export const getAllProducts = catchAsync(async (req, res) => {
 });
 
 /**
- * Get Product Using It's ID
- * @param     {Object}    req
- * @param     {Object}    res
- * @property  {ObjectId}  req.params.id
- * @returns   {JSON}
+ * Get Product Using It's ID Controller
+ * @param     { Object }    req
+ * @param     { Object }    res
+ * @property  { ObjectId }  req.params.id
+ * @returns   { JSON }
  */
 export const getProduct = catchAsync(async (req, res) => {
   const { id } = req.params;
 
-  // 1) Get Product Using It's ID
+  // 1) Get product using it's ID
   const { type, message, statusCode, product } =
     await productService.queryProductById(id);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -68,7 +65,7 @@ export const getProduct = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Product
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -77,21 +74,22 @@ export const getProduct = catchAsync(async (req, res) => {
 });
 
 /**
- * Create New Product
- * @param     {Object}    req
- * @param     {Object}    res
- * @property  {Object}    req.body
- * @property  {Object}    req.files
- * @property  {ObjectId}  req.user._id
- * @returns   {JSON}
+ * Create New Product Controller
+ * @param     { Object }    req
+ * @param     { Object }    res
+ * @property  { Object }    req.body
+ * @property  { Object }    req.files
+ * @property  { ObjectId }  req.user._id
+ * @returns   { JSON }
  */
 export const addProduct = catchAsync(async (req, res) => {
   const { body, files, user } = req;
-  // 1) Create Product
+
+  // 1) Create product
   const { type, message, statusCode, product } =
     await productService.createProduct(body, files, user._id);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -99,7 +97,7 @@ export const addProduct = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Category
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -108,17 +106,19 @@ export const addProduct = catchAsync(async (req, res) => {
 });
 
 /**
- * Update Product Details
- * @param     {Object}    req
- * @param     {Object}    res
- * @returns   {JSON}
+ * Update Product Details Controller
+ * @param     { Object }    req
+ * @param     { Object }    res
+ * @property  { ObjectId }  req.params.id
+ * @property  { Object }    req.body
+ * @returns   { JSON }
  */
 export const updateProductDetails = catchAsync(async (req, res) => {
-  // 1) Update Product Using It's ID
+  // 1) Update product details using it's ID
   const { type, message, statusCode, product } =
     await productService.updateProductDetails(req.params.id, req.body);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -126,7 +126,7 @@ export const updateProductDetails = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Product
+  // 3) If everything is OK, send product
   return res.status(statusCode).json({
     type,
     message,
@@ -135,26 +135,26 @@ export const updateProductDetails = catchAsync(async (req, res) => {
 });
 
 /**
- * Update Product Main Image
- * @param     {Object}    req
- * @param     {Object}    res
- * @property  {Object}    req.files
- * @property  {ObjectId}  req.params.id
- * @returns   {JSON}
+ * Update Product Main Image Controller
+ * @param     { Object }    req
+ * @param     { Object }    res
+ * @property  { Object }    req.files
+ * @property  { ObjectId }  req.params.id
+ * @returns   { JSON }
  */
 export const updateProductMainImage = catchAsync(async (req, res) => {
-  // 1) Update Product Using It's ID
+  // 1) Update product main image using it's ID
   const { type, message, statusCode, product } =
     await productService.updateProductMainImage(req.params.id, req.files);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
       message
     });
   }
-  // 3) If Everything is OK, Send Product
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -163,19 +163,19 @@ export const updateProductMainImage = catchAsync(async (req, res) => {
 });
 
 /**
- * Update Product Images
- * @param     {Object}    req
- * @param     {Object}    res
- * @property  {Object}    req.files
- * @property  {ObjectId}  req.params.id
- * @returns   {JSON}
+ * Update Product Images Controller
+ * @param     { Object }    req
+ * @param     { Object }    res
+ * @property  { Object }    req.files
+ * @property  { ObjectId }  req.params.id
+ * @returns   { JSON }
  */
 export const updateProductImages = catchAsync(async (req, res) => {
-  // 1) Update Product Using It's ID
+  // 1) Update product images using it's ID
   const { type, message, statusCode, product } =
     await productService.updateProductImages(req.params.id, req.files);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -183,7 +183,7 @@ export const updateProductImages = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Product
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -192,19 +192,19 @@ export const updateProductImages = catchAsync(async (req, res) => {
 });
 
 /**
- * Delete Product
- * @param     {Object}     req
- * @param     {Object}     res
- * @property  {ObjectId}   req.params.id
- * @return    {JSON}
+ * Delete Product Controller
+ * @param     { Object }     req
+ * @param     { Object }     res
+ * @property  { ObjectId }   req.params.id
+ * @return    { JSON }
  */
 export const deleteProduct = catchAsync(async (req, res) => {
-  // 1) Delete Product
+  // 1) Delete product using it's ID
   const { type, message, statusCode } = await productService.deleteProduct(
     req.params.id
   );
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -212,7 +212,7 @@ export const deleteProduct = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything Is OK, Send Message
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message
@@ -220,15 +220,15 @@ export const deleteProduct = catchAsync(async (req, res) => {
 });
 
 /**
- * Get Top 5 Cheapeast Products
- * @param   {Object} req
- * @param   {Object} res
- * @param   {Object} next
+ * Get Top 5 Cheapeast Products Controller
+ * @param   { Object } req
+ * @param   { Object } res
+ * @param   { Object } next
  */
 export const top5Cheap = catchAsync(async (req, res, next) => {
-  // Limiting Products To Top 5 Products
-  // Sorting Products According to It's Price Asc and According To Ratings Average Des
-  // Selecting Name, Price and Ratings Average
+  // Limiting products to top 5 products
+  // Sorting products according to it's price asc and according to ratings average des
+  // Selecting name, price and ratings average
   req.query.limit = '5';
   req.query.sort = '-ratingsAverage,price';
   req.query.select = 'name,price,ratingsAverage';
@@ -237,16 +237,16 @@ export const top5Cheap = catchAsync(async (req, res, next) => {
 });
 
 /**
- * Get Products Statics
- * @param   {Object} req
- * @param   {Object} res
- * @return  {JSON}
+ * Get Products Statics Controller
+ * @param   { Object } req
+ * @param   { Object } res
+ * @return  { JSON }
  */
 export const productStats = catchAsync(async (req, res) => {
-  // 1) Get Product Stats
+  // 1) Get product stats
   const stats = await productService.getProductStats();
 
-  // 2) If Everything Is OK, Send Stats
+  // 2) If everything is OK, send data
   return res.status(200).json({
     status: 'success',
     message: 'Product Statics',
