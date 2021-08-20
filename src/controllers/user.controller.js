@@ -1,6 +1,3 @@
-// Config
-import logger from '../config/logger';
-
 // Utils
 import catchAsync from '../utils/catchAsync';
 
@@ -8,21 +5,21 @@ import catchAsync from '../utils/catchAsync';
 import { userService } from '../services/index';
 
 /**
- * Create New User
- * @param     {Object} req
- * @param     {Object} res
- * @property  {Object} req.body
- * @property  {Object} req.file
- * @returns   {JSON}
+ * Create New User Controller
+ * @param     { Object } req
+ * @param     { Object } res
+ * @property  { Object } req.body
+ * @property  { Object } req.file
+ * @returns   { JSON }
  */
 export const createUser = catchAsync(async (req, res) => {
-  // 1) Create User Document
+  // 1) Create new user
   const { type, message, statusCode, user } = await userService.createUser(
     req.body,
     req.file
   );
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -30,7 +27,7 @@ export const createUser = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send User Data
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -39,30 +36,30 @@ export const createUser = catchAsync(async (req, res) => {
 });
 
 /**
- * Get All Users
- * @param     {Object}  req
- * @param     {Object}  res
- * @property  {String}  req.query.sort
- * @property  {String}  req.query.select
- * @property  {Number}  req.query.page
- * @property  {Number}  req.query.limit
- * @returns   {JSON}
+ * Get All Users Controller
+ * @param     { Object }  req
+ * @param     { Object }  res
+ * @property  { String }  req.query.sort
+ * @property  { String }  req.query.select
+ * @property  { Number }  req.query.page
+ * @property  { Number }  req.query.limit
+ * @returns   { JSON }
  */
 export const getUsers = catchAsync(async (req, res) => {
   let { page, sort, limit, select } = req.query;
 
-  // 1) Setting Default Params
+  // 1) Setting default params
   if (!page) page = 1;
   if (!sort) sort = '';
   if (!limit) limit = 10;
   if (!select) select = '';
 
-  // 2) Get All Users
+  // 2) Get all users
   const { type, message, statusCode, users } = await userService.queryUsers(
     req
   );
 
-  // 3) Check If There is an Error
+  // 3) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -70,7 +67,7 @@ export const getUsers = catchAsync(async (req, res) => {
     });
   }
 
-  // 4) If Everything is OK, Send Data
+  // 4) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -79,19 +76,19 @@ export const getUsers = catchAsync(async (req, res) => {
 });
 
 /**
- * Get User Data Using It's ID
- * @param     {Object}    req
- * @param     {Object}    res
- * @property  {ObjectId}  req.params.id
- * @returns   {JSON}
+ * Get User Data Using It's ID Controller
+ * @param     { Object }    req
+ * @param     { Object }    res
+ * @property  { ObjectId }  req.params.id
+ * @returns   { JSON }
  */
 export const getUser = catchAsync(async (req, res) => {
   const { id } = req.params;
 
-  // 1) Find User Document By It's ID
+  // 1) Find User Document By It's ID Controller
   const { type, message, statusCode, user } = await userService.queryUser(id);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -99,7 +96,7 @@ export const getUser = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send User's Data
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -108,19 +105,19 @@ export const getUser = catchAsync(async (req, res) => {
 });
 
 /**
- * Update User Details
- * @param     {Object}    req
- * @param     {Object}    res
- * @property  {Object}    req.body
- * @property  {ObjectId}  req.params.id
- * @returns   {JSON}
+ * Update User Details Controller
+ * @param     { Object }    req
+ * @param     { Object }    res
+ * @property  { Object }    req.body
+ * @property  { ObjectId }  req.params.id
+ * @returns   { JSON }
  */
 export const updateUserDetails = catchAsync(async (req, res) => {
-  // 1) Find User Document and Update it
+  // 1) Find user document and update it's details
   const { type, message, statusCode, user } =
     await userService.updateUserDetails(req.params.id, req.body);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -128,7 +125,7 @@ export const updateUserDetails = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send User's Data
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -137,19 +134,19 @@ export const updateUserDetails = catchAsync(async (req, res) => {
 });
 
 /**
- * Update User Profile Image
- * @param     {Object}    req
- * @param     {Object}    res
- * @property  {Object}    req.file
- * @property  {ObjectId}  req.params.id
- * @returns   {JSON}
+ * Update User Profile Image Controller
+ * @param     { Object }    req
+ * @param     { Object }    res
+ * @property  { Object }    req.file
+ * @property  { ObjectId }  req.params.id
+ * @returns   { JSON }
  */
 export const updateUserProfileImage = catchAsync(async (req, res) => {
-  // 1) Find User Document and Update it
+  // 1) Find user document and update it's profile image
   const { type, message, statusCode, user } =
     await userService.updateUserDetails(req.params.id, req.file);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -157,7 +154,7 @@ export const updateUserProfileImage = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send User's Data
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -166,19 +163,19 @@ export const updateUserProfileImage = catchAsync(async (req, res) => {
 });
 
 /**
- * Delete User's Data
- * @param     {Object}    req
- * @param     {Object}    res
- * @property  {ObjectId}  req.params.id
- * @returns   {JSON}
+ * Delete User's Data Controller
+ * @param     { Object }    req
+ * @param     { Object }    res
+ * @property  { ObjectId }  req.params.id
+ * @returns   { JSON }
  */
 export const deleteUser = catchAsync(async (req, res) => {
-  // 1) Find User Document and Delete it
+  // 1) Find user document and delete it
   const { type, message, statusCode } = await userService.deleteUserById(
     req.params.id
   );
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -186,7 +183,7 @@ export const deleteUser = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Message
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message
