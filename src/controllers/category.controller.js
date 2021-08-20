@@ -1,35 +1,33 @@
 // Utils
 import catchAsync from '../utils/catchAsync';
 
-// Configs
-import logger from '../config/logger';
-
 // Services
 import { categoryService } from '../services/index';
 
 /**
- * Get All Categories Data
- * @param     {Object} req
- * @param     {Object} res
- * @property  {String} req.query.sort
- * @property  {String} req.query.select
- * @property  {Number} req.query.page
- * @property  {Number} req.query.limit
- * @returns {JSON}
+ * Get All Categories Data Controller
+ * @param     { Object } req
+ * @param     { Object } res
+ * @property  { String } req.query.sort
+ * @property  { String } req.query.select
+ * @property  { Number } req.query.page
+ * @property  { Number } req.query.limit
+ * @returns   { JSON }
  */
 export const getAllCategories = catchAsync(async (req, res) => {
   let { page, sort, limit, select } = req.query;
-  // 1) Setting Default Params
+
+  // 1) Setting default params
   if (!page) page = 1;
   if (!sort) sort = '';
   if (!limit) limit = 10;
   if (!select) select = '';
 
-  // 2) Get All Users
+  // 2) Get all categories
   const { type, message, statusCode, categories } =
     await categoryService.queryCategories(req);
 
-  // 3) Check If There is an Error
+  // 3) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -37,7 +35,7 @@ export const getAllCategories = catchAsync(async (req, res) => {
     });
   }
 
-  // 4) If Everything is OK, Send Data
+  // 4) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -46,20 +44,20 @@ export const getAllCategories = catchAsync(async (req, res) => {
 });
 
 /**
- * Get Category Using It's ID
- * @param     {Object} req
- * @param     {Object} res
- * @property  {ObjectID} req.params.id
- * @returns   {JSON}
+ * Get Category Using It's ID Category
+ * @param     { Object } req
+ * @param     { Object } res
+ * @property  { ObjectID } req.params.id
+ * @returns   { JSON }
  */
 export const getCategory = catchAsync(async (req, res) => {
   const { id } = req.params;
 
-  // 1) Get All Users
+  // 1) Get category using it's ID
   const { type, message, statusCode, category } =
     await categoryService.queryCategory(id);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -67,7 +65,7 @@ export const getCategory = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Category
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -76,23 +74,23 @@ export const getCategory = catchAsync(async (req, res) => {
 });
 
 /**
- * Create New Category
- * @param     {Object} req
- * @param     {Object} res
- * @property  {String} req.body.name
- * @property  {String} req.body.description
- * @property  {Object} req.file
- * @returns   {JSON}
+ * Create New Category Controller
+ * @param     { Object } req
+ * @param     { Object } res
+ * @property  { String } req.body.name
+ * @property  { String } req.body.description
+ * @property  { Object } req.file
+ * @returns   { JSON }
  */
 export const addCategory = catchAsync(async (req, res) => {
   const { name, description } = req.body;
   const { file } = req;
 
-  // 1) Insert Data into The Database
+  // 1) Create new category
   const { type, message, statusCode, category } =
     await categoryService.createCategory({ name, description }, file);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -100,7 +98,7 @@ export const addCategory = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Result
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -109,21 +107,21 @@ export const addCategory = catchAsync(async (req, res) => {
 });
 
 /**
- * Update Category Details
- * @param     {Object}    req
- * @param     {Object}    res
- * @property  {ObjectId}  req.params.id
- * @property  {Object}    req.body
- * @returns   {JSON}
+ * Update Category Details Controller
+ * @param     { Object }    req
+ * @param     { Object }    res
+ * @property  { ObjectId }  req.params.id
+ * @property  { Object }    req.body
+ * @returns   { JSON }
  */
 export const updateCategoryDetails = catchAsync(async (req, res) => {
   const { id } = req.params;
 
-  // 1) Update Category
+  // 1) Update category details using it's ID
   const { type, message, statusCode, category } =
     await categoryService.updateCategoryDetails(id, req.body);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -131,7 +129,7 @@ export const updateCategoryDetails = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Category Data
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -140,22 +138,22 @@ export const updateCategoryDetails = catchAsync(async (req, res) => {
 });
 
 /**
- * Update Category Image
- * @param     {Object}    req
- * @param     {Object}    res
- * @property  {ObjectId}  req.params.id
- * @property  {Object}    req.file
- * @returns   {JSON}
+ * Update Category Image Controller
+ * @param     { Object }    req
+ * @param     { Object }    res
+ * @property  { ObjectId }  req.params.id
+ * @property  { Object }    req.file
+ * @returns   { JSON }
  */
 export const updateCategoryImage = catchAsync(async (req, res) => {
   const { id } = req.params;
   let image = req.file;
 
-  // 1) Update Category
+  // 1) Update category image using it's ID
   const { type, message, statusCode, category } =
     await categoryService.updateCategoryImage(id, image);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -163,7 +161,7 @@ export const updateCategoryImage = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Category Data
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -172,20 +170,20 @@ export const updateCategoryImage = catchAsync(async (req, res) => {
 });
 
 /**
- * Delete Category
- * @param     {Object}    req
- * @param     {Object}    res
- * @property  {ObjectId}  req.params.id
- * @returns   {JSON}
+ * Delete Category Controller
+ * @param     { Object }    req
+ * @param     { Object }    res
+ * @property  { ObjectId }  req.params.id
+ * @returns   { JSON }
  */
 export const deleteCategory = catchAsync(async (req, res) => {
   const { id } = req.params;
 
-  // 1) Find Category By ID & Delete It
+  // 1) Find category using it's ID & delete it
   const { type, message, statusCode } =
     await categoryService.deleteCategoryById(id);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -193,7 +191,7 @@ export const deleteCategory = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Message
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message
