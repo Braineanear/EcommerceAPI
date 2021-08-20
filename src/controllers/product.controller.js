@@ -18,10 +18,10 @@ export const getAllProducts = catchAsync(async (req, res) => {
   let { page, sort, limit, select } = req.query;
 
   // 1) Setting default params
-  if (!page) page = 1;
-  if (!sort) sort = '';
-  if (!limit) limit = 10;
-  if (!select) select = '';
+  if (!page) req.query.page = 1;
+  if (!sort) req.query.sort = '';
+  if (!limit) req.query.limit = 10;
+  if (!select) req.query.select = '';
 
   // 1) Get all products
   const { type, message, statusCode, products } =
@@ -228,11 +228,8 @@ export const deleteProduct = catchAsync(async (req, res) => {
 export const top5Cheap = catchAsync(async (req, res, next) => {
   // Limiting products to top 5 products
   // Sorting products according to it's price asc and according to ratings average des
-  // Selecting name, price and ratings average
   req.query.limit = '5';
   req.query.sort = '-ratingsAverage,price';
-  req.query.select = 'name,price,ratingsAverage';
-
   next();
 });
 
