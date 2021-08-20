@@ -1,6 +1,3 @@
-// Configs
-import logger from '../config/logger';
-
 // Utils
 import catchAsync from '../utils/catchAsync';
 
@@ -8,22 +5,22 @@ import catchAsync from '../utils/catchAsync';
 import { cartService } from '../services/index';
 
 /**
- * Add Product To Cart.
- * @param     {Object} req
- * @param     {Object} res
- * @property  {String} req.body.productId
- * @property  {Number} req.body.quantity
- * @returns   {JSON<Cart>}
+ * Add Product To Cart Controller
+ * @param     { Object } req
+ * @param     { Object } res
+ * @property  { String } req.body.productId
+ * @property  { Number } req.body.quantity
+ * @returns   { JSON }
  */
 export const addItemToCart = catchAsync(async (req, res) => {
-  // 1) Get productId & quantity From Body
+  // 1) Get productId & quantity from dody
   const { productId, quantity } = req.body;
 
-  // 2) Add Product To Cart
+  // 2) Add product to cart
   const { type, message, statusCode, cart } =
     await cartService.addProductToCart(req.user, productId, quantity);
 
-  // 3) Check If There is an Error
+  // 3) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -31,7 +28,7 @@ export const addItemToCart = catchAsync(async (req, res) => {
     });
   }
 
-  // 4) If Everything is OK, Send Cart
+  // 4) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -40,22 +37,22 @@ export const addItemToCart = catchAsync(async (req, res) => {
 });
 
 /**
- * Subtract Quantity From Product In Cart.
- * @param     {Obejct} req
- * @param     {Object} res
- * @property  {String} req.body.productId
- * @property  {Number} req.body.quantity
- * @returns   {JSON<Cart>}
+ * Subtract Quantity From Product In Cart Controller
+ * @param     { Obejct } req
+ * @param     { Object } res
+ * @property  { String } req.body.productId
+ * @property  { Number } req.body.quantity
+ * @returns   { JSON }
  */
 export const subtractItemFromCart = catchAsync(async (req, res) => {
-  // 1) Get productId & quanitity From Body
+  // 1) Get productId & quanitity from body
   const { productId, quantity } = req.body;
 
-  // 2) Subtract Product From Cart
+  // 2) Subtract product from cart
   const { type, message, statusCode, cart } =
     await cartService.subtractItemFromCart(productId, quantity);
 
-  // 3) Check If There is an Error
+  // 3) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -63,7 +60,7 @@ export const subtractItemFromCart = catchAsync(async (req, res) => {
     });
   }
 
-  // 4) If Everything is OK, Send Cart
+  // 4) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -72,19 +69,19 @@ export const subtractItemFromCart = catchAsync(async (req, res) => {
 });
 
 /**
- * Reduce Product By One.
- * @param     {Object} req
- * @param     {Object} res
- * @property  {String} req.body.productId
- * @returns   {JSON<Cart>}
+ * Reduce Product By One Controller
+ * @param     { Object } req
+ * @param     { Object } res
+ * @property  { String } req.body.productId
+ * @returns   { JSON }
  */
 export const reduceByOne = catchAsync(async (req, res) => {
-  // 1) Reduce Product Quantity By One From Cart
+  // 1) Reduce product quantity by one from cart
   const { type, message, statusCode, cart } = await cartService.reduceByOne(
     req.body.productId
   );
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -92,7 +89,7 @@ export const reduceByOne = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Cart
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -101,19 +98,19 @@ export const reduceByOne = catchAsync(async (req, res) => {
 });
 
 /**
- * Increase Product By One.
- * @param     {Object} req
- * @param     {Object} res
- * @property  {String} req.body.productId
- * @returns   {JSON<Cart>}
+ * Increase Product By One Controller
+ * @param     { Object } req
+ * @param     { Object } res
+ * @property  { String } req.body.productId
+ * @returns   { JSON }
  */
 export const increaseByOne = catchAsync(async (req, res) => {
-  // 1) Increase Product By One
+  // 1) Increase product by one
   const { type, message, statusCode, cart } = await cartService.increaseByOne(
     req.body.productId
   );
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -121,7 +118,7 @@ export const increaseByOne = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Cart
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -130,21 +127,21 @@ export const increaseByOne = catchAsync(async (req, res) => {
 });
 
 /**
- * Get Cart By User Email.
- * @param     {Object} req
- * @param     {Object} res
- * @property  {String} req.query.email
- * @returns   {JSON<Cart>}
+ * Get Cart By User Email Controller
+ * @param     { Object } req
+ * @param     { Object } res
+ * @property  { String } req.query.email
+ * @returns   { JSON }
  */
 export const getCart = catchAsync(async (req, res) => {
   const { email } = req.query;
 
-  // 1) Get Cart Using User Email
+  // 1) Get cart using user email
   const { type, message, statusCode, cart } = await cartService.queryCart(
     email
   );
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -152,7 +149,7 @@ export const getCart = catchAsync(async (req, res) => {
     });
   }
 
-  // 9) If Everything is OK, Send Cart
+  // 9) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
@@ -161,19 +158,19 @@ export const getCart = catchAsync(async (req, res) => {
 });
 
 /**
- * Delete Cart By User Email.
- * @param     {Object} req
- * @param     {Object} res
- * @property  {String} req.query.email
- * @returns   {JSON<Cart>}
+ * Delete Cart By User Email Controller
+ * @param     { Object } req
+ * @param     { Object } res
+ * @property  { String } req.query.email
+ * @returns   { JSON }
  */
 export const deleteCart = catchAsync(async (req, res) => {
   const { email } = req.query;
 
-  // 1) Delete Cart Using User Email
+  // 1) Delete cart using user email
   const { type, message, statusCode } = await cartService.deleteCart(email);
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -181,7 +178,7 @@ export const deleteCart = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Message
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message
@@ -189,24 +186,24 @@ export const deleteCart = catchAsync(async (req, res) => {
 });
 
 /**
- * Delete Product From Cart
- * @param     {Object} req
- * @param     {Object} res
- * @property  {String} req.params.productId
- * @property  {String} req.query.email
- * @returns   {JSON<Cart>}
+ * Delete Product From Cart Controller
+ * @param     { Object } req
+ * @param     { Object } res
+ * @property  { String } req.params.productId
+ * @property  { String } req.query.email
+ * @returns   { JSON }
  */
 export const deleteItem = catchAsync(async (req, res) => {
   const { email } = req.query;
   const { productId } = req.params;
 
-  // 1) Delete Product From Cart
+  // 1) Delete product from cart
   const { type, message, statusCode, cart } = await cartService.deleteItem(
     email,
     productId
   );
 
-  // 2) Check If There is an Error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -214,7 +211,7 @@ export const deleteItem = catchAsync(async (req, res) => {
     });
   }
 
-  // 3) If Everything is OK, Send Cart
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message,
