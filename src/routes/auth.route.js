@@ -31,7 +31,7 @@ router.post('/register', singleFile('image'), signup);
 router.post('/logout', logout);
 
 // Refresh Token Route
-router.post('/refresh-tokens', refreshTokens);
+router.post('/tokens', refreshTokens);
 
 // Forgot Password Route
 router.post('/forgot-password', forgotPassword);
