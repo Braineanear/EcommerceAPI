@@ -5,12 +5,15 @@ import helmet from 'helmet';
 import xss from 'xss-clean';
 import compression from 'compression';
 import cors from 'cors';
+import swaggerUI from 'swagger-ui-express';
 
 import config from './config/config';
 import { successHandle, errorHandle } from './config/morgan';
 import limiter from './middlewares/rateLimiter';
 import errorHandler from './utils/errorHandler';
 import AppError from './utils/appError';
+
+import docs from '../docs/swagger';
 
 import routes from './routes/index';
 
@@ -52,6 +55,7 @@ if (config.env === 'production') {
 
 // API Routes
 app.use('/api', routes);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(docs));
 
 // When someone access route that does not exist
 app.all('*', (req, res, next) => {
