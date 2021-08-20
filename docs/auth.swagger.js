@@ -53,7 +53,7 @@ export const signUp = {
     }
   },
   responses: {
-    200: {
+    201: {
       description: 'User data with access token and refresh token',
       content: {
         'application/json': {
