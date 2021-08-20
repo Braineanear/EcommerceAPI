@@ -172,3 +172,88 @@ export const getCategory = {
     }
   }
 };
+
+export const addCategory = {
+  tags: ['Category'],
+  description: 'This route allow only admin to add new category',
+  opeationId: 'addCategory',
+  security: {
+    bearerAuth: []
+  },
+  requestBody: {
+    required: true,
+    content: {
+      'multipart/form-data': {
+        schema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              required: true
+            },
+            description: {
+              type: 'string',
+              required: true
+            },
+            image: {
+              type: 'string',
+              formate: 'binary',
+              required: true
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    201: {
+      description: 'Add new category',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Category Created Successfully.'
+              },
+              catagory: {
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                    example: 'Laptop'
+                  },
+                  description: {
+                    type: 'string',
+                    example:
+                      "This category contains all products related to Laptops, it's components and accessories."
+                  },
+                  image: {
+                    type: 'string',
+                    example:
+                      'https://res.cloudinary.com/dknma8cck/image/upload/v1629411453/EcommerceAPI/Category/Laptop/hqbknfppz8src5szz2w9.webp'
+                  },
+                  imageId: {
+                    type: 'string',
+                    example: 'EcommerceAPI/Category/Laptop/hqbknfppz8src5szz2w9'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const updateCategoryDetails = {};
+
+export const updateCategoryImage = {};
+
+export const deleteCategory = {};

@@ -7,7 +7,7 @@ import {
   resetPassword
 } from './auth.swagger';
 
-import { getAllCategories, getCategory } from './category.swagger';
+import { getAllCategories, getCategory, addCategory } from './category.swagger';
 
 const docs = {
   openapi: '3.0.3',
@@ -60,8 +60,9 @@ const docs = {
       post: resetPassword
     },
     '/user': {},
-    '/category/getAllCategories': {
-      get: getAllCategories
+    '/category': {
+      get: getAllCategories,
+      post: addCategory
     },
     '/category/{id}': {
       get: getCategory
