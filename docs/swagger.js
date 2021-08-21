@@ -16,7 +16,7 @@ import {
   deleteCategory
 } from './category.swagger';
 
-import { getAllProducts, getProduct } from './product.swagger';
+import { getAllProducts, getProduct, addProduct } from './product.swagger';
 
 const docs = {
   openapi: '3.0.3',
@@ -88,7 +88,8 @@ const docs = {
       patch: updateCategoryImage
     },
     '/product': {
-      get: getAllProducts
+      get: getAllProducts,
+      post: addProduct
     },
     '/product/:id': {
       get: getProduct
