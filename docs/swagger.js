@@ -16,7 +16,7 @@ import {
   deleteCategory
 } from './category.swagger';
 
-import { getAllProducts } from './product.swagger';
+import { getAllProducts, getProduct } from './product.swagger';
 
 const docs = {
   openapi: '3.0.3',
@@ -89,6 +89,9 @@ const docs = {
     },
     '/product': {
       get: getAllProducts
+    },
+    '/product/:id': {
+      get: getProduct
     },
     '/cart': {},
     '/order': {},
