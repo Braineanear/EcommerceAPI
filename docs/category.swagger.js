@@ -255,8 +255,193 @@ export const addCategory = {
   }
 };
 
-export const updateCategoryDetails = {};
+export const updateCategoryDetails = {
+  tags: ['Category'],
+  description:
+    'This route allow only admin to update category details [name / description]',
+  opeationId: 'updateCategoryDetails',
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      type: 'integer',
+      description: 'Category ID'
+    }
+  ],
+  requestBody: {
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string'
+            },
+            description: {
+              type: 'string'
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    200: {
+      description: 'Updated category details',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Category Details Updated Successfully.'
+              },
+              catagory: {
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                    example: 'Makeup'
+                  },
+                  description: {
+                    type: 'string',
+                    example:
+                      'This category contains all products related to makeup.'
+                  },
+                  image: {
+                    type: 'string',
+                    example:
+                      'https://res.cloudinary.com/dknma8cck/image/upload/v1629411601/EcommerceAPI/Category/Makeup/wnxfwht979aao486afll.webp'
+                  },
+                  imageId: {
+                    type: 'string',
+                    example: 'EcommerceAPI/Category/Makeup/wnxfwht979aao486afll'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
 
-export const updateCategoryImage = {};
+export const updateCategoryImage = {
+  tags: ['Category'],
+  description: 'This route allow only admin to update category image [image]',
+  opeationId: 'updateCategoryImage',
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      type: 'integer',
+      description: 'Category ID'
+    }
+  ],
+  requestBody: {
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string'
+            },
+            description: {
+              type: 'string'
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    200: {
+      description: 'Updated category image',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Category Image Updated Successfully.'
+              },
+              catagory: {
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string',
+                    example: 'Makeup'
+                  },
+                  description: {
+                    type: 'string',
+                    example:
+                      'This category contains all products related to makeup.'
+                  },
+                  image: {
+                    type: 'string',
+                    example:
+                      'https://res.cloudinary.com/dknma8cck/image/upload/v1629411601/EcommerceAPI/Category/Makeup/wnxfwht979aao486afll.webp'
+                  },
+                  imageId: {
+                    type: 'string',
+                    example: 'EcommerceAPI/Category/Makeup/wnxfwht979aao486afll'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
 
-export const deleteCategory = {};
+export const deleteCategory = {
+  tags: ['Category'],
+  description: 'This route allow only admin to delete the category',
+  opeationId: 'deleteCategory',
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      type: 'integer',
+      description: 'Category ID'
+    }
+  ],
+  responses: {
+    200: {
+      description: 'Delete category',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Category Deleted Successfully.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};

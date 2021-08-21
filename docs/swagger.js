@@ -7,7 +7,14 @@ import {
   resetPassword
 } from './auth.swagger';
 
-import { getAllCategories, getCategory, addCategory } from './category.swagger';
+import {
+  getAllCategories,
+  getCategory,
+  addCategory,
+  updateCategoryDetails,
+  updateCategoryImage,
+  deleteCategory
+} from './category.swagger';
 
 const docs = {
   openapi: '3.0.3',
@@ -71,7 +78,12 @@ const docs = {
       post: addCategory
     },
     '/category/{id}': {
-      get: getCategory
+      get: getCategory,
+      patch: updateCategoryDetails,
+      delete: deleteCategory
+    },
+    '/category/{id}/image': {
+      patch: updateCategoryImage
     },
     '/product': {},
     '/cart': {},
