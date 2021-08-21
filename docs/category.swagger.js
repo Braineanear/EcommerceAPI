@@ -40,7 +40,7 @@ export const getAllCategories = {
   ],
   responses: {
     200: {
-      description: 'Log user out',
+      description: 'Get All Categories',
       content: {
         'application/json': {
           schema: {
