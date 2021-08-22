@@ -42,8 +42,8 @@ export const addProductToCart = catchAsync(
         cart.items.splice(indexFound, 1);
       } else if (indexFound !== -1) {
         // In Case Product Exist In The Cart
-        cart.items[indexFound].totalQuantity += quantity;
-        cart.items[indexFound].totalPrice += price * quantity;
+        cart.items[indexFound].totalProductQuantity += quantity;
+        cart.items[indexFound].totalProductPrice += price * quantity;
         cart.totalQuantity += quantity;
         cart.totalPrice += price * quantity;
       } else if (quantity > 0) {
@@ -51,8 +51,8 @@ export const addProductToCart = catchAsync(
         // Then Push The New Product To The Items Array In The Cart & Update totalQuantity & totalPrice
         cart.items.push({
           product: productId,
-          totalQuantity: quantity,
-          totalPrice: price * quantity
+          totalProductQuantity: quantity,
+          totalProductPrice: price * quantity
         });
         cart.totalQuantity += quantity;
         cart.totalPrice += price * quantity;
@@ -82,8 +82,8 @@ export const addProductToCart = catchAsync(
       items: [
         {
           product: productId,
-          totalQuantity: quantity,
-          totalPrice: price * quantity
+          totalProductQuantity: quantity,
+          totalProductPrice: price * quantity
         }
       ],
       totalQuantity: quantity,
@@ -332,7 +332,9 @@ export const increaseByOne = catchAsync(async (email, productId) => {
  * @param     {String}    email
  * @returns   {Object<type|message|statusCode|cart>}
  */
-export const queryCart = catchAsync(async (email) => {
+export const queryCart = catchAsync(async (user) => {
+  const { email } = user;
+
   // 1) Find Cart Using User Email
   const cart = await Cart.findOne({ email });
 
