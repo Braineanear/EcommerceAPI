@@ -49,7 +49,6 @@ import {
 
 import {
   addItemToCart,
-  subtractItemFromCart,
   reduceByOne,
   increaseByOne,
   getCart,
@@ -115,7 +114,6 @@ const reviewController = {
 
 const cartController = {
   addItemToCart,
-  subtractItemFromCart,
   reduceByOne,
   increaseByOne,
   getCart,
