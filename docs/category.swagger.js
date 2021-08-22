@@ -348,15 +348,13 @@ export const updateCategoryImage = {
   requestBody: {
     required: true,
     content: {
-      'application/json': {
+      'multipart/form-data': {
         schema: {
           type: 'object',
           properties: {
-            name: {
-              type: 'string'
-            },
-            description: {
-              type: 'string'
+            image: {
+              type: 'string',
+              format: 'image'
             }
           }
         }
