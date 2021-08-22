@@ -234,3 +234,66 @@ export const addReview = {
     }
   }
 };
+
+export const updateReview = {
+  tags: ['Review'],
+  description:
+    "This route allow logged in user/seller/admin to update review using it's ID",
+  opeationId: 'updateReview',
+  parameters: [
+    {
+      in: 'path',
+      name: 'productId',
+      type: 'integer',
+      description: 'Product ID'
+    },
+    {
+      in: 'path',
+      name: 'reviewId',
+      type: 'integer',
+      description: 'Review ID'
+    }
+  ],
+  requestBody: {
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            review: {
+              type: 'string',
+              required: true
+            },
+            rateing: {
+              type: 'integer',
+              required: true
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    200: {
+      description: 'Update review',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Review Updated Successfully.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
