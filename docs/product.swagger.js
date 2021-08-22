@@ -890,3 +890,82 @@ export const productStats = {
     }
   }
 };
+
+export const updateProductDetails = {
+  tags: ['Product'],
+  description:
+    'This route allow only admin or seller to update product details',
+  opeationId: 'updateProductDetails',
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      type: 'integer',
+      description: 'Product ID'
+    }
+  ],
+  requestBody: {
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string'
+            },
+            description: {
+              type: 'string'
+            },
+            category: {
+              type: 'string'
+            },
+            price: {
+              type: 'integer'
+            },
+            priceDiscount: {
+              type: 'integer'
+            },
+            color: {
+              type: 'string'
+            },
+            size: {
+              type: 'string'
+            },
+            quantity: {
+              type: 'integer'
+            },
+            sold: {
+              type: 'integer'
+            },
+            isOutOfStock: {
+              type: 'boolean'
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    200: {
+      description: 'Updated product details',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Product Details Updated Successfully.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};

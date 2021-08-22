@@ -21,7 +21,8 @@ import {
   getProduct,
   addProduct,
   top5Cheap,
-  productStats
+  productStats,
+  updateProductDetails
 } from './product.swagger';
 
 const docs = {
@@ -105,6 +106,9 @@ const docs = {
     },
     '/product/product-stats': {
       get: productStats
+    },
+    '/product/{id}/details': {
+      patch: updateProductDetails
     },
     '/cart': {},
     '/order': {},
