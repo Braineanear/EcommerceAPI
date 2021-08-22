@@ -953,3 +953,31 @@ export const deleteProductFromCart = {
     }
   }
 };
+
+export const deleteCart = {
+  tags: ['Cart'],
+  description: 'This route allow logged in user/seller/admin to delete cart',
+  opeationId: 'deleteCart',
+  responses: {
+    200: {
+      description: 'Delete Cart',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Cart Deleted Successfully.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
