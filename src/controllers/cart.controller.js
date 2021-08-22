@@ -134,11 +134,9 @@ export const increaseByOne = catchAsync(async (req, res) => {
  * @returns   { JSON }
  */
 export const getCart = catchAsync(async (req, res) => {
-  const { email } = req.query;
-
   // 1) Get cart using user email
   const { type, message, statusCode, cart } = await cartService.queryCart(
-    email
+    req.user
   );
 
   // 2) Check if there is an error
