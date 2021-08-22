@@ -46,16 +46,7 @@ export const createReview = catchAsync(async (product, user, body) => {
  */
 export const queryReviews = catchAsync(async (req) => {
   // 1) Get All Reviews
-  const reviews = await APIFeatures(req, Review, [
-    {
-      path: 'product',
-      select: 'name mainImage images description price quantity'
-    },
-    {
-      path: 'category',
-      select: 'name description status image'
-    }
-  ]);
+  const reviews = await APIFeatures(req, Review);
 
   // 2) Check if Reviews Doesn't Exist
   if (reviews.length === 0) {
