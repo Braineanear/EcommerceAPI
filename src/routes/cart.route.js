@@ -9,7 +9,6 @@ import { cartController } from '../controllers/index';
 
 const {
   addItemToCart,
-  subtractItemFromCart,
   reduceByOne,
   increaseByOne,
   getCart,
@@ -27,12 +26,7 @@ router.use(protect);
 // Add Item To Cart Route
 // Subtract Item From Cart Route
 // Delete Cart Route
-router
-  .route('/')
-  .get(getCart)
-  .post(addItemToCart)
-  .patch(subtractItemFromCart)
-  .delete(deleteCart);
+router.route('/').get(getCart).post(addItemToCart).delete(deleteCart);
 
 // Reduce One Route
 router.patch('/reduce-one', reduceByOne);
