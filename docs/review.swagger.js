@@ -1,14 +1,14 @@
-export const getAllReviews = {
+export const getAllProductReviews = {
   security: {
     jwt: []
   },
   tags: ['Review'],
-  description: 'This route allow you to get all products reviews',
-  opeationId: 'getAllReviews',
+  description: 'This route allow you to get all product reviews',
+  opeationId: 'getAllProductReviews',
   parameters: [
     {
       in: 'path',
-      name: 'id',
+      name: 'productId',
       type: 'integer',
       description: 'Product ID'
     },
@@ -47,7 +47,7 @@ export const getAllReviews = {
 
   responses: {
     200: {
-      description: 'Get All Reviews',
+      description: 'Get All Product Reviews',
       content: {
         'application/json': {
           schema: {
@@ -93,6 +93,80 @@ export const getAllReviews = {
                     updatedAt: {
                       type: 'string',
                       example: '2021-08-20T09:13:26.697Z'
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const getReview = {
+  security: {
+    jwt: []
+  },
+  tags: ['Review'],
+  description: "This route allow you to get specific review using it's ID",
+  opeationId: 'getReview',
+  parameters: [
+    {
+      in: 'path',
+      name: 'productId',
+      type: 'integer',
+      description: 'Product ID'
+    },
+    {
+      in: 'path',
+      name: 'reviewId',
+      type: 'integer',
+      description: 'Review ID'
+    }
+  ],
+
+  responses: {
+    200: {
+      description: 'Get Specific Reviews',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Review Found Successfully.'
+              },
+              reviews: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    id: {
+                      type: 'string',
+                      example: '611f7236f4529300507723a2'
+                    },
+                    product: {
+                      type: 'string',
+                      example: '611f6385628e64b6ff96393c'
+                    },
+                    user: {
+                      type: 'string',
+                      example: '611f62e28fa5d0a76cefbc96'
+                    },
+                    review: {
+                      type: 'string',
+                      example: 'Amazing Product!!'
+                    },
+                    rating: {
+                      type: 'integer',
+                      example: 5
                     }
                   }
                 }
