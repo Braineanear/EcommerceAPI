@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 import Product from './product.model';
 
+// Plugins
+import toJSON from './plugins/index';
+
 const reviewSchema = mongoose.Schema(
   {
     review: {
@@ -29,6 +32,9 @@ const reviewSchema = mongoose.Schema(
     toObject: { virtuals: true }
   }
 );
+
+// add plugin that converts mongoose to json
+reviewSchema.plugin(toJSON);
 
 reviewSchema.index({ product: 1, user: 1 }, { unique: true });
 
