@@ -112,7 +112,7 @@ export const getReview = catchAsync(async (req, res) => {
 export const updateReview = catchAsync(async (req, res) => {
   // 1) Update review using it's ID
   const { type, message, statusCode, review } =
-    await reviewService.updateReview(req.params.reviewId, req.body);
+    await reviewService.updateReview(req.user, req.params.reviewId, req.body);
 
   // 2) Check if there is an error
   if (type === 'Error') {
@@ -140,6 +140,7 @@ export const updateReview = catchAsync(async (req, res) => {
 export const deleteReview = catchAsync(async (req, res) => {
   // 1) Delete review using it's ID
   const { type, message, statusCode } = await reviewService.deleteReview(
+    req.user,
     req.params.reviewId
   );
 
