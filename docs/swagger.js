@@ -22,7 +22,8 @@ import {
   addProduct,
   top5Cheap,
   productStats,
-  updateProductDetails
+  updateProductDetails,
+  updateProductMainImage
 } from './product.swagger';
 
 const docs = {
@@ -109,6 +110,9 @@ const docs = {
     },
     '/product/{id}/details': {
       patch: updateProductDetails
+    },
+    '/product/{id}/main-image': {
+      patch: updateProductMainImage
     },
     '/cart': {},
     '/order': {},
