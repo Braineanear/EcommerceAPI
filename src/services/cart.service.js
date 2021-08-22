@@ -12,9 +12,9 @@ import { Cart, Product } from '../models/index';
  * @returns   {Object<type|message|statusCode|cart>}
  */
 export const addProductToCart = catchAsync(
-  async (user, productId, quantity) => {
+  async (email, productId, quantity) => {
     // 1) Get Cart Using User Email
-    let cart = await Cart.findOne({ email: user.email });
+    let cart = await Cart.findOne({ email });
 
     // 2) Get Product Using It's ID
     const product = await Product.findById(productId);
@@ -78,7 +78,7 @@ export const addProductToCart = catchAsync(
 
     // 5) In Case User Doesn't Have Cart, Then Create New Cart For The User
     const cartData = {
-      email: user.email,
+      email,
       items: [
         {
           product: productId,
@@ -158,17 +158,17 @@ export const subtractItemFromCart = catchAsync(
 
     // 8) Update Cart & Product Data
     const updatedProductTotalQuantity =
-      cart.items[indexFound].totalQuantity - quantity;
+      cart.items[indexFound].totalProductQuantity - quantity;
     const updatedProductTotalPrice =
-      cart.items[indexFound].totalPrice - price * quantity;
+      cart.items[indexFound].totalProductPrice - price * quantity;
     const updatedCartTotalQuantity = cart.totalQuantity - quantity;
     const updatedCartTotalPrice = cart.totalPrice - price * quantity;
 
     if (updatedProductTotalQuantity <= 0 && updatedProductTotalPrice <= 0) {
       cart.items.splice(indexFound, 1);
     } else {
-      cart.items[indexFound].totalQuantity = updatedProductTotalQuantity;
-      cart.items[indexFound].totalPrice = updatedProductTotalPrice;
+      cart.items[indexFound].totalProductQuantity = updatedProductTotalQuantity;
+      cart.items[indexFound].totalProductPrice = updatedProductTotalPrice;
       cart.totalQuantity = updatedCartTotalQuantity;
       cart.totalPrice = updatedCartTotalPrice;
     }
@@ -229,16 +229,18 @@ export const reduceByOne = catchAsync(async (email, productId) => {
   }
 
   // 7) Update Cart & Product Data
-  const updatedProductTotalQuantity = cart.items[indexFound].totalQuantity - 1;
-  const updatedProductTotalPrice = cart.items[indexFound].totalPrice - price;
+  const updatedProductTotalQuantity =
+    cart.items[indexFound].totalProductQuantity - 1;
+  const updatedProductTotalPrice =
+    cart.items[indexFound].totalProductPrice - price;
   const updatedCartTotalQuantity = cart.totalQuantity - 1;
   const updatedCartTotalPrice = cart.totalPrice - price;
 
   if (updatedProductTotalQuantity <= 0 && updatedProductTotalPrice <= 0) {
     cart.items.splice(indexFound, 1);
   } else {
-    cart.items[indexFound].totalQuantity = updatedProductTotalQuantity;
-    cart.items[indexFound].totalPrice = updatedProductTotalPrice;
+    cart.items[indexFound].totalProductQuantity = updatedProductTotalQuantity;
+    cart.items[indexFound].totalProductPrice = updatedProductTotalPrice;
     cart.totalQuantity = updatedCartTotalQuantity;
     cart.totalPrice = updatedCartTotalPrice;
   }
@@ -271,6 +273,14 @@ export const increaseByOne = catchAsync(async (email, productId) => {
   // 2) Find Product Using It's ID
   const product = await Product.findById(productId);
 
+  if (!product) {
+    return {
+      type: 'Error',
+      statusCode: 404,
+      message: `No Product Found With ID: ${productId}`
+    };
+  }
+
   // 3) Get Product Price
   const { price } = product;
 
@@ -298,16 +308,18 @@ export const increaseByOne = catchAsync(async (email, productId) => {
   }
 
   // 7) Update Cart & Product Data
-  const updatedProductTotalQuantity = cart.items[indexFound].totalQuantity + 1;
-  const updatedProductTotalPrice = cart.items[indexFound].totalPrice + price;
+  const updatedProductTotalQuantity =
+    cart.items[indexFound].totalProductQuantity + 1;
+  const updatedProductTotalPrice =
+    cart.items[indexFound].totalProductPrice + price;
   const updatedCartTotalQuantity = cart.totalQuantity + 1;
   const updatedCartTotalPrice = cart.totalPrice + price;
 
   if (updatedProductTotalQuantity <= 0 && updatedProductTotalPrice <= 0) {
     cart.items.splice(indexFound, 1);
   } else {
-    cart.items[indexFound].totalQuantity = updatedProductTotalQuantity;
-    cart.items[indexFound].totalPrice = updatedProductTotalPrice;
+    cart.items[indexFound].totalProductQuantity = updatedProductTotalQuantity;
+    cart.items[indexFound].totalProductPrice = updatedProductTotalPrice;
     cart.totalQuantity = updatedCartTotalQuantity;
     cart.totalPrice = updatedCartTotalPrice;
   }
@@ -332,9 +344,7 @@ export const increaseByOne = catchAsync(async (email, productId) => {
  * @param     {String}    email
  * @returns   {Object<type|message|statusCode|cart>}
  */
-export const queryCart = catchAsync(async (user) => {
-  const { email } = user;
-
+export const queryCart = catchAsync(async (email) => {
   // 1) Find Cart Using User Email
   const cart = await Cart.findOne({ email });
 
@@ -420,9 +430,9 @@ export const deleteItem = catchAsync(async (email, productId) => {
     (item) => item.product.name === product.name
   );
 
-  const totalPrice = cart.totalPrice - cart.items[indexFound].totalPrice;
+  const totalPrice = cart.totalPrice - cart.items[indexFound].totalProductPrice;
   const totalQuantity =
-    cart.totalQuantity - cart.items[indexFound].totalQuantity;
+    cart.totalQuantity - cart.items[indexFound].totalProductQuantity;
 
   // 5) Update Cart By Deleting Product
   cart = await Cart.findOneAndUpdate(
