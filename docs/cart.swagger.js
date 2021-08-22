@@ -916,3 +916,40 @@ export const reduceProductQuantityByOne = {
     }
   }
 };
+
+export const deleteProductFromCart = {
+  tags: ['Cart'],
+  description:
+    'This route allow logged in user/seller/admin to delete product from cart',
+  opeationId: 'deleteProductFromCart',
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      type: 'integer',
+      description: 'Product ID'
+    }
+  ],
+  responses: {
+    200: {
+      description: 'Delete Product From Cart',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Item Deleted From Cart Successfully.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
