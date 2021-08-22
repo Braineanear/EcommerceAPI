@@ -13,14 +13,14 @@ const { getAllReviews, getReview, addReview, updateReview, deleteReview } =
 // Router Initialization
 const router = express.Router({ mergeParams: true });
 
-// Protect All Routes
-router.use(protect);
-
 // Get All Reviews Route
 router.get('/', getAllReviews);
 
 // Get Review Route
 router.get('/:reviewId', getReview);
+
+// Protect All Routes
+router.use(protect);
 
 // Add Review Route
 router.post('/', addReview);
