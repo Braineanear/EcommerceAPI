@@ -20,7 +20,8 @@ import {
   getAllProducts,
   getProduct,
   addProduct,
-  top5Cheap
+  top5Cheap,
+  productStats
 } from './product.swagger';
 
 const docs = {
@@ -37,7 +38,7 @@ const docs = {
   },
   servers: [
     {
-      url: 'https://e-commerce-a-p-i.herokuapp.com',
+      url: 'https://e-commerce-a-p-i.herokuapp.com/api',
       description: 'Production Server'
     },
     {
@@ -101,6 +102,9 @@ const docs = {
     },
     '/product/top5Cheap': {
       get: top5Cheap
+    },
+    '/product/product-stats': {
+      get: productStats
     },
     '/cart': {},
     '/order': {},
