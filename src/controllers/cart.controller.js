@@ -37,38 +37,6 @@ export const addItemToCart = catchAsync(async (req, res) => {
 });
 
 /**
- * Subtract Quantity From Product In Cart Controller
- * @param     { Obejct } req
- * @param     { Object } res
- * @property  { String } req.body.productId
- * @property  { Number } req.body.quantity
- * @returns   { JSON }
- */
-export const subtractItemFromCart = catchAsync(async (req, res) => {
-  // 1) Get productId & quanitity from body
-  const { productId, quantity } = req.body;
-
-  // 2) Subtract product from cart
-  const { type, message, statusCode, cart } =
-    await cartService.subtractItemFromCart(req.user.email, productId, quantity);
-
-  // 3) Check if there is an error
-  if (type === 'Error') {
-    return res.status(statusCode).json({
-      type,
-      message
-    });
-  }
-
-  // 4) If everything is OK, send data
-  return res.status(statusCode).json({
-    type,
-    message,
-    cart
-  });
-});
-
-/**
  * Reduce Product By One Controller
  * @param     { Object } req
  * @param     { Object } res
