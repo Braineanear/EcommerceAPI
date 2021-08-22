@@ -27,7 +27,7 @@ import {
   updateProductImages
 } from './product.swagger';
 
-import { getCart } from './cart.swagger';
+import { getCart, addItemsToCart } from './cart.swagger';
 
 const docs = {
   openapi: '3.0.3',
@@ -121,7 +121,8 @@ const docs = {
       patch: updateProductImages
     },
     '/cart': {
-      get: getCart
+      get: getCart,
+      post: addItemsToCart
     },
     '/order': {},
     '/review': {}
