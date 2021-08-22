@@ -816,3 +816,77 @@ export const top5Cheap = {
     }
   }
 };
+
+export const productStats = {
+  tags: ['Product'],
+  description:
+    'This route allow only admin to get some statistics about products, ratings, categories, and price',
+  opeationId: 'product-stats',
+  responses: {
+    200: {
+      description: 'Get Products Statistics',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Product Statics.'
+              },
+              stats: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    'Number Of Products': {
+                      type: 'integer',
+                      example: 1
+                    },
+                    'Number Of Ratings': {
+                      type: 'integer',
+                      example: 0
+                    },
+                    'Average Rating': {
+                      type: 'integer',
+                      example: 4.5
+                    },
+                    'Average Price': {
+                      type: 'integer',
+                      example: 3100
+                    },
+                    'Minimum Price': {
+                      type: 'integer',
+                      example: 3100
+                    },
+                    'Maximum Price': {
+                      type: 'integer',
+                      example: 31
+                    },
+                    Quantity: {
+                      type: 'integer',
+                      example: 49
+                    },
+                    category: {
+                      type: 'object',
+                      properties: {
+                        name: {
+                          type: 'string',
+                          example: 'Laptop'
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
