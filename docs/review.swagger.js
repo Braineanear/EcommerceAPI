@@ -126,7 +126,6 @@ export const getReview = {
       description: 'Review ID'
     }
   ],
-
   responses: {
     200: {
       description: 'Get Specific Reviews',
@@ -170,6 +169,63 @@ export const getReview = {
                     }
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const addReview = {
+  tags: ['Review'],
+  description:
+    'This route allow logged in user/seller/admin to make a review on a product',
+  opeationId: 'addReview',
+  parameters: [
+    {
+      in: 'path',
+      name: 'productId',
+      type: 'integer',
+      description: 'Product ID'
+    }
+  ],
+  requestBody: {
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            review: {
+              type: 'string',
+              required: true
+            },
+            rateing: {
+              type: 'integer',
+              required: true
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    201: {
+      description: 'Add new review',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Review Created Successfully.'
               }
             }
           }
