@@ -99,7 +99,7 @@ export const queryReviewById = catchAsync(async (id) => {
  * @param   {Object} body
  * @returns {Object<type|message|statusCode|review>}
  */
-export const updateReview = catchAsync(async (id, body) => {
+export const updateReview = catchAsync(async (user, id, body) => {
   // 1) Get Review Document Using It's ID
   const review = await Review.findById(id);
 
@@ -109,6 +109,15 @@ export const updateReview = catchAsync(async (id, body) => {
       type: 'Error',
       message: `No Review Found With This ID: ${id}`,
       statusCode: 404
+    };
+  }
+
+  if (user._id !== review.user) {
+    return {
+      type: 'Error',
+      statusCode: 400,
+      message:
+        'Sorry you are not the creator of this review. You are not authorized to perform this action.'
     };
   }
 
@@ -132,7 +141,7 @@ export const updateReview = catchAsync(async (id, body) => {
  * @param   {ObjectId} id
  * @returns   {Object<type|message|statusCode>}
  */
-export const deleteReview = catchAsync(async (id) => {
+export const deleteReview = catchAsync(async (user, id) => {
   // 1) Get Review Using It's ID
   const review = await Review.findById(id);
 
@@ -142,6 +151,15 @@ export const deleteReview = catchAsync(async (id) => {
       type: 'Error',
       message: `No Review Found With This ID: ${id}`,
       statusCode: 404
+    };
+  }
+
+  if (user._id !== review.user) {
+    return {
+      type: 'Error',
+      statusCode: 400,
+      message:
+        'Sorry you are not the creator of this review. You are not authorized to perform this action.'
     };
   }
 
