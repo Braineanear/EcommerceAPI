@@ -60,7 +60,6 @@ import {
 
 import {
   addProductToCart,
-  subtractItemFromCart,
   reduceByOne,
   increaseByOne,
   queryCart,
@@ -137,7 +136,6 @@ const productService = {
 
 const cartService = {
   addProductToCart,
-  subtractItemFromCart,
   reduceByOne,
   increaseByOne,
   queryCart,
