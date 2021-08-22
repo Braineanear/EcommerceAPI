@@ -40,7 +40,8 @@ import {
   getAllProductReviews,
   getReview,
   addReview,
-  updateReview
+  updateReview,
+  deleteReview
 } from './review.swagger';
 
 const docs = {
@@ -155,7 +156,8 @@ const docs = {
     },
     '/product/{productId}/reviews/{reviewId}': {
       get: getReview,
-      patch: updateReview
+      patch: updateReview,
+      delete: deleteReview
     }
   }
 };
