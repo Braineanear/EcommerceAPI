@@ -36,7 +36,7 @@ import {
   deleteCart
 } from './cart.swagger';
 
-import { getAllProductReviews, getReview } from './review.swagger';
+import { getAllProductReviews, getReview, addReview } from './review.swagger';
 
 const docs = {
   openapi: '3.0.3',
@@ -145,7 +145,8 @@ const docs = {
     },
     '/order': {},
     '/product/{productId}/reviews': {
-      get: getAllProductReviews
+      get: getAllProductReviews,
+      post: addReview
     },
     '/product/{productId}/reviews/{reviewId}': {
       get: getReview
