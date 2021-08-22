@@ -31,7 +31,8 @@ import {
   getCart,
   addItemsToCart,
   increaseProductQuantityByOne,
-  reduceProductQuantityByOne
+  reduceProductQuantityByOne,
+  deleteProductFromCart
 } from './cart.swagger';
 
 const docs = {
@@ -134,6 +135,9 @@ const docs = {
     },
     '/cart/reduce-one': {
       patch: reduceProductQuantityByOne
+    },
+    '/cart/:id': {
+      delete: deleteProductFromCart
     },
     '/order': {},
     '/review': {}
