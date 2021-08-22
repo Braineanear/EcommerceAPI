@@ -30,7 +30,8 @@ import {
 import {
   getCart,
   addItemsToCart,
-  increaseProductQuantityByOne
+  increaseProductQuantityByOne,
+  reduceProductQuantityByOne
 } from './cart.swagger';
 
 const docs = {
@@ -130,6 +131,9 @@ const docs = {
     },
     '/cart/increase-one': {
       patch: increaseProductQuantityByOne
+    },
+    '/cart/reduce-one': {
+      patch: reduceProductQuantityByOne
     },
     '/order': {},
     '/review': {}
