@@ -36,6 +36,8 @@ import {
   deleteCart
 } from './cart.swagger';
 
+import { getAllReviews } from './review.swagger';
+
 const docs = {
   openapi: '3.0.3',
   info: {
@@ -142,7 +144,9 @@ const docs = {
       delete: deleteProductFromCart
     },
     '/order': {},
-    '/review': {}
+    '/review': {
+      get: getAllReviews
+    }
   }
 };
 
