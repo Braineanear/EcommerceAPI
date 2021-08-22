@@ -18,7 +18,7 @@ export const addItemToCart = catchAsync(async (req, res) => {
 
   // 2) Add product to cart
   const { type, message, statusCode, cart } =
-    await cartService.addProductToCart(req.user, productId, quantity);
+    await cartService.addProductToCart(req.user.email, productId, quantity);
 
   // 3) Check if there is an error
   if (type === 'Error') {
@@ -50,7 +50,7 @@ export const subtractItemFromCart = catchAsync(async (req, res) => {
 
   // 2) Subtract product from cart
   const { type, message, statusCode, cart } =
-    await cartService.subtractItemFromCart(productId, quantity);
+    await cartService.subtractItemFromCart(req.user.email, productId, quantity);
 
   // 3) Check if there is an error
   if (type === 'Error') {
@@ -78,6 +78,7 @@ export const subtractItemFromCart = catchAsync(async (req, res) => {
 export const reduceByOne = catchAsync(async (req, res) => {
   // 1) Reduce product quantity by one from cart
   const { type, message, statusCode, cart } = await cartService.reduceByOne(
+    req.user.email,
     req.body.productId
   );
 
@@ -107,6 +108,7 @@ export const reduceByOne = catchAsync(async (req, res) => {
 export const increaseByOne = catchAsync(async (req, res) => {
   // 1) Increase product by one
   const { type, message, statusCode, cart } = await cartService.increaseByOne(
+    req.user.email,
     req.body.productId
   );
 
@@ -136,7 +138,7 @@ export const increaseByOne = catchAsync(async (req, res) => {
 export const getCart = catchAsync(async (req, res) => {
   // 1) Get cart using user email
   const { type, message, statusCode, cart } = await cartService.queryCart(
-    req.user
+    req.user.email
   );
 
   // 2) Check if there is an error
@@ -163,10 +165,10 @@ export const getCart = catchAsync(async (req, res) => {
  * @returns   { JSON }
  */
 export const deleteCart = catchAsync(async (req, res) => {
-  const { email } = req.query;
-
   // 1) Delete cart using user email
-  const { type, message, statusCode } = await cartService.deleteCart(email);
+  const { type, message, statusCode } = await cartService.deleteCart(
+    req.user.email
+  );
 
   // 2) Check if there is an error
   if (type === 'Error') {
@@ -192,12 +194,11 @@ export const deleteCart = catchAsync(async (req, res) => {
  * @returns   { JSON }
  */
 export const deleteItem = catchAsync(async (req, res) => {
-  const { email } = req.query;
   const { productId } = req.params;
 
   // 1) Delete product from cart
   const { type, message, statusCode, cart } = await cartService.deleteItem(
-    email,
+    req.user.email,
     productId
   );
 
