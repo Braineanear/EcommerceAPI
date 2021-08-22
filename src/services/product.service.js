@@ -147,13 +147,13 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     name,
     description,
     category,
-    price: price * 1,
-    priceDiscount: priceDiscount * 1,
+    price: Number(price),
+    priceDiscount: Number(priceDiscount),
     color,
     size,
     seller,
-    quantity: quantity * 1,
-    sold: sold * 1,
+    quantity: Number(quantity),
+    sold: Number(sold),
     isOutOfStock
   });
 
