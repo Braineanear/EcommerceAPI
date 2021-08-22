@@ -32,21 +32,6 @@ const reviewSchema = mongoose.Schema(
 
 reviewSchema.index({ product: 1, user: 1 }, { unique: true });
 
-reviewSchema.pre(/^find/, function (next) {
-  this.populate([
-    {
-      path: 'user',
-      select: 'name image'
-    },
-    {
-      path: 'product',
-      select: 'name description mainImage images price category quantity'
-    }
-  ]);
-
-  next();
-});
-
 reviewSchema.statics.calcAverageRatings = async function (productId) {
   const stats = await this.aggregate([
     {
@@ -84,7 +69,6 @@ reviewSchema.post('save', function () {
 // findByIdAndDelete
 reviewSchema.pre(/^findOneAnd/, async function (next) {
   this.rev = await this.findOne();
-  // console.log(this.rev);
   next();
 });
 
