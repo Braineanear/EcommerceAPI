@@ -297,3 +297,67 @@ export const updateReview = {
     }
   }
 };
+
+export const deleteReview = {
+  tags: ['Review'],
+  description:
+    "This route allow logged in user/seller/admin to delete review using it's ID",
+  opeationId: 'deleteReview',
+  parameters: [
+    {
+      in: 'path',
+      name: 'productId',
+      type: 'integer',
+      description: 'Product ID'
+    },
+    {
+      in: 'path',
+      name: 'reviewId',
+      type: 'integer',
+      description: 'Review ID'
+    }
+  ],
+  responses: {
+    200: {
+      description: 'Delete review',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Review Deleted Successfully.'
+              }
+            }
+          }
+        }
+      }
+    },
+    400: {
+      description: 'When random user try to delete any review',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example:
+                  'Sorry you are not the creator of this review. You are not authorized to perform this action.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
