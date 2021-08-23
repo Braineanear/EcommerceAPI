@@ -9,7 +9,7 @@ import APIFeatures from '../utils/apiFeatures';
 import config from '../config/config';
 
 // Models
-import { Order, Cart } from '../models/index';
+import { Order, Cart, Product } from '../models/index';
 
 const stripe = STRIPE_SDK(config.stripe.secret_key);
 
@@ -64,6 +64,17 @@ export const createOrder = catchAsync(async (body, user) => {
       phone
     });
 
+    cart.items.forEach(async (item) => {
+      const { id } = item.product;
+      const { totalProductQuantity } = item;
+      const product = await Product.findById(id);
+      const sold = product.sold + totalProductQuantity;
+      const quantity = product.quantity - totalProductQuantity;
+      await Product.findByIdAndUpdate(id, { sold, quantity });
+    });
+
+    await Cart.findByIdAndDelete(cart._id);
+
     // 2) If Everything is OK, Send Order Data
     return {
       type: 'Success',
@@ -114,6 +125,17 @@ export const createOrder = catchAsync(async (body, user) => {
     paymentStripeId: charge.id,
     phone
   });
+
+  cart.items.forEach(async (item) => {
+    const { id } = item.product;
+    const { totalProductQuantity } = item;
+    const product = await Product.findById(id);
+    const sold = product.sold + totalProductQuantity;
+    const quantity = product.quantity - totalProductQuantity;
+    await Product.findByIdAndUpdate(id, { sold, quantity });
+  });
+
+  await Cart.findByIdAndDelete(cart._id);
 
   // 10) If Everything is OK, Send Order Data
   return {
