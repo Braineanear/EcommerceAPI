@@ -225,3 +225,137 @@ export const getUser = {
     }
   }
 };
+
+export const addUser = {
+  tags: ['User'],
+  description: 'This route allow only admin to add new user',
+  opeationId: 'addUser',
+  requestBody: {
+    required: true,
+    content: {
+      'multipart/form-data': {
+        schema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string',
+              required: true
+            },
+            username: {
+              type: 'string',
+              required: true
+            },
+            email: {
+              type: 'string',
+              required: true
+            },
+            password: {
+              type: 'string',
+              required: true
+            },
+            passwordConfirmation: {
+              type: 'string',
+              required: true
+            },
+            role: {
+              type: 'string',
+              required: true
+            },
+            image: {
+              type: 'string',
+              format: 'image',
+              required: true
+            },
+            phone: {
+              type: 'string'
+            },
+            address: {
+              type: 'string'
+            },
+            companyName: {
+              type: 'string'
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    201: {
+      description: 'Add new user',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Account Created Successfully.'
+              },
+              catagory: {
+                type: 'object',
+                properties: {
+                  role: {
+                    type: 'string',
+                    example: 'user'
+                  },
+                  isEmailVerified: {
+                    type: 'boolean',
+                    example: false
+                  },
+                  favoriteProducts: {
+                    type: 'array',
+                    items: {
+                      type: 'string'
+                    }
+                  },
+                  _id: {
+                    type: 'string',
+                    example: '6123f6756874853c161ec5b9'
+                  },
+                  name: {
+                    type: 'string',
+                    example: 'armar'
+                  },
+                  username: {
+                    type: 'string',
+                    example: 'armar'
+                  },
+                  email: {
+                    type: 'string',
+                    example: 'armar@gmail.com'
+                  },
+                  companyName: {
+                    type: 'string',
+                    example: ''
+                  },
+                  phone: {
+                    type: 'string',
+                    example: ''
+                  },
+                  address: {
+                    type: 'string',
+                    example: ''
+                  },
+                  profileImage: {
+                    type: 'string',
+                    example:
+                      'https://res.cloudinary.com/dknma8cck/image/upload/v1629746804/EcommerceAPI/Users/armar/cmt6rf3l45rs0lqaviq7.webp'
+                  },
+                  profileImageId: {
+                    type: 'string',
+                    example: 'EcommerceAPI/Users/armar/cmt6rf3l45rs0lqaviq7'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
