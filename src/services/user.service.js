@@ -168,7 +168,7 @@ export const updateUserDetails = catchAsync(async (id, body) => {
     return {
       type: 'Error',
       message:
-        'Cannot Update Password From Here, Please Go To Update Passwor Route',
+        'Cannot Update Password From Here, Please Go To Update Password Route',
       statusCode: 400
     };
   }
