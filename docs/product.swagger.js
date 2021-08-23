@@ -1388,3 +1388,48 @@ export const updateProductImages = {
     }
   }
 };
+
+export const addFavoriteProduct = {
+  tags: ['Product'],
+  description:
+    'This route allow logged in user/seller/admin to add product to his favorite list',
+  opeationId: 'addFavoriteProduct',
+  requestBody: {
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            productId: {
+              type: 'string',
+              required: true
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    200: {
+      description: 'Add Product Favorite List',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Product added to favorite list successfully.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
