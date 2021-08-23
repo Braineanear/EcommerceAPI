@@ -8,6 +8,14 @@ export const getAllProducts = {
   parameters: [
     {
       in: 'query',
+      name: 'filter',
+      type: 'string',
+      example: 'flawless',
+      description:
+        'This will filter all products and select only products that contain the word you insert and search in all product fields about this word'
+    },
+    {
+      in: 'query',
       name: 'select',
       type: 'string',
       example: 'name, image',
