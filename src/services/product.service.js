@@ -29,6 +29,15 @@ export const addFavoriteProduct = catchAsync(async (user, productId) => {
     };
   }
 
+  // 4) Check if product already exist in favorite list
+  if (favoriteProducts.includes(productId)) {
+    return {
+      type: 'Error',
+      statusCode: 400,
+      message: 'Product already exits.'
+    };
+  }
+
   // 4) Push the productId into the new favorite products array
   favoriteProducts.push(productId);
 
