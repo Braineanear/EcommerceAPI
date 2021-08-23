@@ -44,6 +44,11 @@ const productSchema = mongoose.Schema(
       required: true,
       default: 0
     },
+    priceAfterDiscount: {
+      type: Number,
+      required: true,
+      default: 0
+    },
     priceDiscount: {
       type: Number,
       validate: {
