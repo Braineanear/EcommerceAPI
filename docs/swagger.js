@@ -24,7 +24,8 @@ import {
   productStats,
   updateProductDetails,
   updateProductMainImage,
-  updateProductImages
+  updateProductImages,
+  addFavoriteProduct
 } from './product.swagger';
 
 import {
@@ -134,6 +135,9 @@ const docs = {
     },
     '/product/{id}/images': {
       patch: updateProductImages
+    },
+    '/product/favorite': {
+      post: addFavoriteProduct
     },
     '/cart': {
       get: getCart,
