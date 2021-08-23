@@ -14,10 +14,7 @@ import { Product } from '../models/index';
  */
 export const queryProducts = catchAsync(async (req) => {
   // 1) Get All Products
-  const products = await APIFeatures(req, Product, {
-    path: 'seller',
-    select: 'name email profileImage companyName address phone'
-  });
+  const products = await APIFeatures(req, Product);
 
   // 2) Check if Porducts Already Exist
   if (!products) {
