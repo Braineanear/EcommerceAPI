@@ -22,11 +22,20 @@ const {
   updateProductImages,
   deleteProduct,
   top5Cheap,
-  productStats
+  productStats,
+  addFavoriteProduct,
+  getFavoriteList
 } = productController;
 
 // Router Initialization
 const router = express.Router();
+
+// Add Product to Favorite List Route
+// Get Product's of Favorite List Route
+router
+  .route('/favorite')
+  .post(protect, addFavoriteProduct)
+  .get(protect, getFavoriteList);
 
 router.use('/:id/reviews', reviewRoute);
 
