@@ -71,7 +71,7 @@ export const createOrder = catchAsync(async (body, user) => {
       const sold = product.sold + totalProductQuantity;
       const quantity = product.quantity - totalProductQuantity;
       await Product.findByIdAndUpdate(id, { sold, quantity });
-    d});
+    });
 
     await Cart.findByIdAndDelete(cart._id);
 
