@@ -9,7 +9,7 @@ const apiFeatures = catchAsync(async (req, model, populate) => {
   const reqQuery = { ...req.query };
 
   // Fields to exclude
-  const removeFields = ['select', 'sort', 'page', 'limit'];
+  const removeFields = ['select', 'sort', 'page', 'limit', 'filter'];
 
   // Loop over removeFields and delete them from reqQuery
   removeFields.forEach((param) => delete reqQuery[param]);
@@ -24,7 +24,7 @@ const apiFeatures = catchAsync(async (req, model, populate) => {
   );
 
   // Finding resource
-  query = model.find(JSON.parse(queryStr)).lean();
+  query = model.find(JSON.parse(queryStr));
 
   if (!query) {
     throw new AppError('No Data Found', 400);
@@ -34,17 +34,12 @@ const apiFeatures = catchAsync(async (req, model, populate) => {
   if (req.query.select) {
     const fields = req.query.select.split(',').join(' ');
     query = query.select(fields);
-  } else {
-    //Execluding __v which mongo create on each record to use it by using select and putting -
-    query = query.select('-__v');
   }
 
   // Sort
   if (req.query.sort) {
     const sortBy = req.query.sort.split(',').join(' ');
     query = query.sort(sortBy);
-  } else {
-    query = query.sort('-createdAt');
   }
 
   // Pagination
@@ -60,6 +55,17 @@ const apiFeatures = catchAsync(async (req, model, populate) => {
 
   // Executing query
   query = await query;
+
+  const filterByValue = (array, value) =>
+    array.filter(
+      (data) =>
+        JSON.stringify(data).toLowerCase().indexOf(value.toLowerCase()) !== -1
+    );
+
+  if (req.query.filter) {
+    const filter = req.query.filter.split(',').join(' ');
+    return filterByValue(query, filter);
+  }
 
   return query;
 });
