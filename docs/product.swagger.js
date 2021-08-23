@@ -1433,3 +1433,39 @@ export const addFavoriteProduct = {
     }
   }
 };
+
+export const getFavoriteList = {
+  tags: ['Product'],
+  description:
+    'This route allow logged in user/seller/admin to get his favorite products list',
+  opeationId: 'getFavoriteList',
+  responses: {
+    200: {
+      description: "Get Product's Favorite List",
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Favorite list successfully retrieved.'
+              },
+              products: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                  example: '6123dab951ff329fed1bc794'
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
