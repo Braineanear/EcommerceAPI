@@ -18,7 +18,9 @@ import {
   updateProductImages,
   deleteProduct,
   top5Cheap,
-  productStats
+  productStats,
+  addFavoriteProduct,
+  getFavoriteList
 } from './product.controller';
 
 import {
@@ -101,7 +103,9 @@ const productController = {
   updateProductImages,
   deleteProduct,
   top5Cheap,
-  productStats
+  productStats,
+  addFavoriteProduct,
+  getFavoriteList
 };
 
 const reviewController = {

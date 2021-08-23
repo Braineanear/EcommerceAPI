@@ -5,6 +5,71 @@ import catchAsync from '../utils/catchAsync';
 import { productService } from '../services/index';
 
 /**
+ * Get product's favorite list controller
+ * @param     { Object } req
+ * @param     { Object } res
+ * @property  { Object }  req.user
+ * @returns   { JSON }
+ */
+export const getFavoriteList = catchAsync(async (req, res) => {
+  // 1) Extract user data
+  const { user } = req;
+
+  // 2) Calling addFavoriteProduct service
+  const { type, message, statusCode, favoriteProducts } =
+    await productService.getFavoriteList(user);
+
+  // 3) Check if something went wrong
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 4) If everything is OK, send data
+  return res.status(statusCode).json({
+    type,
+    message,
+    products: favoriteProducts
+  });
+});
+
+/**
+ * Add product to favorite list controller
+ * @param     { Object } req
+ * @param     { Object } res
+ * @property  { String } req.body.productId
+ * @property  { Object }  req.user
+ * @returns   { JSON }
+ */
+export const addFavoriteProduct = catchAsync(async (req, res) => {
+  // 1) Extract productId and user data
+  const { productId } = req.body;
+  const { user } = req;
+
+  // 2) Calling addFavoriteProduct service
+  const { type, message, statusCode } = await productService.addFavoriteProduct(
+    user,
+    productId
+  );
+
+  // 3) Check if something went wrong
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 4) If everything is OK, send data
+  return res.status(statusCode).json({
+    type,
+    message
+  });
+});
+
+/**
  * Get All Products Controller
  * @param     { Object } req
  * @param     { Object } res
