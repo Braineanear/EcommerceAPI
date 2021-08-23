@@ -78,7 +78,13 @@ const userSchema = mongoose.Schema(
     profileImageId: {
       type: String,
       required: true
-    }
+    },
+    favoriteProducts: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Product'
+      }
+    ]
   },
   {
     timestamps: true
