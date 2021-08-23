@@ -38,8 +38,14 @@ const apiFeatures = catchAsync(async (req, model, populate) => {
 
   // Sort
   if (req.query.sort) {
-    const sortBy = req.query.sort.split(',').join(' ');
-    query = query.sort(sortBy);
+    const sortBy = req.query.sort.split(',');
+    const obj = {};
+
+    sortBy.forEach((field) => {
+      obj[field] = -1;
+    });
+
+    query = query.sort(obj);
   }
 
   // Pagination
