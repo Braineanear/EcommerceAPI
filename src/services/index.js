@@ -55,7 +55,9 @@ import {
   updateProductMainImage,
   updateProductImages,
   deleteProduct,
-  getProductStats
+  getProductStats,
+  addFavoriteProduct,
+  getFavoriteList
 } from './product.service';
 
 import {
@@ -131,7 +133,9 @@ const productService = {
   updateProductMainImage,
   updateProductImages,
   deleteProduct,
-  getProductStats
+  getProductStats,
+  addFavoriteProduct,
+  getFavoriteList
 };
 
 const cartService = {

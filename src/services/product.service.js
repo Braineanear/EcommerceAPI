@@ -5,7 +5,70 @@ import APIFeatures from '../utils/apiFeatures';
 import { uploadFile, destroyFile } from '../utils/cloudinary';
 
 // Model
-import { Product } from '../models/index';
+import { Product, User } from '../models/index';
+
+/**
+ * Add product to favorite list service
+ * @param     { Object } user
+ * @property  { String } productId
+ * @returns   { JSON }
+ */
+export const addFavoriteProduct = catchAsync(async (user, productId) => {
+  // 1) Get id and favoriteProducts fields from user data
+  const { id, favoriteProducts } = user;
+
+  // 2) Get product data from database
+  const product = await Product.findById(productId);
+
+  // 3) Check if product already exist
+  if (!product) {
+    return {
+      type: 'Error',
+      statusCode: 404,
+      message: `No product found with ID: ${productId}`
+    };
+  }
+
+  // 4) Push the productId into the new favorite products array
+  favoriteProducts.push(productId);
+
+  // 5) Update user favoriteProducts field
+  await User.findByIdAndUpdate(id, { favoriteProducts });
+
+  // 6) If everything is OK, send data
+  return {
+    type: 'Success',
+    statusCode: 200,
+    message: 'Product added to favorite list successfully.'
+  };
+});
+
+/**
+ * Get product's favorite list service
+ * @param     { Object } user
+ * @returns   { JSON }
+ */
+export const getFavoriteList = catchAsync(async (user) => {
+  // 1) Get id and favoriteProducts fields from user data
+  const { favoriteProducts } = user;
+
+  // 2) Check if favorite products already exist
+  if (favoriteProducts.length === 0) {
+    return {
+      type: 'Error',
+      statusCode: 404,
+      message: `No products on the favorite list found`
+    };
+  }
+
+  // 3) If everything is OK, send data
+  return {
+    type: 'Success',
+    statusCode: 200,
+    message: 'Favorite list successfully retrieved.',
+    favoriteProducts
+  };
+});
 
 /**
  * Query products
@@ -135,6 +198,13 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     imagesId.push(image.public_id);
   });
 
+  let priceAfterDiscount = Number(price);
+
+  if (priceDiscount !== 0) {
+    priceAfterDiscount =
+      Number(price) - (Number(price) / 100) * Number(priceDiscount);
+  }
+
   // 9) Create Product
   let product = await Product.create({
     mainImage: imageResult.secure_url,
@@ -145,6 +215,7 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     description,
     category,
     price: Number(price),
+    priceAfterDiscount,
     priceDiscount: Number(priceDiscount),
     color,
     size,
