@@ -1,3 +1,4 @@
+// Packages
 import path from 'path';
 import { fileURLToPath } from 'url';
 import express from 'express';
@@ -5,16 +6,24 @@ import helmet from 'helmet';
 import xss from 'xss-clean';
 import compression from 'compression';
 import cors from 'cors';
+import mongoSanitize from 'express-mongo-sanitize';
 import swaggerUI from 'swagger-ui-express';
 
+// Configs
 import config from './config/config';
 import { successHandle, errorHandle } from './config/morgan';
+
+// Middlewares
 import limiter from './middlewares/rateLimiter';
+
+// Utils
 import errorHandler from './utils/errorHandler';
 import AppError from './utils/appError';
 
+// Documentation
 import docs from '../docs/swagger';
 
+// Routes
 import routes from './routes/index';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -37,8 +46,11 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-//Data sanitization against XSS
+// Data sanitization against XSS
 app.use(xss());
+
+// MongoDB data sanitization
+app.use(mongoSanitize());
 
 // Implement CORS
 app.use(cors());
