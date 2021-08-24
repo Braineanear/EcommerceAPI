@@ -29,7 +29,8 @@ import {
   getUser,
   updateUserDetails,
   updateUserProfileImage,
-  deleteUser
+  deleteUser,
+  deleteMyAccount
 } from './user.controller';
 
 import {
@@ -82,7 +83,8 @@ const userController = {
   getUser,
   updateUserDetails,
   updateUserProfileImage,
-  deleteUser
+  deleteUser,
+  deleteMyAccount
 };
 
 const categoryController = {
