@@ -795,7 +795,7 @@ export const reduceProductQuantityByOne = {
     }
   },
   responses: {
-    201: {
+    200: {
       description: 'Reduce product quantity by one',
       content: {
         'application/json': {
@@ -997,6 +997,31 @@ export const reduceProductQuantityByOne = {
                     example: 6200
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message1: {
+                type: 'string',
+                example: 'No Cart Found For User With The Email: {email}'
+              },
+              message2: {
+                type: 'string',
+                example:
+                  'No Product Found With This ID: {productId} In The Cart'
               }
             }
           }
