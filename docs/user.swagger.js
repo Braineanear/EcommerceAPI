@@ -126,6 +126,26 @@ export const getAllUsers = {
           }
         }
       }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'No Users Found'
+              }
+            }
+          }
+        }
+      }
     }
   }
 };
@@ -217,6 +237,26 @@ export const getUser = {
                     example: 'EcommerceAPI/Users/admin/vt3wgvwvwv4s6d1e81lr'
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'No User Found With This ID: {id}'
               }
             }
           }
@@ -356,6 +396,54 @@ export const addUser = {
           }
         }
       }
+    },
+    400: {
+      description: 'Error: 400',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message1: {
+                type: 'string',
+                example: 'Profile Image Is Required, Please Upload an Image'
+              },
+              message2: {
+                type: 'string',
+                example: 'All Fields Are Required'
+              },
+              message3: {
+                type: 'string',
+                example: 'Email Is Already Taken: {email}'
+              }
+            }
+          }
+        }
+      }
+    },
+    409: {
+      description: 'Error: 409',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'Email Is Already Taken: {email}'
+              }
+            }
+          }
+        }
+      }
     }
   }
 };
@@ -471,6 +559,47 @@ export const updateUserDetails = {
           }
         }
       }
+    },
+    400: {
+      description: 'Error: 400',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example:
+                  'Cannot Update Password From Here, Please Go To Update Password Route'
+              }
+            }
+          }
+        }
+      }
+    },
+    409: {
+      description: 'Error: 409',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'This Email Is Already Taken: {email}'
+              }
+            }
+          }
+        }
+      }
     }
   }
 };
@@ -517,6 +646,26 @@ export const updateUserProfileImage = {
           }
         }
       }
+    },
+    400: {
+      description: 'Error: 400',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'Profile Image Is Required, Please Upload an Image'
+              }
+            }
+          }
+        }
+      }
     }
   }
 };
@@ -549,6 +698,26 @@ export const deleteUser = {
               message: {
                 type: 'string',
                 example: 'Account Deleted Successfully.'
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'No User Found With This ID: {id}'
               }
             }
           }
