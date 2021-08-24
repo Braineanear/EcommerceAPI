@@ -197,6 +197,14 @@ export const updateUserDetails = catchAsync(async (user, body) => {
  * @returns   {Object<type|message|statusCode|user>}
  */
 export const updateUserProfileImage = catchAsync(async (user, profileImage) => {
+  if (profileImage === undefined) {
+    return {
+      type: 'Error',
+      message: 'Profile Image Is Required, Please Upload an Image',
+      statusCode: 400
+    };
+  }
+
   const { name, profileImageId, id } = user;
   // 2) Specifiy Folder Name Where The Profile Image Is Going To Be Uploaded In Cloudinary
   const folderName = `Users/${name.trim().split(' ').join('')}`;
