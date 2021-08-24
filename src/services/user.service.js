@@ -260,3 +260,25 @@ export const deleteUser = catchAsync(async (id) => {
     statusCode: 200
   };
 });
+
+/**
+ * Delete LoggedIn User Data Service
+ * @param     {ObjectId} id - User ID,
+ * @returns   {Object<type|message|statusCode>}
+ */
+export const deleteMyAccount = catchAsync(async (user) => {
+  const { id, profileImageId } = user;
+
+  // 1) Delete User Profile Image
+  destroyFile(profileImageId);
+
+  // 2) Delete User Data
+  await User.findByIdAndDelete(id);
+
+  // 3) If Everything is OK, Send Message
+  return {
+    type: 'Success',
+    message: 'Your Account Deleted Successfully',
+    statusCode: 200
+  };
+});
