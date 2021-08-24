@@ -393,7 +393,27 @@ export const logout = {
           }
         }
       }
-    }
+    },
+    401: {
+      description: 'Error: 401',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'Please login again!'
+              }
+            }
+          }
+        }
+      }
+    },
   }
 };
 
