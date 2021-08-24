@@ -198,6 +198,14 @@ export const refreshAuth = catchAsync(async (refreshToken) => {
   // 1) Verify Refresh Token
   const refreshTokenDoc = await verifyToken(refreshToken, tokenTypes.REFRESH);
 
+  if (!refreshTokenDoc) {
+    return {
+      type: 'Error',
+      statusCode: 404,
+      message: 'No token found.'
+    };
+  }
+
   const user = await User.findById(refreshTokenDoc.user);
 
   // 3) Check if User Already Exist
