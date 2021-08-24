@@ -11,7 +11,8 @@ import {
   getUser,
   updateUserDetails,
   updateUserProfileImage,
-  deleteUser
+  deleteUser,
+  deleteMyAccount
 } from '../controllers/user.controller';
 
 // Utils
@@ -42,7 +43,10 @@ router.patch(
   updateUserProfileImage
 );
 
+// Delete LoggedIn User Account Route
+router.delete('/me', deleteMyAccount);
+
 // Delete User Route
-router.delete('/:id', deleteUser);
+router.delete('/:id', restrictedTo('admin'), deleteUser);
 
 export default router;
