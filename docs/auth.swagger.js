@@ -413,7 +413,7 @@ export const logout = {
           }
         }
       }
-    },
+    }
   }
 };
 
@@ -471,6 +471,30 @@ export const generateTokens = {
                       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MTFkMDhhNjJmYzIxMGEzMGVjZmI3NWIiLCJpYXQiOjE2MjkyOTI3NzgsImV4cCI6MTYzMTg4NDc3OCwidHlwZSI6InJlZnJlc2gifQ.VG-vE3RyQi2SRdDNd_AeHH3Ue9OYtaEE2W_gfNTtE_Q'
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message1: {
+                type: 'string',
+                example: 'No user found.'
+              },
+              message2: {
+                type: 'string',
+                example: 'No token found.'
               }
             }
           }
