@@ -51,7 +51,8 @@ import {
   getUser,
   addUser,
   updateUserDetails,
-  updateUserProfileImage
+  updateUserProfileImage,
+  deleteUser
 } from './user.swagger';
 
 const docs = {
@@ -115,7 +116,8 @@ const docs = {
       post: addUser
     },
     '/user/:id': {
-      get: getUser
+      get: getUser,
+      delete: deleteUser
     },
     '/user/update-details': {
       patch: updateUserDetails

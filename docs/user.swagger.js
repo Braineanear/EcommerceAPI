@@ -520,3 +520,40 @@ export const updateUserProfileImage = {
     }
   }
 };
+
+export const deleteUser = {
+  tags: ['User'],
+  description:
+    "This route allow only admin to delete user account using it's ID",
+  opeationId: 'deleteUser',
+  parameters: [
+    {
+      in: 'path',
+      name: 'id',
+      type: 'integer',
+      description: 'User ID'
+    }
+  ],
+  responses: {
+    200: {
+      description: 'Delete user account',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Account Deleted Successfully.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
