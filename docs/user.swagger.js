@@ -415,10 +415,6 @@ export const addUser = {
               message2: {
                 type: 'string',
                 example: 'All Fields Are Required'
-              },
-              message3: {
-                type: 'string',
-                example: 'Email Is Already Taken: {email}'
               }
             }
           }
