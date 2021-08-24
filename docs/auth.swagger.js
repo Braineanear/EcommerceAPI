@@ -145,6 +145,50 @@ export const signUp = {
           }
         }
       }
+    },
+    400: {
+      description: 'Error: 400',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message1: {
+                type: 'string',
+                example: 'Profile Image Is Required, Please Upload an Image'
+              },
+              message2: {
+                type: 'string',
+                example: 'All Fields Are Required'
+              }
+            }
+          }
+        }
+      }
+    },
+    409: {
+      description: 'Error: 409',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message1: {
+                type: 'string',
+                example: 'Email Is Already Taken: {email}'
+              }
+            }
+          }
+        }
+      }
     }
   }
 };
