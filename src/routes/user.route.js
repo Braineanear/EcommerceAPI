@@ -33,10 +33,14 @@ router.use(protect);
 router.post('/', restrictedTo('admin'), singleFile('image'), createUser);
 
 // Update User Details Route
-router.patch('/:id/details', updateUserDetails);
+router.patch('/update-details', updateUserDetails);
 
 // Update User Profile Image (Multer Middleware) Route
-router.patch('/:id/profile-image', singleFile('image'), updateUserProfileImage);
+router.patch(
+  '/update-profile-image',
+  singleFile('image'),
+  updateUserProfileImage
+);
 
 // Delete User Route
 router.delete('/:id', deleteUser);
