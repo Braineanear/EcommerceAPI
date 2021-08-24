@@ -148,23 +148,14 @@ export const queryUser = catchAsync(async (id) => {
 
 /**
  * Update User Details Using It's ID
- * @param     {ObjectId}  id - User ID
+ * @param     {Object}  user - User Data
  * @param     {Object}    body - Updated Body
  * @returns   {Object<type|message|statusCode|user>}
  */
-export const updateUserDetails = catchAsync(async (id, body) => {
-  let user = await User.findById(id);
-
-  // 1) Check If User Doesn't Exist
-  if (!user) {
-    return {
-      type: 'Error',
-      message: `No User Found With This ID: ${id}`,
-      statusCode: 404
-    };
-  }
-
-  if (body.password || body.passwordConfirmation) {
+export const updateUserDetails = catchAsync(async (user, body) => {
+  const { id } = user;
+  const { password, passwordConfirmation, email } = body;
+  if (password || passwordConfirmation) {
     return {
       type: 'Error',
       message:
@@ -174,12 +165,12 @@ export const updateUserDetails = catchAsync(async (id, body) => {
   }
 
   // 2) Check if Email Taken Or Not
-  const isEmailTaken = await User.isEmailTaken(body.email, id);
+  const isEmailTaken = await User.isEmailTaken(email, id);
 
-  if (body.email && isEmailTaken) {
+  if (email && isEmailTaken) {
     return {
       type: 'Error',
-      message: `This Email Is Already Taken: ${body.email}`,
+      message: `This Email Is Already Taken: ${email}`,
       statusCode: 409
     };
   }
@@ -201,27 +192,17 @@ export const updateUserDetails = catchAsync(async (id, body) => {
 
 /**
  * Update User Profile Image Using It's ID
- * @param     {ObjectId}  id - User ID
+ * @param     {Object}  user - User Data
  * @param     {Object}    profileImage - Updated Profile Image
  * @returns   {Object<type|message|statusCode|user>}
  */
-export const updateUserProfileImage = catchAsync(async (id, profileImage) => {
-  let user = await User.findById(id);
-
-  // 1) Check If User Doesn't Exist
-  if (!user) {
-    return {
-      type: 'Error',
-      message: `No User Found With This ID: ${id}`,
-      statusCode: 404
-    };
-  }
-
+export const updateUserProfileImage = catchAsync(async (user, profileImage) => {
+  const { name, profileImageId, id } = user;
   // 2) Specifiy Folder Name Where The Profile Image Is Going To Be Uploaded In Cloudinary
-  const folderName = `Users/${user.name.trim().split(' ').join('')}`;
+  const folderName = `Users/${name.trim().split(' ').join('')}`;
 
   // 3) Destroy Image From Cloudinary
-  destroyFile(user.profileImageId);
+  destroyFile(profileImageId);
 
   // 4) Upload Image to Cloudinary
   const image = await uploadFile(
