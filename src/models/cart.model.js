@@ -43,16 +43,6 @@ const cartSchema = mongoose.Schema(
 // add plugin that converts mongoose to json
 cartSchema.plugin(toJSON);
 
-cartSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'items.product',
-    select:
-      '-mainImageId -imagesId -color -size -slug -sold -quantity -ratingsAverage -ratingsQuantity -user'
-  });
-
-  next();
-});
-
 const Cart = mongoose.model('Cart', cartSchema);
 
 export default Cart;
