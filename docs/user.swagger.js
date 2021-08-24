@@ -359,3 +359,118 @@ export const addUser = {
     }
   }
 };
+
+export const updateUserDetails = {
+  tags: ['User'],
+  description:
+    'This route allow logged in user to update his own profile details',
+  opeationId: 'updateUserDetails',
+  requestBody: {
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string'
+            },
+            username: {
+              type: 'string'
+            },
+            email: {
+              type: 'string'
+            },
+            phone: {
+              type: 'string'
+            },
+            address: {
+              type: 'string'
+            },
+            companyName: {
+              type: 'string'
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    200: {
+      description: 'Update user details',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'User Details Updated Successfully.'
+              },
+              catagory: {
+                type: 'object',
+                properties: {
+                  role: {
+                    type: 'string',
+                    example: 'user'
+                  },
+                  isEmailVerified: {
+                    type: 'boolean',
+                    example: false
+                  },
+                  favoriteProducts: {
+                    type: 'array',
+                    items: {
+                      type: 'string'
+                    }
+                  },
+                  _id: {
+                    type: 'string',
+                    example: '6123f6756874853c161ec5b9'
+                  },
+                  name: {
+                    type: 'string',
+                    example: 'armar1'
+                  },
+                  username: {
+                    type: 'string',
+                    example: 'armar1'
+                  },
+                  email: {
+                    type: 'string',
+                    example: 'armar@gmail.com'
+                  },
+                  companyName: {
+                    type: 'string',
+                    example: ''
+                  },
+                  phone: {
+                    type: 'string',
+                    example: '12345678912'
+                  },
+                  address: {
+                    type: 'string',
+                    example: ''
+                  },
+                  profileImage: {
+                    type: 'string',
+                    example:
+                      'https://res.cloudinary.com/dknma8cck/image/upload/v1629746804/EcommerceAPI/Users/armar/cmt6rf3l45rs0lqaviq7.webp'
+                  },
+                  profileImageId: {
+                    type: 'string',
+                    example: 'EcommerceAPI/Users/armar/cmt6rf3l45rs0lqaviq7'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
