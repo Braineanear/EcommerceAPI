@@ -8,7 +8,7 @@
   <h3 align="center">Ecommerce API</h3>
 </h1>
 
-<h4 align="center">An API for ecommerce works built using NodeJS & MongoDB</h4>
+<h4 align="center">E-commerce API built using NodeJS & MongoDB</h4>
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
@@ -50,66 +50,70 @@
 
 ## Deployed Version
 
-Live demo (Feel free to visit) 👉 : </>
+Live demo (Feel free to visit) 👉 :  <a href="https://e-commerce-a-p-i.herokuapp.com/api">E-commerce API</a>
 
 ## Key Features
 
-* Authentication and Authorization
-  * Login & Logout & SignUp
+* Authentication
+  * Login [Public]
+  * SignUp [Public]
+  * Logout [User]
+  * Tokens [User]
+* Password Management
+  * Change Password [User]
+  * Forgot Password [Public]
+  * Reset Password  [Public]
+* Email Management
+  * Send Email Verification [User]
 * User
-  * Create New User
-  * Query Users
-  * Query User Using It's ID
-  * Update User Details Using It's ID
-  * Update User Profile Image Using It's ID
-  * Delete User Using It's ID
-* Redis
-  * Caching API Data
-* SMS
-  * Sending SMS Message with SignUp Verification Code
-* Notification
-  * Socket.IO Notifications
-* Email Service
-  * Sending Emails
+  * Create New User [Admin]
+  * Get All Users [Public]
+  * Get User Data Using It's ID [Public]
+  * Update User Details Using It's ID [User]
+  * Update User Profile Image Using It's ID [User]
+  * Delete My Account [User]
+  * Delete User Using It's ID [Admin]
 * Cart Services
-  * Add Product To Cart
-  * Subtract Quantity From Product In Cart
-  * Reduce Product Quantity By One
-  * Increase Product Quantity By One
-  * Get Cart
-  * Delete Cart Item
-  * Delete Cart
+  * Add Product To Cart [User]
+  * Reduce Product Quantity By One [User]
+  * Increase Product Quantity By One [User]
+  * Get Cart [User]
+  * Delete Cart Item [User]
+  * Delete Cart [User]
 * Review Services
-  * Create New Review
-  * Query All Reviews
-  * Query Review Using It's ID
-  * Update Review Using It's ID
-  * Delete Review Using It's ID
+  * Create New Review [User]
+  * Query All Reviews [Public]
+  * Query Review Using It's ID [Public]
+  * Update Review Using It's ID [User]
+  * Delete Review Using It's ID [User]
 * Product Services
-  * Query products
-  * Query Product Using It's ID
-  * Create new product
-  * Update Product Details
-  * Update Product Main Image
-  * Update Product Images
-  * Delete Product Using It's ID
-  * Get Products Statics
+  * Query products [Public]
+  * Query Product Using It's ID [Public]
+  * Create new product [User]
+  * Update Product Details [User]
+  * Update Product Main Image [User]
+  * Update Product Images [User]
+  * Delete Product Using It's ID [User]
+  * Get Products Statics [Admin]
+  * Top 5 Cheapeast Products [Public]
+  * Get Favorite Products List [User]
+  * Add Product to Favorite List [User]
 * Order Services
-  * Create New Order
-  * Query Orders
-  * Query Order Using It's ID
-  * Cancel Order
+  * Create New Order [User]
+  * Query Orders [User]
+  * Query Order Using It's ID [User]
+  * Cancel Order [User]
 * Category Services
-  * Create New Category
-  * Query Categories
-  * Query Category Using It's ID
-  * Update Category Details
-  * Update Category Image
-  * Delete Category
+  * Create New Category [User]
+  * Query Categories [Public]
+  * Query Category Using It's ID [Public]
+  * Update Category Details [Admin]
+  * Update Category Image [Admin]
+  * Delete Category [Admin]
 
 ## API Usage
 
-Check [Ecommerce API Documentation]() for more info.
+Check [Ecommerce API Documentation](https://e-commerce-a-p-i.herokuapp.com/api-docs/#/) for more info.
 
 ## Deployment
 
@@ -130,26 +134,26 @@ List of any major frameworks used to build the project.
 * [MongoDB](https://www.mongodb.com/) - NoSQL Database uses JSON-like documents with optional schemas
 * [Mongoose](https://mongoosejs.com/) - Object Data Modeling (ODM) library for MongoDB and NodeJS
 * [Argon2](https://www.npmjs.com/package/argon2) - Encryption & Decryption Algorithm
-* [Vonage-Nexmo](https://www.vonage.com/communications-apis/) - Offers communications APIs
 * [Cloudinary](https://cloudinary.com/) - Cloud-based service
 * [Compression](https://www.npmjs.com/package/compression) - NodeJS compression middleware
 * [Cors](https://www.npmjs.com/package/cors) - NodeJS package for providing a Connect/Express middleware that can be used to enable CORS with various options
+* [Express Mongo Sanitize](https://www.npmjs.com/package/express-mongo-sanitize) - Express 4.x middleware which sanitizes user-supplied data to prevent MongoDB Operator Injection.
+* [Slugify](https://www.npmjs.com/package/slugify) - Slugifies a string
 * [Datauri](https://www.npmjs.com/package/datauri) - Create DataURI scheme easily
 * [Dotenv](https://www.npmjs.com/package/dotenv) - Loads environment variables from a . env file into process. env
 * [Rate Limiter](https://www.npmjs.com/package/express-rate-limit) - Basic IP rate-limiting middleware for Express
 * [Helmet](https://www.npmjs.com/package/helmet) - Secure Express apps by setting various HTTP headers
-* [Joi](https://www.npmjs.com/package/joi) - The most powerful schema description language and data validator for JavaScript
 * [JWT](https://jwt.io/) - Compact URL-safe means of representing claims to be transferred between two parties
 * [Method Override](https://www.npmjs.com/package/method-override) - Use HTTP verbs such as PUT or DELETE in places where the client doesn't support it.
 * [Moment](https://momentjs.com/) - JavaScript library which helps is parsing, validating, manipulating and displaying date/time in JavaScript in a very easy way
 * [Morgan](https://www.npmjs.com/package/morgan) - HTTP request logger middleware for NodeJS
 * [Multer](https://www.npmjs.com/package/multer) - NodeJS middleware for handling multipart/form-data
 * [Nodemailer](https://www.npmjs.com/package/nodemailer) - Easy as cake e-mail sending from your Node.js applications
-* [Passport](http://www.passportjs.org/) - Express-compatible authentication middleware for NodeJS
-* [Passport JWT](http://www.passportjs.org/packages/passport-jwt/) - Creates a new extractor that looks for the JWT in the given URL query parameter
 * [Validator](https://www.npmjs.com/package/validator) - A library of string validators and sanitizers.
 * [Winston](https://www.npmjs.com/package/winston) - A logger for just about everything.
 * [XSS Clean](https://www.npmjs.com/package/xss-clean) - Middleware to sanitize user input
+* [Stripe](https://www.npmjs.com/package/stripe) - The Stripe Node library provides convenient access to the Stripe API from applications written in server-side JavaScript.
+* [Swagger UI Express](https://www.npmjs.com/package/swagger-ui-express) - Allows you to serve auto-generated swagger-ui generated API docs from express.
 
 ## To-do
 
@@ -162,9 +166,9 @@ List of any major frameworks used to build the project.
 You can fork the app or you can git-clone the app into your local machine. Once done that, please install all the
 dependencies by running
 ```
-$ npm i
+$ yarn install
 set your env variables
-$ npm start
+$ yarn run start
 ```
 
 ## Known Bugs
