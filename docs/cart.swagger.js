@@ -467,6 +467,46 @@ export const addItemsToCart = {
           }
         }
       }
+    },
+    400: {
+      description: 'Error: 400',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'Invalid Request'
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'No Product Found With This ID: {productId}'
+              }
+            }
+          }
+        }
+      }
     }
   }
 };
@@ -493,7 +533,7 @@ export const increaseProductQuantityByOne = {
     }
   },
   responses: {
-    201: {
+    200: {
       description: 'Increase product quantity by one',
       content: {
         'application/json': {
@@ -695,6 +735,35 @@ export const increaseProductQuantityByOne = {
                     example: 9300
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message1: {
+                type: 'string',
+                example: 'No Product Found With This ID: {productId}'
+              },
+              message2: {
+                type: 'string',
+                example: 'No Cart Found For User With The Email: {email}'
+              },
+              message3: {
+                type: 'string',
+                example:
+                  'No Product Found With This ID: {productId} In The Cart'
               }
             }
           }
