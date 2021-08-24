@@ -52,7 +52,8 @@ import {
   addUser,
   updateUserDetails,
   updateUserProfileImage,
-  deleteUser
+  deleteUser,
+  deleteMyAccount
 } from './user.swagger';
 
 const docs = {
@@ -124,6 +125,9 @@ const docs = {
     },
     '/user/update-profile-image': {
       patch: updateUserProfileImage
+    },
+    '/user/me': {
+      delete: deleteMyAccount
     },
     '/category': {
       get: getAllCategories,

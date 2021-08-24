@@ -557,3 +557,31 @@ export const deleteUser = {
     }
   }
 };
+
+export const deleteMyAccount = {
+  tags: ['User'],
+  description: 'This route allow logged in user to delete his account',
+  opeationId: 'deleteMyAccount',
+  responses: {
+    200: {
+      description: 'Delete logged in user account',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Your Account Deleted Successfully.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
