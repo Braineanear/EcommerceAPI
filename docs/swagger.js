@@ -46,7 +46,12 @@ import {
   deleteReview
 } from './review.swagger';
 
-import { getAllUsers, getUser, addUser } from './user.swagger';
+import {
+  getAllUsers,
+  getUser,
+  addUser,
+  updateUserDetails
+} from './user.swagger';
 
 const docs = {
   openapi: '3.0.3',
@@ -110,6 +115,9 @@ const docs = {
     },
     '/user/:id': {
       get: getUser
+    },
+    '/user/update-details': {
+      patch: updateUserDetails
     },
     '/category': {
       get: getAllCategories,
