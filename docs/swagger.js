@@ -56,6 +56,8 @@ import {
   deleteMyAccount
 } from './user.swagger';
 
+import { createNewOrder } from './order.swagger';
+
 const docs = {
   openapi: '3.0.3',
   info: {
@@ -181,7 +183,9 @@ const docs = {
     '/cart/:id': {
       delete: deleteProductFromCart
     },
-    '/order': {},
+    '/order': {
+      post: createNewOrder
+    },
     '/product/{productId}/reviews': {
       get: getAllProductReviews,
       post: addReview
