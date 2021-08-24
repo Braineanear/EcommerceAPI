@@ -171,8 +171,36 @@ export const updateUserProfileImage = catchAsync(async (req, res) => {
  */
 export const deleteUser = catchAsync(async (req, res) => {
   // 1) Find user document and delete it
-  const { type, message, statusCode } = await userService.deleteUserById(
+  const { type, message, statusCode } = await userService.deleteUser(
     req.params.id
+  );
+
+  // 2) Check if there is an error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message
+    });
+  }
+
+  // 3) If everything is OK, send data
+  return res.status(statusCode).json({
+    type,
+    message
+  });
+});
+
+/**
+ * Delete LoggedIn User's Data Controller
+ * @param     { Object }    req
+ * @param     { Object }    res
+ * @property  { Object }  req.user
+ * @returns   { JSON }
+ */
+export const deleteMyAccount = catchAsync(async (req, res) => {
+  // 1) Find user document and delete it
+  const { type, message, statusCode } = await userService.deleteMyAccount(
+    req.user
   );
 
   // 2) Check if there is an error
