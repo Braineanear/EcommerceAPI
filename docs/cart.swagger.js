@@ -1064,6 +1064,30 @@ export const deleteProductFromCart = {
           }
         }
       }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message1: {
+                type: 'string',
+                example: 'No Cart Found For The User With This Email: {email}'
+              },
+              message2: {
+                type: 'string',
+                example: 'No Product Found With This ID: {productId}'
+              }
+            }
+          }
+        }
+      }
     }
   }
 };
