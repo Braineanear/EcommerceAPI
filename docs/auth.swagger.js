@@ -181,7 +181,7 @@ export const signUp = {
                 type: 'string',
                 example: 'Error'
               },
-              message1: {
+              message: {
                 type: 'string',
                 example: 'Email Is Already Taken: {email}'
               }
@@ -301,6 +301,46 @@ export const signIn = {
                       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MTFkMDU4NWYzODY2MDhlZjIzYzI3OGQiLCJpYXQiOjE2MjkyOTIwMjAsImV4cCI6MTYzMTg4NDAyMCwidHlwZSI6InJlZnJlc2gifQ.pxSceF4uGMlPxaQLjdUiaEdi3ejCxnWPtSApm7BdGCw'
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    400: {
+      description: 'Error: 400',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'Please enter both email and password.'
+              }
+            }
+          }
+        }
+      }
+    },
+    401: {
+      description: 'Error: 401',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'Incorrect email or password.'
               }
             }
           }
