@@ -1116,6 +1116,26 @@ export const deleteCart = {
           }
         }
       }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'No Cart Found For The User With This Email: {email}'
+              }
+            }
+          }
+        }
+      }
     }
   }
 };
