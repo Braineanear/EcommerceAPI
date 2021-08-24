@@ -161,7 +161,7 @@ export const getUser = {
                 type: 'string',
                 example: 'Found User Successfully.'
               },
-              users: {
+              user: {
                 type: 'object',
                 properties: {
                   _id: {
@@ -296,7 +296,7 @@ export const addUser = {
                 type: 'string',
                 example: 'Account Created Successfully.'
               },
-              catagory: {
+              user: {
                 type: 'object',
                 properties: {
                   role: {
@@ -411,7 +411,7 @@ export const updateUserDetails = {
                 type: 'string',
                 example: 'User Details Updated Successfully.'
               },
-              catagory: {
+              user: {
                 type: 'object',
                 properties: {
                   role: {
@@ -466,6 +466,52 @@ export const updateUserDetails = {
                     example: 'EcommerceAPI/Users/armar/cmt6rf3l45rs0lqaviq7'
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const updateUserProfileImage = {
+  tags: ['User'],
+  description:
+    'This route allow logged in user to update his own profile image',
+  opeationId: 'updateUserProfileImage',
+  requestBody: {
+    required: true,
+    content: {
+      'multipart/form-data': {
+        schema: {
+          type: 'object',
+          properties: {
+            image: {
+              type: 'string',
+              format: 'image',
+              required: true
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    200: {
+      description: 'Update user profile image',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'User Image Updated Successfully.'
               }
             }
           }

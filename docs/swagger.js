@@ -50,7 +50,8 @@ import {
   getAllUsers,
   getUser,
   addUser,
-  updateUserDetails
+  updateUserDetails,
+  updateUserProfileImage
 } from './user.swagger';
 
 const docs = {
@@ -118,6 +119,9 @@ const docs = {
     },
     '/user/update-details': {
       patch: updateUserDetails
+    },
+    '/user/update-profile-image': {
+      patch: updateUserProfileImage
     },
     '/category': {
       get: getAllCategories,
