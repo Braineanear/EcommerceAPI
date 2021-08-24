@@ -109,13 +109,13 @@ export const getUser = catchAsync(async (req, res) => {
  * @param     { Object }    req
  * @param     { Object }    res
  * @property  { Object }    req.body
- * @property  { ObjectId }  req.params.id
+ * @property  { Object }  req.user
  * @returns   { JSON }
  */
 export const updateUserDetails = catchAsync(async (req, res) => {
   // 1) Find user document and update it's details
   const { type, message, statusCode, user } =
-    await userService.updateUserDetails(req.params.id, req.body);
+    await userService.updateUserDetails(req.user, req.body);
 
   // 2) Check if there is an error
   if (type === 'Error') {
@@ -138,13 +138,13 @@ export const updateUserDetails = catchAsync(async (req, res) => {
  * @param     { Object }    req
  * @param     { Object }    res
  * @property  { Object }    req.file
- * @property  { ObjectId }  req.params.id
+ * @property  { Object }  req.user
  * @returns   { JSON }
  */
 export const updateUserProfileImage = catchAsync(async (req, res) => {
   // 1) Find user document and update it's profile image
   const { type, message, statusCode, user } =
-    await userService.updateUserDetails(req.params.id, req.file);
+    await userService.updateUserProfileImage(req.user, req.file);
 
   // 2) Check if there is an error
   if (type === 'Error') {
