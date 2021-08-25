@@ -430,6 +430,26 @@ export const getProduct = {
           }
         }
       }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'No Product Found With This ID: {productId}'
+              }
+            }
+          }
+        }
+      }
     }
   }
 };
@@ -618,6 +638,26 @@ export const addProduct = {
                       'lenovo-yoga-9-14itl5-laptop-intel-core-i7-1185g7-14-inch-uhd-1tb-ssd-16-gb-ram-integrated-intel-iris-xe-graphics-windows-shadow-black'
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    400: {
+      description: 'Error: 400',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'All Fields Are Required'
               }
             }
           }
