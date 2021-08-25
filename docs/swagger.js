@@ -26,7 +26,8 @@ import {
   updateProductMainImage,
   updateProductImages,
   addFavoriteProduct,
-  getFavoriteList
+  getFavoriteList,
+  deleteProduct
 } from './product.swagger';
 
 import {
@@ -148,7 +149,8 @@ const docs = {
       post: addProduct
     },
     '/product/:id': {
-      get: getProduct
+      get: getProduct,
+      delete: deleteProduct
     },
     '/product/top5Cheap': {
       get: top5Cheap

@@ -1689,3 +1689,52 @@ export const getFavoriteList = {
     }
   }
 };
+
+export const deleteProduct = {
+  tags: ['Product'],
+  description:
+    "This route allow logged in seller/admin to delete product using it's ID",
+  opeationId: 'deleteProduct',
+  responses: {
+    200: {
+      description: "Delete product using it's ID",
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Product Deleted Successfully.'
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'No Product Found With This ID: {id}'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
