@@ -148,6 +148,14 @@ export const updateCategoryDetails = catchAsync(async (id, body) => {
  * @returns {Object<type|message|statusCode|category>}
  */
 export const updateCategoryImage = catchAsync(async (id, image) => {
+  if (image === undefined) {
+    return {
+      type: 'Error',
+      message: 'Image Is Required, Please Upload an Image!',
+      statusCode: 400
+    };
+  }
+
   // 1) Get Category Data
   let category = await Category.findById(id);
 
