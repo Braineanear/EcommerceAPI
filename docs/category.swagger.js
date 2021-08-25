@@ -291,6 +291,26 @@ export const addCategory = {
           }
         }
       }
+    },
+    400: {
+      description: 'Error: 400',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'All Fields Are Required'
+              }
+            }
+          }
+        }
+      }
     }
   }
 };
