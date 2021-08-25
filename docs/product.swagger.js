@@ -220,6 +220,26 @@ export const getAllProducts = {
           }
         }
       }
+    },
+    200: {
+      description: 'Get All Products',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Products Found Successfully.'
+              }
+            }
+          }
+        }
+      }
     }
   }
 };
