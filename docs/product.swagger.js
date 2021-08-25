@@ -1278,6 +1278,26 @@ export const updateProductMainImage = {
           }
         }
       }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'No Product Found With This ID: {id}'
+              }
+            }
+          }
+        }
+      }
     }
   }
 };
