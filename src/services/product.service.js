@@ -293,7 +293,7 @@ export const updateProductMainImage = catchAsync(async (id, image) => {
   }
 
   // 2) Check If Product Already Exist
-  let product = await Product.findById(id);
+  const product = await Product.findById(id);
 
   if (!product) {
     return {
@@ -323,7 +323,7 @@ export const updateProductMainImage = catchAsync(async (id, image) => {
   };
 
   // 8) Update Product Using It's ID
-  product = await Product.findByIdAndUpdate(id, productBody, {
+  await Product.findByIdAndUpdate(id, productBody, {
     new: true,
     runValidators: true
   });
@@ -332,8 +332,7 @@ export const updateProductMainImage = catchAsync(async (id, image) => {
   return {
     type: 'Success',
     message: 'Product Main Image Updated Successfully',
-    statusCode: 200,
-    product
+    statusCode: 200
   };
 });
 
@@ -354,7 +353,7 @@ export const updateProductImages = catchAsync(async (id, images) => {
   }
 
   // 2) Check If Product Already Exist
-  let product = await Product.findById(id);
+  const product = await Product.findById(id);
 
   if (!product) {
     return {
@@ -400,7 +399,7 @@ export const updateProductImages = catchAsync(async (id, images) => {
   };
 
   // 11) Update Product Using It's ID
-  product = await Product.findByIdAndUpdate(id, productBody, {
+  await Product.findByIdAndUpdate(id, productBody, {
     new: true,
     runValidators: true
   });
@@ -409,8 +408,7 @@ export const updateProductImages = catchAsync(async (id, images) => {
   return {
     type: 'Success',
     message: 'Product Sub Images Updated Successfully',
-    statusCode: 200,
-    product
+    statusCode: 200
   };
 });
 
