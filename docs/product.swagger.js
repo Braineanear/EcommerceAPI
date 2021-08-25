@@ -221,8 +221,8 @@ export const getAllProducts = {
         }
       }
     },
-    200: {
-      description: 'Get All Products',
+    404: {
+      description: 'Error: 404',
       content: {
         'application/json': {
           schema: {
@@ -230,11 +230,11 @@ export const getAllProducts = {
             properties: {
               type: {
                 type: 'string',
-                example: 'Success'
+                example: 'Error'
               },
               message: {
                 type: 'string',
-                example: 'Products Found Successfully.'
+                example: 'No Products Found'
               }
             }
           }
