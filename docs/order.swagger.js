@@ -62,7 +62,7 @@ export const createNewOrder = {
   responses: {
     201: {
       description:
-        'Create new order | paymentMethod: "card" | cardNumber: 4242424242424242 | expMonth: 4 | expYear: 2022 | cvc: 247',
+        'Create new order | paymentMethod: "card" | cardNumber: 4242424242424242 | expMonth: 4 | expYear: 2022 |g cvc: 247',
       content: {
         'application/json': {
           schema: {
