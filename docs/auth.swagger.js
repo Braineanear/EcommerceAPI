@@ -164,6 +164,15 @@ export const signUp = {
               message2: {
                 type: 'string',
                 example: 'All Fields Are Required'
+              },
+              message3: {
+                type: 'string',
+                example:
+                  'Password must be longer than 8 characters and contains letters, numbers, and symbols'
+              },
+              message4: {
+                type: 'string',
+                example: 'Role must be one of the following: user or seller'
               }
             }
           }
