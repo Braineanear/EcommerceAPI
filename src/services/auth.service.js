@@ -58,6 +58,23 @@ export const signup = catchAsync(async (body, profileImage) => {
     };
   }
 
+  if (password.length > 8) {
+    return {
+      type: 'Error',
+      statusCode: 400,
+      message:
+        'Password must be longer than 8 characters and contains letters, numbers, and symbols'
+    };
+  }
+
+  if (!['user', 'seller'].includes(role)) {
+    return {
+      type: 'Error',
+      statusCode: 400,
+      message: 'Role must be one of the following: user or seller'
+    };
+  }
+
   // 2) Check if the email already taken
   const isEmailTaken = await User.isEmailTaken(email);
 
