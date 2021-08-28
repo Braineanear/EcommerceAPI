@@ -30,7 +30,7 @@ export const signup = catchAsync(async (body, profileImage) => {
   if (profileImage === undefined) {
     return {
       type: 'Error',
-      message: 'Profile Image Is Required, Please Upload an Image',
+      message: 'profileImageRequired',
       statusCode: 400
     };
   }
@@ -53,25 +53,24 @@ export const signup = catchAsync(async (body, profileImage) => {
   ) {
     return {
       type: 'Error',
-      message: 'All Fields Are Required',
+      message: 'fieldsRequired',
       statusCode: 400
     };
   }
 
-  if (password.length > 8) {
+  if (password.length < 8) {
     return {
       type: 'Error',
-      statusCode: 400,
-      message:
-        'Password must be longer than 8 characters and contains letters, numbers, and symbols'
+      message: 'passwordLength',
+      statusCode: 400
     };
   }
 
   if (!['user', 'seller'].includes(role)) {
     return {
       type: 'Error',
-      statusCode: 400,
-      message: 'Role must be one of the following: user or seller'
+      message: 'roleRestriction',
+      statusCode: 400
     };
   }
 
@@ -81,7 +80,7 @@ export const signup = catchAsync(async (body, profileImage) => {
   if (isEmailTaken) {
     return {
       type: 'Error',
-      message: `Email Is Already Taken: ${email}`,
+      message: 'emailTaken',
       statusCode: 409
     };
   }
@@ -126,8 +125,8 @@ export const signup = catchAsync(async (body, profileImage) => {
   // 13) If everything is OK, send user data
   return {
     type: 'Success',
-    message: 'Account created successfull, please verify your email!',
     statusCode: 201,
+    message: 'successfullSignUp',
     user,
     tokens
   };
