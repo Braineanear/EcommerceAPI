@@ -1,6 +1,4 @@
 // Packages
-import path from 'path';
-import { fileURLToPath } from 'url';
 import express from 'express';
 import helmet from 'helmet';
 import xss from 'xss-clean';
@@ -8,6 +6,7 @@ import compression from 'compression';
 import cors from 'cors';
 import mongoSanitize from 'express-mongo-sanitize';
 import swaggerUI from 'swagger-ui-express';
+import createLocaleMiddleware from 'express-locale';
 
 // Configs
 import config from './config/config';
@@ -19,14 +18,13 @@ import limiter from './middlewares/rateLimiter';
 // Utils
 import errorHandler from './utils/errorHandler';
 import AppError from './utils/appError';
+import startPolyglot from './utils/startPolyglot';
 
 // Documentation
 import docs from '../docs/swagger';
 
 // Routes
 import routes from './routes/index';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
 
@@ -43,8 +41,16 @@ app.use(helmet());
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
-// Serving static files
-app.use(express.static(path.join(__dirname, 'public')));
+// Get the user's locale, and set a default in case there's none
+app.use(
+  createLocaleMiddleware({
+    priority: ['accept-language', 'default'],
+    default: 'en_US'
+  })
+);
+
+// Start polyglot and set the language in the req with the phrases to be used
+app.use(startPolyglot);
 
 // Data sanitization against XSS
 app.use(xss());
