@@ -7,6 +7,12 @@ export const getAllCategories = {
   opeationId: 'getAllCategories',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    },
+    {
       in: 'query',
       name: 'select',
       type: 'string',
@@ -130,6 +136,12 @@ export const getCategory = {
   opeationId: 'getCategory',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    },
+    {
       in: 'path',
       name: 'id',
       type: 'integer',
@@ -223,6 +235,14 @@ export const addCategory = {
   tags: ['Category'],
   description: 'This route allow only admin to add new category',
   opeationId: 'addCategory',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -322,6 +342,12 @@ export const updateCategoryDetails = {
   opeationId: 'updateCategoryDetails',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
+    {
       in: 'path',
       name: 'id',
       type: 'integer',
@@ -418,6 +444,12 @@ export const updateCategoryImage = {
   description: 'This route allow only admin to update category image [image]',
   opeationId: 'updateCategoryImage',
   parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
     {
       in: 'path',
       name: 'id',
@@ -533,6 +565,12 @@ export const deleteCategory = {
   description: 'This route allow only admin to delete the category',
   opeationId: 'deleteCategory',
   parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    },
     {
       in: 'path',
       name: 'id',
