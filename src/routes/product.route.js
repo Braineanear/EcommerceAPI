@@ -37,8 +37,9 @@ const router = express.Router();
 router
   .route('/favorite')
   .post(protect, addFavoriteProduct)
-  .get(protect, getFavoriteList)
-  .delete(protect, deleteProductFromFavorite);
+  .get(protect, getFavoriteList);
+
+router.delete('/favorite/:id', protect, deleteProductFromFavorite);
 
 router.post('/favorite/check', protect, checkProductInFavoriteList);
 
