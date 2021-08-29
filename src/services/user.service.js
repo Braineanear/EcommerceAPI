@@ -17,7 +17,7 @@ export const createUser = catchAsync(async (body, profileImage) => {
   if (profileImage === undefined) {
     return {
       type: 'Error',
-      message: 'Profile Image Is Required, Please Upload an Image',
+      message: 'profileImageRequired',
       statusCode: 400
     };
   }
@@ -41,7 +41,7 @@ export const createUser = catchAsync(async (body, profileImage) => {
   ) {
     return {
       type: 'Error',
-      message: 'All Fields Are Required',
+      message: 'fieldsRequired',
       statusCode: 400
     };
   }
@@ -53,7 +53,7 @@ export const createUser = catchAsync(async (body, profileImage) => {
   if (isEmailTaken) {
     return {
       type: 'Error',
-      message: `Email Is Already Taken: ${email}`,
+      message: 'emailTaken',
       statusCode: 409
     };
   }
@@ -86,7 +86,7 @@ export const createUser = catchAsync(async (body, profileImage) => {
   // 4) If Everything is OK, Send User Data
   return {
     type: 'Success',
-    message: 'Account Created Successfully',
+    message: 'successfulSignUp',
     statusCode: 201,
     user
   };
@@ -105,7 +105,7 @@ export const queryUsers = catchAsync(async (req) => {
   if (users.length === 0) {
     return {
       type: 'Error',
-      message: 'No Users Found',
+      message: 'noUsersFound',
       statusCode: 404
     };
   }
@@ -113,7 +113,7 @@ export const queryUsers = catchAsync(async (req) => {
   // 3) If Everything is OK, Send Users Data
   return {
     type: 'Success',
-    message: 'Users Found Successfully',
+    message: 'successfulUsersFound',
     statusCode: 200,
     users
   };
@@ -132,7 +132,7 @@ export const queryUser = catchAsync(async (id) => {
   if (!user) {
     return {
       type: 'Error',
-      message: `No User Found With This ID: ${id}`,
+      message: 'noUserFoundWithID',
       statusCode: 404
     };
   }
@@ -140,7 +140,7 @@ export const queryUser = catchAsync(async (id) => {
   // 3) If Everything is OK, Send User Data;
   return {
     type: 'Success',
-    message: 'Found User Successfully',
+    message: 'successfulUserFound',
     statusCode: 200,
     user
   };
@@ -158,8 +158,7 @@ export const updateUserDetails = catchAsync(async (user, body) => {
   if (password || passwordConfirmation) {
     return {
       type: 'Error',
-      message:
-        'Cannot Update Password From Here, Please Go To Update Password Route',
+      message: 'passwordUpdateRoute',
       statusCode: 400
     };
   }
@@ -170,7 +169,7 @@ export const updateUserDetails = catchAsync(async (user, body) => {
   if (email && isEmailTaken) {
     return {
       type: 'Error',
-      message: `This Email Is Already Taken: ${email}`,
+      message: 'emailTaken',
       statusCode: 409
     };
   }
@@ -184,7 +183,7 @@ export const updateUserDetails = catchAsync(async (user, body) => {
   // 4) If Everything is OK, Send User Data
   return {
     type: 'Success',
-    message: 'User Details Updated Successfully',
+    message: 'successfulUserDetails',
     statusCode: 200,
     user
   };
@@ -200,7 +199,7 @@ export const updateUserProfileImage = catchAsync(async (user, profileImage) => {
   if (profileImage === undefined) {
     return {
       type: 'Error',
-      message: 'Profile Image Is Required, Please Upload an Image',
+      message: 'profileImageRequired',
       statusCode: 400
     };
   }
@@ -235,7 +234,7 @@ export const updateUserProfileImage = catchAsync(async (user, profileImage) => {
   // 6) If Everything is OK, Send User Data
   return {
     type: 'Success',
-    message: 'User Image Updated Successfully',
+    message: 'successfulUserImage',
     statusCode: 200
   };
 });
@@ -253,7 +252,7 @@ export const deleteUser = catchAsync(async (id) => {
   if (!user) {
     return {
       type: 'Error',
-      message: `No User Found With This ID: ${id}`,
+      message: 'noUserFoundWithID',
       statusCode: 404
     };
   }
@@ -264,7 +263,7 @@ export const deleteUser = catchAsync(async (id) => {
   // 4) If Everything is OK, Send Message
   return {
     type: 'Success',
-    message: 'Account Deleted Successfully',
+    message: 'successfulUserDelete',
     statusCode: 200
   };
 });
@@ -286,7 +285,7 @@ export const deleteMyAccount = catchAsync(async (user) => {
   // 3) If Everything is OK, Send Message
   return {
     type: 'Success',
-    message: 'Your Account Deleted Successfully',
+    message: 'successfulDeleteYourAccount',
     statusCode: 200
   };
 });

@@ -126,7 +126,7 @@ export const signup = catchAsync(async (body, profileImage) => {
   return {
     type: 'Success',
     statusCode: 201,
-    message: 'successfullSignUp',
+    message: 'successfulSignUp',
     user,
     tokens
   };
@@ -142,7 +142,7 @@ export const signin = catchAsync(async (email, password) => {
   if (!email || !password) {
     return {
       statusCode: 400,
-      message: 'Please enter both email and password'
+      message: 'emailPasswordRequired'
     };
   }
 
@@ -153,7 +153,7 @@ export const signin = catchAsync(async (email, password) => {
   if (!user) {
     return {
       statusCode: 401,
-      message: 'Incorrect email or password.'
+      message: 'incorrectEmailOrPassword'
     };
   }
 
@@ -164,7 +164,7 @@ export const signin = catchAsync(async (email, password) => {
   if (!isMatch) {
     return {
       statusCode: 401,
-      message: 'Incorrect email or password.'
+      message: 'incorrectEmailOrPassword'
     };
   }
 
@@ -174,7 +174,7 @@ export const signin = catchAsync(async (email, password) => {
   return {
     type: 'Success',
     statusCode: 200,
-    message: 'User logged in successfully.',
+    message: 'successfulogin',
     user,
     tokens
   };
@@ -196,13 +196,13 @@ export const logout = catchAsync(async (refreshToken) => {
     return {
       type: 'Error',
       statusCode: 401,
-      message: 'Please login again!'
+      message: 'loginAgain'
     };
   }
   return {
     type: 'Success',
     statusCode: 200,
-    message: 'Logged out successfully.'
+    message: 'successfulogout'
   };
 });
 
@@ -229,7 +229,7 @@ export const refreshAuth = catchAsync(async (refreshToken) => {
     return {
       type: 'Error',
       statusCode: 404,
-      message: 'No user found.'
+      message: 'noUserFound'
     };
   }
 
@@ -239,7 +239,7 @@ export const refreshAuth = catchAsync(async (refreshToken) => {
   return {
     type: 'Success',
     statusCode: 200,
-    message: 'Tokens generated successfully.',
+    message: 'successfulTokenGeneration',
     tokens
   };
 });
@@ -268,7 +268,7 @@ export const resetPassword = catchAsync(
       return {
         type: 'Error',
         statusCode: 404,
-        message: 'No user found.'
+        message: 'noUserFound'
       };
     }
 
@@ -284,7 +284,7 @@ export const resetPassword = catchAsync(
     return {
       type: 'Success',
       statusCode: 200,
-      message: 'Password changed successfully.'
+      message: 'successfulPasswordChange'
     };
   }
 );
@@ -308,7 +308,7 @@ export const verifyEmail = catchAsync(async (verifyEmailToken) => {
     return {
       type: 'Error',
       statusCode: 404,
-      message: 'No user found.'
+      message: 'noUserFound'
     };
   }
 
@@ -321,6 +321,6 @@ export const verifyEmail = catchAsync(async (verifyEmailToken) => {
   return {
     type: 'Sucess',
     statusCode: 200,
-    message: 'Email verified successfully.'
+    message: 'successfulEmailVerification'
   };
 });
