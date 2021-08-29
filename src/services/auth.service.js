@@ -251,19 +251,33 @@ export const refreshAuth = catchAsync(async (refreshToken) => {
  */
 export const resetPassword = catchAsync(
   async (token, password, passwordConfirmation) => {
-    // 1) Verify Reset Password Token
+    // 1) Check if password and passwordConfirmation are not the same
+    if (password !== passwordConfirmation) {
+      return {
+        type: 'Error',
+        statusCode: 400,
+        message: 'passConfirm'
+      };
+    }
+    // 2) Verify Reset Password Token
     const resetPasswordTokenDoc = await verifyToken(
       token,
       tokenTypes.RESET_PASSWORD
     );
 
-    // 2) Find User and Update it's Password
-    const user = await User.findByIdAndUpdate(resetPasswordTokenDoc.user, {
-      password,
-      passwordConfirmation
-    });
+    // 3) Check if token already exists
+    if (!resetPasswordTokenDoc) {
+      return {
+        type: 'Error',
+        statusCode: 400,
+        message: 'invalidLink'
+      };
+    }
 
-    // 3) Check if User Already Exist
+    // 4) Find User and Update it's Password
+    const user = await User.findById(resetPasswordTokenDoc.user);
+
+    // 5) Check if user already exist
     if (!user) {
       return {
         type: 'Error',
@@ -272,15 +286,20 @@ export const resetPassword = catchAsync(
       };
     }
 
-    // 4) Sending After Reset Password Mail
+    // 6) Save user password
+    user.password = password;
+    await user.save();
+
+    // 7) Sending After Reset Password Mail
     await sendAfterResetPasswordMessage(user.email);
 
-    // 5) Deleteing User Reset Token
+    // 8) Deleteing User Reset Token
     await Token.deleteMany({
       user: user.id,
       type: tokenTypes.RESET_PASSWORD
     });
 
+    // 9) If everything is OK, send data
     return {
       type: 'Success',
       statusCode: 200,
