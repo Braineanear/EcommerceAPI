@@ -110,6 +110,7 @@ Live demo (Feel free to visit) 👉 :  <a href="https://e-commerce-a-p-i.herokua
   * Update Category Details [Admin]
   * Update Category Image [Admin]
   * Delete Category [Admin]
+* Multi-Language Support
 
 ## API Usage
 
