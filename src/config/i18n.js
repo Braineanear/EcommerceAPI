@@ -14,16 +14,15 @@ export const messages = {
     noTokenFound: 'No token found.',
     noUserFound: 'No user found.',
     emailVerified: 'Email is already verified.',
-    noProductFound: 'No product found with this ID: {productID}.',
+    noProductFound: 'No product found with this ID.',
     productExist: 'Product already exits',
     noProductsFound: 'No products found.',
     invalidRequest: 'Invalid request.',
-    noCartForUser: 'No cart found for user with the email: {email}.',
+    noCartForUser: 'No cart found for user with this email.',
     noCartFound: 'No cart found.',
-    noProductInCartWithID:
-      'No product found with this ID: {productId} in the cart.',
+    noProductInCartWithID: 'No product found with this ID in the cart.',
     noCategories: 'No categories found.',
-    noCategoryFound: 'No category found with this ID: {id}.',
+    noCategoryFound: 'No category found with this ID.',
     categoryImageRequired: 'Image is required, please upload an image!',
     noOrders: 'No orders found',
     noOrder: 'No order found',
@@ -31,11 +30,11 @@ export const messages = {
     selectImage: 'Please select an image!',
     selectImages: 'Please select one or more images!',
     noReviewsFound: 'No reviews found.',
-    noReviewFound: 'No review found with this ID: {id}',
+    noReviewFound: 'No review found with this ID',
     notReviewCreator:
       'Sorry you are not the creator of this review. You are not authorized to perform this action.',
     noUsersFound: 'No users found.',
-    noUserFoundWithID: 'No user found with this ID: {id}.',
+    noUserFoundWithID: 'No user found with this ID.',
     passwordUpdateRoute:
       'Cannot update password from here, please go to update password route.',
     successfulSignUp: 'Account created successful, please verify your email!',
@@ -103,10 +102,10 @@ export const messages = {
     emailVerified: 'البريد الإلكتروني مفعلا.',
     invalidRequest: 'طلب مرفوض.',
     noCartForUser:
-      '<لم يتم العثور علي السلة الخاصة بالمسخدم الذي بريده الإلكتروني : <البريد الإلكتروني.',
+      'لم يتم العثور علي السلة الخاصة بالمسخدم الذي بريده الإلكتروني.',
     noCartFound: 'لم يتم العثور علي سلة المشتريات.',
     noProductInCartWithID:
-      'لم يتم العثور علي المنتج الذي رقمه : <رقم المنتج> في سلة المشتريات.',
+      'لم يتم العثور علي المنتج الذي رقمه في سلة المشتريات.',
     noCategories: 'لم يتم العثور علي أي تصنيفات.',
     noCategoryFound: 'لم يتم العثور علي تصنيف بهذا الرقم.',
     categoryImageRequired: 'الصورة مطلوبة. برجاء رفع صورة!',
@@ -120,7 +119,7 @@ export const messages = {
     notReviewCreator:
       'نأسف لكنك لست مالك هذا التقييم. لست مصرح بتنفيذ ذلك الأمر.',
     noUsersFound: 'لم يتم العثور علي أي مستخدمين.',
-    noUserFoundWithID: 'لم يتم العثور علي المستخدم الذي رقمه: الرقم',
+    noUserFoundWithID: 'لم يتم العثور علي المستخدم الذي رقمه.',
     passwordUpdateRoute:
       'لا يمكنك تحديث كلمة المرور من هنا, برجاء الذهاب إلي المكان المخصص لتغيير كلمة المرور',
     successfulSignUp: 'تم إنشاء الحساب بنجاح. برجاء تفعيل البريد الإلكتروني.',
