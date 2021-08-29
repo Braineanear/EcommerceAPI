@@ -1469,6 +1469,63 @@ export const getFavoriteList = {
   }
 };
 
+export const deleteProductFromFavorite = {
+  tags: ['Product'],
+  description:
+    'This route allow logged in user/seller/admin to delete product from favorite list',
+  opeationId: 'deleteProductFromFavorite',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    }
+  ],
+  responses: {
+    200: {
+      description: 'Delete Product From Favorite List',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Product deleted from favorite list successfully.'
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'Product not found in favorite list.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
 export const deleteProduct = {
   tags: ['Product'],
   description:
