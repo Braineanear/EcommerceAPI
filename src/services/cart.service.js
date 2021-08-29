@@ -22,7 +22,7 @@ export const addProductToCart = catchAsync(
     if (!product) {
       return {
         type: 'Error',
-        message: `No Product Found With This ID: ${productId}`,
+        message: 'noProductFound',
         statusCode: 404
       };
     }
@@ -59,7 +59,7 @@ export const addProductToCart = catchAsync(
       } else {
         return {
           type: 'Error',
-          message: 'Invalid request',
+          message: 'invalidRequest',
           statusCode: 400
         };
       }
@@ -70,7 +70,7 @@ export const addProductToCart = catchAsync(
       // 4) If Everything is OK, Send Cart
       return {
         type: 'Success',
-        message: 'Item Added To Cart Successfully',
+        message: 'successfulItemAddToCart',
         statusCode: 200,
         cart
       };
@@ -99,7 +99,7 @@ export const addProductToCart = catchAsync(
     // 8) If Everything is OK, Send Cart
     return {
       type: 'Success',
-      message: 'Item Added To Cart Successfully',
+      message: 'successfulItemAddToCart',
       statusCode: 200,
       cart
     };
@@ -126,7 +126,7 @@ export const reduceByOne = catchAsync(async (email, productId) => {
   if (!cart) {
     return {
       type: 'Error',
-      message: `No Cart Found For User With The Email: ${email}`,
+      message: 'noCartForUser',
       statusCode: 404
     };
   }
@@ -140,7 +140,7 @@ export const reduceByOne = catchAsync(async (email, productId) => {
   if (indexFound === -1) {
     return {
       type: 'Error',
-      message: `No Product Found With This ID: ${productId} In The Cart`,
+      message: `noProductInCartWithID`,
       statusCode: 404
     };
   }
@@ -171,7 +171,7 @@ export const reduceByOne = catchAsync(async (email, productId) => {
   // 10) If Everything is OK, Send Cart
   return {
     type: 'Success',
-    message: 'Item Reduced By One From Cart Successfully',
+    message: 'successfulReduceByOne',
     statusCode: 200,
     cart
   };
@@ -194,7 +194,7 @@ export const increaseByOne = catchAsync(async (email, productId) => {
     return {
       type: 'Error',
       statusCode: 404,
-      message: `No Product Found With ID: ${productId}`
+      message: 'noProductFound'
     };
   }
 
@@ -205,7 +205,7 @@ export const increaseByOne = catchAsync(async (email, productId) => {
   if (!cart) {
     return {
       type: 'Error',
-      message: `No Cart Found For User With The Email: ${email}`,
+      message: 'noCartForUser',
       statusCode: 404
     };
   }
@@ -219,7 +219,7 @@ export const increaseByOne = catchAsync(async (email, productId) => {
   if (indexFound === -1) {
     return {
       type: 'Error',
-      message: `No Product Found With This ID: ${productId} In The Cart`,
+      message: 'noProductInCartWithID',
       statusCode: 404
     };
   }
@@ -250,7 +250,7 @@ export const increaseByOne = catchAsync(async (email, productId) => {
   // 10) If Everything is OK, Send Cart
   return {
     type: 'Success',
-    message: 'Item Increased By One In Cart Successfully',
+    message: 'successfulIncreaseByOne',
     statusCode: 200,
     cart
   };
@@ -269,7 +269,7 @@ export const queryCart = catchAsync(async (email) => {
   if (!cart) {
     return {
       type: 'Error',
-      message: `No Cart Found For The User With This Email: ${email}`,
+      message: 'noCartForUser',
       statusCode: 404
     };
   }
@@ -277,7 +277,7 @@ export const queryCart = catchAsync(async (email) => {
   // 3) If Everything is OK, Send Cart
   return {
     type: 'Success',
-    message: 'Cart Found Successfully',
+    message: 'successfulCartFound',
     statusCode: 200,
     cart
   };
@@ -296,7 +296,7 @@ export const deleteCart = catchAsync(async (email) => {
   if (!cart) {
     return {
       type: 'Error',
-      message: `No Cart Found For The User With This Email: ${email}`,
+      message: 'noCartForUser',
       statusCode: 404
     };
   }
@@ -307,7 +307,7 @@ export const deleteCart = catchAsync(async (email) => {
   // 4) If Everything is OK, Send Message
   return {
     type: 'Success',
-    message: 'Cart Deleted Successfully',
+    message: 'successfulCartDelete',
     statusCode: 200
   };
 });
@@ -326,7 +326,7 @@ export const deleteItem = catchAsync(async (email, productId) => {
   if (!cart) {
     return {
       type: 'Error',
-      message: `No Cart Found For The User With This Email: ${email}`,
+      message: 'noCartForUser',
       statusCode: 404
     };
   }
@@ -338,7 +338,7 @@ export const deleteItem = catchAsync(async (email, productId) => {
   if (!product) {
     return {
       type: 'Error',
-      message: `No Product Found With This ID: ${productId}`,
+      message: 'noProductInCartWithID',
       statusCode: 404
     };
   }
@@ -365,7 +365,7 @@ export const deleteItem = catchAsync(async (email, productId) => {
   // 6) If Everything is OK, Send Cart
   return {
     type: 'Success',
-    message: 'Item Deleted From Cart Successfully',
+    message: 'successfulDeleteItemFromCart',
     statusCode: 200,
     cart
   };

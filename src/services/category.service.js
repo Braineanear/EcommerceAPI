@@ -20,7 +20,7 @@ export const createCategory = catchAsync(async (body, file) => {
   if (!name || !description || !file) {
     return {
       type: 'Error',
-      message: 'All Fields Are Required',
+      message: 'fieldsRequired',
       statusCode: 400
     };
   }
@@ -48,7 +48,7 @@ export const createCategory = catchAsync(async (body, file) => {
   // 7) If Everything is OK, Send Data
   return {
     type: 'Success',
-    message: 'Category Created Successfully',
+    message: 'successfulCategoryCreate',
     statusCode: 201,
     category
   };
@@ -67,14 +67,14 @@ export const queryCategories = catchAsync(async (req) => {
   if (categories.length === 0) {
     return {
       type: 'Error',
-      message: 'No Categories Found',
+      message: 'noCategories',
       statusCode: 404
     };
   }
   // 3) If Everything is OK, Send Categories
   return {
     type: 'Success',
-    message: 'Found Categories Successfully',
+    message: 'successfulCategoriesFound',
     statusCode: 200,
     categories
   };
@@ -93,7 +93,7 @@ export const queryCategory = catchAsync(async (id) => {
   if (!category) {
     return {
       type: 'Error',
-      message: `No Category Found With This ID: ${id}`,
+      message: 'noCategoryFound',
       statusCode: 404
     };
   }
@@ -101,7 +101,7 @@ export const queryCategory = catchAsync(async (id) => {
   // 3) If Everything is OK, Send Category
   return {
     type: 'Success',
-    message: 'Category Found Successfully',
+    message: 'successfulCategoryFound',
     statusCode: 200,
     category
   };
@@ -121,7 +121,7 @@ export const updateCategoryDetails = catchAsync(async (id, body) => {
   if (!category) {
     return {
       type: 'Error',
-      message: `No Category Found With This ID: ${id}`,
+      message: 'noCategoryFound',
       statusCode: 404
     };
   }
@@ -135,7 +135,7 @@ export const updateCategoryDetails = catchAsync(async (id, body) => {
   // 3) If Everything is OK, Send Result
   return {
     type: 'Success',
-    message: 'Category Details Updated Successfully',
+    message: 'successfulCategoryDetails',
     statusCode: 200,
     category
   };
@@ -151,7 +151,7 @@ export const updateCategoryImage = catchAsync(async (id, image) => {
   if (image === undefined) {
     return {
       type: 'Error',
-      message: 'Image Is Required, Please Upload an Image!',
+      message: 'categoryImageRequired',
       statusCode: 400
     };
   }
@@ -163,7 +163,7 @@ export const updateCategoryImage = catchAsync(async (id, image) => {
   if (!category) {
     return {
       type: 'Error',
-      message: `No Category Found With This ID: ${id}`,
+      message: 'noCategoryFound',
       statusCode: 404
     };
   }
@@ -191,7 +191,7 @@ export const updateCategoryImage = catchAsync(async (id, image) => {
   // 7) If Everything is OK, Send Result
   return {
     type: 'Success',
-    message: 'Category Image Updated Successfully',
+    message: 'successfulCategoryImage',
     statusCode: 200,
     category
   };
@@ -210,7 +210,7 @@ export const deleteCategoryById = catchAsync(async (id) => {
   if (!category) {
     return {
       type: 'Error',
-      message: `No Category Found With This ID: ${id}`,
+      message: 'noCategoryFound',
       statusCode: 404
     };
   }
@@ -223,7 +223,7 @@ export const deleteCategoryById = catchAsync(async (id) => {
   // 4) If Everything is OK, Send Message
   return {
     type: 'Success',
-    message: 'Category Deleted Successfully',
+    message: 'successfulCategoryDelete',
     statusCode: 200
   };
 });

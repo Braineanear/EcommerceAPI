@@ -17,7 +17,7 @@ export const createReview = catchAsync(async (product, user, body) => {
   if (!review || !rating) {
     return {
       type: 'Error',
-      message: 'All Fields Are Required',
+      message: 'fieldsRequired',
       statusCode: 400
     };
   }
@@ -33,7 +33,7 @@ export const createReview = catchAsync(async (product, user, body) => {
   // 3) If Everything is OK, Send Review
   return {
     type: 'Success',
-    message: 'Review Created Successfully',
+    message: 'successfulReviewCreate',
     statusCode: 201,
     newReview
   };
@@ -52,7 +52,7 @@ export const queryReviews = catchAsync(async (req) => {
   if (reviews.length === 0) {
     return {
       type: 'Error',
-      message: 'No Reviews Found',
+      message: 'noReviewsFound',
       statusCode: 404
     };
   }
@@ -60,7 +60,7 @@ export const queryReviews = catchAsync(async (req) => {
   // 3) If Everything is OK, Send Reviews
   return {
     type: 'Success',
-    message: 'Reviews Found Successfully',
+    message: 'successfulReviewsFound',
     statusCode: 200,
     reviews
   };
@@ -79,7 +79,7 @@ export const queryReviewById = catchAsync(async (id) => {
   if (!review) {
     return {
       type: 'Error',
-      message: `No Review Found With This ID: ${id}`,
+      message: 'noReviewFound',
       statusCode: 404
     };
   }
@@ -87,7 +87,7 @@ export const queryReviewById = catchAsync(async (id) => {
   // 3) If Everything is OK, Send Review
   return {
     type: 'Success',
-    message: 'Review Found Successfully',
+    message: 'successfulReviewFound',
     statusCode: 200,
     review
   };
@@ -107,7 +107,7 @@ export const updateReview = catchAsync(async (user, id, body) => {
   if (!review) {
     return {
       type: 'Error',
-      message: `No Review Found With This ID: ${id}`,
+      message: 'noReviewFound',
       statusCode: 404
     };
   }
@@ -116,8 +116,7 @@ export const updateReview = catchAsync(async (user, id, body) => {
     return {
       type: 'Error',
       statusCode: 400,
-      message:
-        'Sorry you are not the creator of this review. You are not authorized to perform this action.'
+      message: 'notReviewCreator'
     };
   }
 
@@ -130,7 +129,7 @@ export const updateReview = catchAsync(async (user, id, body) => {
   // 4) If Everything is OK, Send Result
   return {
     type: 'Success',
-    message: 'Review Updated Successfully',
+    message: 'successfulReviewUpdate',
     statusCode: 200,
     result
   };
@@ -149,7 +148,7 @@ export const deleteReview = catchAsync(async (user, id) => {
   if (!review) {
     return {
       type: 'Error',
-      message: `No Review Found With This ID: ${id}`,
+      message: 'noReviewFound',
       statusCode: 404
     };
   }
@@ -158,8 +157,7 @@ export const deleteReview = catchAsync(async (user, id) => {
     return {
       type: 'Error',
       statusCode: 400,
-      message:
-        'Sorry you are not the creator of this review. You are not authorized to perform this action.'
+      message: 'notReviewCreator'
     };
   }
 
@@ -169,7 +167,7 @@ export const deleteReview = catchAsync(async (user, id) => {
   // 4) If Everything is OK, Send Message
   return {
     type: 'Success',
-    message: 'Review Deleted Successfully',
+    message: 'successfulReviewDelete',
     statusCode: 200
   };
 });

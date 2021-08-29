@@ -35,7 +35,7 @@ export const createOrder = catchAsync(async (body, user) => {
   ) {
     return {
       type: 'Error',
-      message: 'All Fields Are Required',
+      message: 'fieldsRequired',
       statusCode: 400
     };
   }
@@ -47,7 +47,7 @@ export const createOrder = catchAsync(async (body, user) => {
   if (!cart) {
     return {
       type: 'Error',
-      message: 'No Cart Found',
+      message: 'noCartFound',
       statusCode: 404
     };
   }
@@ -78,7 +78,7 @@ export const createOrder = catchAsync(async (body, user) => {
     // 2) If Everything is OK, Send Order Data
     return {
       type: 'Success',
-      message: 'Order Created Successfully',
+      message: 'successfulOrderCreate',
       order
     };
   }
@@ -90,7 +90,7 @@ export const createOrder = catchAsync(async (body, user) => {
   if (!cardNumber || !expMonth || !expYear || !cvc) {
     return {
       type: 'Error',
-      message: 'All Fields Are Required',
+      message: 'fieldsRequired',
       statusCode: 400
     };
   }
@@ -140,7 +140,7 @@ export const createOrder = catchAsync(async (body, user) => {
   // 10) If Everything is OK, Send Order Data
   return {
     type: 'Success',
-    message: 'Order Created Successfully',
+    message: 'successfulOrderCreate',
     statusCode: 201,
     order
   };
@@ -161,7 +161,7 @@ export const queryOrders = catchAsync(async (req) => {
   if (!orders) {
     return {
       type: 'Error',
-      message: 'No Orders Found',
+      message: 'noOrders',
       statusCode: 404
     };
   }
@@ -169,7 +169,7 @@ export const queryOrders = catchAsync(async (req) => {
   // 3) If Everything is OK, Send Orders Data
   return {
     type: 'Success',
-    message: 'Orders Found Successfully',
+    message: 'successfulOrdersFound',
     statusCode: 200,
     orders
   };
@@ -188,7 +188,7 @@ export const queryOrder = catchAsync(async (id) => {
   if (!order) {
     return {
       type: 'Error',
-      message: 'No Order Found',
+      message: 'noOrder',
       statusCode: 404
     };
   }
@@ -196,7 +196,7 @@ export const queryOrder = catchAsync(async (id) => {
   // 3) If Everything is OK, Send Order Data
   return {
     type: 'Success',
-    message: 'Order Found Successfully',
+    message: 'successfulOrderFound',
     statusCode: 200,
     order
   };
@@ -215,7 +215,7 @@ export const cancelOrder = catchAsync(async (id) => {
   if (!order) {
     return {
       type: 'Error',
-      message: 'No Order Found',
+      message: 'noOrder',
       statusCode: 404
     };
   }
@@ -223,7 +223,7 @@ export const cancelOrder = catchAsync(async (id) => {
   // 3) If Everything is OK, Send Message
   return {
     type: 'Success',
-    message: 'Order Cancelled Successfully',
+    message: 'successfulOrderCancel',
     statusCode: 200
   };
 });

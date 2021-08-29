@@ -25,7 +25,7 @@ export const addFavoriteProduct = catchAsync(async (user, productId) => {
     return {
       type: 'Error',
       statusCode: 404,
-      message: `No product found with ID: ${productId}`
+      message: 'noProductFound'
     };
   }
 
@@ -34,7 +34,7 @@ export const addFavoriteProduct = catchAsync(async (user, productId) => {
     return {
       type: 'Error',
       statusCode: 400,
-      message: 'Product already exits.'
+      message: 'productExist'
     };
   }
 
@@ -48,7 +48,7 @@ export const addFavoriteProduct = catchAsync(async (user, productId) => {
   return {
     type: 'Success',
     statusCode: 200,
-    message: 'Product added to favorite list successfully.'
+    message: 'successfulFavoriteAdd'
   };
 });
 
@@ -66,7 +66,7 @@ export const getFavoriteList = catchAsync(async (user) => {
     return {
       type: 'Error',
       statusCode: 404,
-      message: `No products on the favorite list found`
+      message: 'noProductsInFavorite'
     };
   }
 
@@ -74,7 +74,7 @@ export const getFavoriteList = catchAsync(async (user) => {
   return {
     type: 'Success',
     statusCode: 200,
-    message: 'Favorite list successfully retrieved.',
+    message: 'successfulFavoriteGet',
     favoriteProducts
   };
 });
@@ -92,7 +92,7 @@ export const queryProducts = catchAsync(async (req) => {
   if (!products) {
     return {
       type: 'Error',
-      message: 'No Products Found',
+      message: 'noProductsFound',
       statusCode: 404
     };
   }
@@ -100,7 +100,7 @@ export const queryProducts = catchAsync(async (req) => {
   // 3) If Everything is OK, Send Products Data
   return {
     type: 'Success',
-    message: 'Products Found Successfully',
+    message: 'successfulProductsFound',
     statusCode: 200,
     products
   };
@@ -119,7 +119,7 @@ export const queryProductById = catchAsync(async (productId) => {
   if (!product) {
     return {
       type: 'Error',
-      message: `No Product Found With This ID: ${productId}`,
+      message: 'noProductFound',
       statusCode: 404
     };
   }
@@ -127,7 +127,7 @@ export const queryProductById = catchAsync(async (productId) => {
   // 3) If Everything is OK, Send Product
   return {
     type: 'Success',
-    message: 'Product Found Successfully',
+    message: 'successfulProductFound',
     statusCode: 200,
     product
   };
@@ -186,7 +186,7 @@ export const createProduct = catchAsync(async (body, files, seller) => {
   ) {
     return {
       type: 'Error',
-      message: 'All Fields Are Required',
+      message: 'fieldsRequired',
       statusCode: 400
     };
   }
@@ -237,7 +237,7 @@ export const createProduct = catchAsync(async (body, files, seller) => {
   // 10) If Everything is OK, Send Data
   return {
     type: 'Success',
-    message: 'Products Created Successfully',
+    message: 'successfulProductCreate',
     statusCode: 201,
     product
   };
@@ -256,7 +256,7 @@ export const updateProductDetails = catchAsync(async (id, body) => {
   if (!product) {
     return {
       type: 'Error',
-      message: `No Product Found With This ID: ${id}`,
+      message: 'noProductFound',
       statusCode: 404
     };
   }
@@ -270,7 +270,7 @@ export const updateProductDetails = catchAsync(async (id, body) => {
   // 3) If Everything is OK, Send Result
   return {
     type: 'Success',
-    message: 'Product Detials Updated Successfully',
+    message: 'successfulProductDetails',
     statusCode: 200,
     result
   };
@@ -287,7 +287,7 @@ export const updateProductMainImage = catchAsync(async (id, image) => {
   if (image.length === 0) {
     return {
       type: 'Error',
-      message: 'Please Select an Image',
+      message: 'selectImage',
       statusCode: 400
     };
   }
@@ -298,7 +298,7 @@ export const updateProductMainImage = catchAsync(async (id, image) => {
   if (!product) {
     return {
       type: 'Error',
-      message: `No Product Found With This ID: ${id}`,
+      message: 'noProductFound',
       statusCode: 404
     };
   }
@@ -331,7 +331,7 @@ export const updateProductMainImage = catchAsync(async (id, image) => {
   // 9) If Everything is OK, Send Product
   return {
     type: 'Success',
-    message: 'Product Main Image Updated Successfully',
+    message: 'successfulProductMainImage',
     statusCode: 200
   };
 });
@@ -347,7 +347,7 @@ export const updateProductImages = catchAsync(async (id, images) => {
   if (images.length === 0) {
     return {
       type: 'Error',
-      message: 'Please Select One or More Image',
+      message: 'selectImages',
       statusCode: 400
     };
   }
@@ -358,7 +358,7 @@ export const updateProductImages = catchAsync(async (id, images) => {
   if (!product) {
     return {
       type: 'Error',
-      message: `No Product Found With This ID: ${id}`,
+      message: 'noProductFound',
       statusCode: 404
     };
   }
@@ -407,7 +407,7 @@ export const updateProductImages = catchAsync(async (id, images) => {
   // 12) If Everything is OK, Send Result
   return {
     type: 'Success',
-    message: 'Product Sub Images Updated Successfully',
+    message: 'successfulProductSubImages',
     statusCode: 200
   };
 });
@@ -425,7 +425,7 @@ export const deleteProduct = catchAsync(async (id) => {
   if (!product) {
     return {
       type: 'Error',
-      message: `No Product Found With This ID: ${id}`,
+      message: `noProductFound`,
       statusCode: 404
     };
   }
@@ -436,7 +436,7 @@ export const deleteProduct = catchAsync(async (id) => {
   // 4) If Everything is OK, Send Message
   return {
     type: 'Success',
-    message: 'Product Deleted Successfully',
+    message: 'successfulProductDelete',
     statusCode: 200
   };
 });
