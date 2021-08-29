@@ -27,6 +27,7 @@ import {
   updateProductImages,
   addFavoriteProduct,
   deleteProductFromFavorite,
+  checkProductInFavoriteList,
   getFavoriteList,
   deleteProduct
 } from './product.swagger';
@@ -170,8 +171,13 @@ const docs = {
     },
     '/product/favorite': {
       get: getFavoriteList,
-      post: addFavoriteProduct,
+      post: addFavoriteProduct
+    },
+    '/product/favorite/{id}': {
       delete: deleteProductFromFavorite
+    },
+    '/product/favorite/check': {
+      post: checkProductInFavoriteList
     },
     '/cart': {
       get: getCart,
