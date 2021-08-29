@@ -209,7 +209,7 @@ export const queryOrder = catchAsync(async (id) => {
  */
 export const cancelOrder = catchAsync(async (id) => {
   // 1) Find Order Document and Delete It
-  const order = await Order.findByIdAndDelete(id);
+  const order = await Order.findById(id);
 
   // 2) Check If Order Doesn't Exist
   if (!order) {
@@ -220,7 +220,19 @@ export const cancelOrder = catchAsync(async (id) => {
     };
   }
 
-  // 3) If Everything is OK, Send Message
+  // 3) Increase product quantity and reduce product sold
+  order.products.forEach(async (item) => {
+    const product = await Product.findById(item.product);
+
+    await Product.findByIdAndUpdate(item.product, {
+      quantity: product.quantity + item.totalProductQuantity,
+      sold: product.sold - item.totalProductQuantity
+    });
+  });
+
+  await Order.findByIdAndDelete(id);
+
+  // 4) If Everything is OK, Send Message
   return {
     type: 'Success',
     message: 'successfulOrderCancel',
