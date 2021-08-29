@@ -7,6 +7,12 @@ export const getAllProducts = {
   opeationId: 'getAllProducts',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    },
+    {
       in: 'query',
       name: 'filter',
       type: 'string',
@@ -257,6 +263,12 @@ export const getProduct = {
   opeationId: 'getProduct',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
+    {
       in: 'path',
       name: 'id',
       type: 'integer',
@@ -466,6 +478,14 @@ export const addProduct = {
   tags: ['Product'],
   description: 'This route allow only admin and seller to add new product',
   opeationId: 'addProduct',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -687,6 +707,12 @@ export const top5Cheap = {
   description: 'This route allow you to get the top 5 cheapest products',
   opeationId: 'top5Cheap',
   parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
     {
       in: 'query',
       name: 'select',
@@ -926,6 +952,14 @@ export const productStats = {
   description:
     'This route allow only admin to get some statistics about products, ratings, categories, and price',
   opeationId: 'product-stats',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   responses: {
     200: {
       description: 'Get Products Statistics',
@@ -1001,6 +1035,12 @@ export const updateProductDetails = {
     'This route allow only admin or seller to update product details',
   opeationId: 'updateProductDetails',
   parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
     {
       in: 'path',
       name: 'id',
@@ -1101,6 +1141,12 @@ export const updateProductMainImage = {
   opeationId: 'updateProductMainImage',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    },
+    {
       in: 'path',
       name: 'id',
       type: 'integer',
@@ -1173,6 +1219,12 @@ export const updateProductImages = {
     'This route allow only seller or admin to update product images [ images ]',
   opeationId: 'updateProductImages',
   parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
     {
       in: 'path',
       name: 'id',
@@ -1265,6 +1317,14 @@ export const addFavoriteProduct = {
   description:
     'This route allow logged in user/seller/admin to add product to his favorite list',
   opeationId: 'addFavoriteProduct',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -1350,6 +1410,14 @@ export const getFavoriteList = {
   description:
     'This route allow logged in user/seller/admin to get his favorite products list',
   opeationId: 'getFavoriteList',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    }
+  ],
   responses: {
     200: {
       description: "Get Product's Favorite List",
@@ -1406,6 +1474,14 @@ export const deleteProduct = {
   description:
     "This route allow logged in seller/admin to delete product using it's ID",
   opeationId: 'deleteProduct',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   responses: {
     200: {
       description: "Delete product using it's ID",
