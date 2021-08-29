@@ -3,8 +3,16 @@ export const signUp = {
     jwt: []
   },
   tags: ['Auth'],
-  description: 'This route allow to sign up into the api',
+  description: 'This route allow you to sign up into the api',
   opeationId: 'signUp',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -48,7 +56,7 @@ export const signUp = {
             },
             image: {
               type: 'string',
-              format: 'binary'
+              format: 'image'
             }
           }
         }
@@ -207,8 +215,16 @@ export const signIn = {
     jwt: []
   },
   tags: ['Auth'],
-  description: 'This route allow to login into the api',
+  description: 'This route allow you to login into the api',
   opeationId: 'signIn',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -364,8 +380,16 @@ export const logout = {
     jwt: []
   },
   tags: ['Auth'],
-  description: 'This route allow to log out of the api',
+  description: 'This route allow you to logout from the api',
   opeationId: 'logout',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -384,7 +408,7 @@ export const logout = {
   },
   responses: {
     200: {
-      description: 'Log user out',
+      description: 'Logout from the api using you refresh token.',
       content: {
         'application/json': {
           schema: {
@@ -434,6 +458,14 @@ export const generateTokens = {
   description:
     'This route allow the user with a refresh token to regenerate tokens when the access token expires',
   opeationId: 'generateTokens',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -452,7 +484,8 @@ export const generateTokens = {
   },
   responses: {
     200: {
-      description: 'Generated tokens',
+      description:
+        'Regenerate tokens and use them to log into the system again.',
       content: {
         'application/json': {
           schema: {
@@ -521,6 +554,14 @@ export const forgotPassword = {
   description:
     'This route allow you to send email with the reset password link to reset the password you forgot',
   opeationId: 'forgotPassword',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -539,7 +580,8 @@ export const forgotPassword = {
   },
   responses: {
     200: {
-      description: 'Forgot password response',
+      description:
+        'A link is going now to be sent to you email to reset you password.',
       content: {
         'application/json': {
           schema: {
@@ -571,6 +613,12 @@ export const resetPassword = {
   opeationId: 'resetPassword',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
+    {
       in: 'query',
       name: 'token',
       type: 'string',
@@ -599,7 +647,7 @@ export const resetPassword = {
   },
   responses: {
     200: {
-      description: 'Reset password response',
+      description: 'Reset you password using the reset token.',
       content: {
         'application/json': {
           schema: {
