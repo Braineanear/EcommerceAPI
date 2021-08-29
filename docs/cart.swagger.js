@@ -2,9 +2,17 @@ export const getCart = {
   tags: ['Cart'],
   description: 'This route allow logged in user/seller/admin to get his cart',
   opeationId: 'getCart',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   responses: {
     200: {
-      description: 'Get Cart Items',
+      description: 'Get your cart items',
       content: {
         'application/json': {
           schema: {
@@ -239,6 +247,14 @@ export const addItemsToCart = {
   description:
     'This route allow logged in user/seller/admin to add items to his cart',
   opeationId: 'addItemsToCart',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -261,7 +277,7 @@ export const addItemsToCart = {
   },
   responses: {
     201: {
-      description: 'Add items to cart',
+      description: 'Add items to your cart',
       content: {
         'application/json': {
           schema: {
@@ -516,6 +532,14 @@ export const increaseProductQuantityByOne = {
   description:
     'This route allow logged in user/seller/admin to increase product quantity by one',
   opeationId: 'increaseProductQuantityByOne',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -778,6 +802,14 @@ export const reduceProductQuantityByOne = {
   description:
     'This route allow logged in user/seller/admin to reduce product quantity by one',
   opeationId: 'reduceProductQuantityByOne',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -1038,6 +1070,12 @@ export const deleteProductFromCart = {
   opeationId: 'deleteProductFromCart',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
+    {
       in: 'path',
       name: 'id',
       type: 'integer',
@@ -1096,6 +1134,14 @@ export const deleteCart = {
   tags: ['Cart'],
   description: 'This route allow logged in user/seller/admin to delete cart',
   opeationId: 'deleteCart',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    }
+  ],
   responses: {
     200: {
       description: 'Delete Cart',
