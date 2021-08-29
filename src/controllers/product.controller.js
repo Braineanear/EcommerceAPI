@@ -23,14 +23,14 @@ export const getFavoriteList = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 4) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     products: favoriteProducts
   });
 });
@@ -58,14 +58,14 @@ export const addFavoriteProduct = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 4) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message
+    message: req.polyglot.t(message)
   });
 });
 
@@ -96,14 +96,14 @@ export const getAllProducts = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     products
   });
 });
@@ -126,14 +126,14 @@ export const getProduct = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     product
   });
 });
@@ -158,14 +158,14 @@ export const addProduct = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     product
   });
 });
@@ -187,14 +187,14 @@ export const updateProductDetails = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send product
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     product
   });
 });
@@ -216,13 +216,13 @@ export const updateProductMainImage = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     product
   });
 });
@@ -244,14 +244,14 @@ export const updateProductImages = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     product
   });
 });
@@ -273,14 +273,14 @@ export const deleteProduct = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message
+    message: req.polyglot.t(message)
   });
 });
 
@@ -311,7 +311,7 @@ export const productStats = catchAsync(async (req, res) => {
   // 2) If everything is OK, send data
   return res.status(200).json({
     status: 'success',
-    message: 'Product Statics',
+    message: req.polyglot.t('productStatics'),
     stats
   });
 });

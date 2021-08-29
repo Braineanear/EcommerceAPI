@@ -21,14 +21,14 @@ export const signup = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     user,
     tokens
   });
@@ -53,14 +53,14 @@ export const signin = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     user,
     tokens
   });
@@ -82,14 +82,14 @@ export const logout = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message
+    message: req.polyglot.t(message)
   });
 });
 
@@ -111,14 +111,14 @@ export const refreshTokens = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     tokens
   });
 });
@@ -143,7 +143,7 @@ export const forgotPassword = catchAsync(async (req, res) => {
   // 3) If everything is OK, send data
   return res.status(200).json({
     type: 'Success',
-    message: 'Reset Password Link Sent Successfully'
+    message: req.polyglot.t('successfulResetLink')
   });
 });
 
@@ -168,14 +168,14 @@ export const resetPassword = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message
+    message: req.polyglot.t(message)
   });
 });
 
@@ -192,7 +192,7 @@ export const sendVerificationEmail = catchAsync(async (req, res) => {
   if (user.isEmailVerified) {
     return res.status(400).json({
       type: 'Error',
-      message: 'Email is already verified'
+      message: req.polyglot.t('emailVerified')
     });
   }
 
@@ -206,7 +206,7 @@ export const sendVerificationEmail = catchAsync(async (req, res) => {
   return res.status(200).json({
     status: 'success',
     type: 'Success',
-    message: 'Verification Email Sent Successfully'
+    message: req.polyglot.t('successfulSendVerificationEmail')
   });
 });
 
@@ -226,13 +226,13 @@ export const verifyEmail = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message
+    message: req.polyglot.t(message)
   });
 });

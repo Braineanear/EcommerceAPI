@@ -23,14 +23,14 @@ export const createOrder = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     order
   });
 });
@@ -63,14 +63,14 @@ export const getAllOrders = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     orders
   });
 });
@@ -94,14 +94,14 @@ export const getOrder = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     order
   });
 });
@@ -123,13 +123,13 @@ export const cancelOrder = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message
+    message: req.polyglot.t(message)
   });
 });

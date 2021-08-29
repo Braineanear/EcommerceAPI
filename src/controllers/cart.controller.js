@@ -24,14 +24,14 @@ export const addItemToCart = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 4) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     cart
   });
 });
@@ -54,14 +54,14 @@ export const reduceByOne = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     cart
   });
 });
@@ -84,14 +84,14 @@ export const increaseByOne = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     cart
   });
 });
@@ -113,14 +113,14 @@ export const getCart = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 9) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     cart
   });
 });
@@ -142,14 +142,14 @@ export const deleteCart = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message
+    message: req.polyglot.t(message)
   });
 });
 
@@ -174,14 +174,14 @@ export const deleteItem = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     cart
   });
 });

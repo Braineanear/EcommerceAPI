@@ -31,14 +31,14 @@ export const getAllCategories = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 4) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     categories
   });
 });
@@ -61,14 +61,14 @@ export const getCategory = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     category
   });
 });
@@ -94,14 +94,14 @@ export const addCategory = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     category
   });
 });
@@ -125,14 +125,14 @@ export const updateCategoryDetails = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     category
   });
 });
@@ -157,14 +157,14 @@ export const updateCategoryImage = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message,
+    message: req.polyglot.t(message),
     category
   });
 });
@@ -187,13 +187,13 @@ export const deleteCategory = catchAsync(async (req, res) => {
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
-      message
+      message: req.polyglot.t(message)
     });
   }
 
   // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
-    message
+    message: req.polyglot.t(message)
   });
 });
