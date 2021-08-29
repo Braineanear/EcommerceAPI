@@ -1480,6 +1480,12 @@ export const deleteProductFromFavorite = {
       name: 'Accept-Language',
       type: 'string',
       example: 'ar_MX'
+    },
+    {
+      in: 'path',
+      name: 'id',
+      type: 'integer',
+      description: 'Product ID'
     }
   ],
   responses: {
@@ -1497,6 +1503,63 @@ export const deleteProductFromFavorite = {
               message: {
                 type: 'string',
                 example: 'Product deleted from favorite list successfully.'
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'Product not found in favorite list.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const checkProductInFavoriteList = {
+  tags: ['Product'],
+  description:
+    'This route allow logged in user/seller/admin to check if product in favorite list',
+  opeationId: 'checkProductInFavoriteList',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    }
+  ],
+  responses: {
+    200: {
+      description: 'Check if Product in Favorite List',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Product in favorite list.'
               }
             }
           }
