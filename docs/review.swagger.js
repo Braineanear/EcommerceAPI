@@ -7,6 +7,12 @@ export const getAllProductReviews = {
   opeationId: 'getAllProductReviews',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    },
+    {
       in: 'path',
       name: 'productId',
       type: 'integer',
@@ -114,6 +120,12 @@ export const getReview = {
   opeationId: 'getReview',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
+    {
       in: 'path',
       name: 'productId',
       type: 'integer',
@@ -185,6 +197,12 @@ export const addReview = {
   opeationId: 'addReview',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    },
+    {
       in: 'path',
       name: 'productId',
       type: 'integer',
@@ -241,6 +259,12 @@ export const updateReview = {
     "This route allow logged in user/seller/admin to update review using it's ID",
   opeationId: 'updateReview',
   parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
     {
       in: 'path',
       name: 'productId',
@@ -304,6 +328,12 @@ export const deleteReview = {
     "This route allow logged in user/seller/admin to delete review using it's ID",
   opeationId: 'deleteReview',
   parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    },
     {
       in: 'path',
       name: 'productId',
