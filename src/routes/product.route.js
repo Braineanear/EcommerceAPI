@@ -24,7 +24,9 @@ const {
   top5Cheap,
   productStats,
   addFavoriteProduct,
-  getFavoriteList
+  getFavoriteList,
+  deleteProductFromFavorite,
+  checkProductInFavoriteList
 } = productController;
 
 // Router Initialization
@@ -35,7 +37,10 @@ const router = express.Router();
 router
   .route('/favorite')
   .post(protect, addFavoriteProduct)
-  .get(protect, getFavoriteList);
+  .get(protect, getFavoriteList)
+  .delete(protect, deleteProductFromFavorite);
+
+router.post('/favorite/check', protect, checkProductInFavoriteList);
 
 router.use('/:id/reviews', reviewRoute);
 
