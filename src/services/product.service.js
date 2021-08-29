@@ -80,6 +80,69 @@ export const getFavoriteList = catchAsync(async (user) => {
 });
 
 /**
+ * Remove product from favorite list service
+ * @param     { ObjectId } productId
+ * @param     { Object }   user
+ * @returns   { JSON }
+ */
+export const deleteProductFromFavorite = catchAsync(async (user, productId) => {
+  // 1) Get favoriteProducts field from user data
+  let { favoriteProducts } = user;
+
+  // 2) Check if favorite list includes the productId
+  if (favoriteProducts.includes(productId)) {
+    favoriteProducts = favoriteProducts.filter(
+      (item) => item.toString() !== productId.toString()
+    );
+  } else {
+    return {
+      type: 'Error',
+      statusCode: 404,
+      message: 'notFoundInFavoriteList'
+    };
+  }
+
+  // 3) Save the updated favorite list in user data
+  user.favoriteProducts = favoriteProducts;
+  await user.save();
+
+  // 4) If everything is OK, send data
+  return {
+    type: 'Error',
+    statusCode: 200,
+    message: 'successfulDeleteProductFromFavorite'
+  };
+});
+
+/**
+ * Check if product in favorite list service
+ * @param     { ObjectId } productId
+ * @param     { Object }   user
+ * @returns   { JSON }
+ */
+export const checkProductInFavoriteList = catchAsync(
+  async (user, productId) => {
+    // 1) Get favoriteProducts field from user data
+    let { favoriteProducts } = user;
+
+    // 2) Check if favorite list includes the productId
+    if (!favoriteProducts.includes(productId)) {
+      return {
+        type: 'Error',
+        statusCode: 404,
+        message: 'notFoundInFavoriteList'
+      };
+    }
+
+    // 3) If everything is OK, send data
+    return {
+      type: 'Success',
+      statusCode: '200',
+      message: 'successfulProductFoundInFavorite'
+    };
+  }
+);
+/**
  * Query products
  * @param   {Object} request
  * @returns {Object<type|message|statusCode|products>}

@@ -58,7 +58,9 @@ import {
   deleteProduct,
   getProductStats,
   addFavoriteProduct,
-  getFavoriteList
+  getFavoriteList,
+  deleteProductFromFavorite,
+  checkProductInFavoriteList
 } from './product.service';
 
 import {
@@ -137,7 +139,9 @@ const productService = {
   deleteProduct,
   getProductStats,
   addFavoriteProduct,
-  getFavoriteList
+  getFavoriteList,
+  deleteProductFromFavorite,
+  checkProductInFavoriteList
 };
 
 const cartService = {
