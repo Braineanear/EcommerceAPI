@@ -7,6 +7,12 @@ export const getAllUsers = {
   opeationId: 'getAllUsers',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    },
+    {
       in: 'query',
       name: 'filter',
       type: 'string',
@@ -159,6 +165,12 @@ export const getUser = {
   opeationId: 'getUser',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
+    {
       in: 'path',
       name: 'id',
       type: 'integer',
@@ -270,6 +282,14 @@ export const addUser = {
   tags: ['User'],
   description: 'This route allow only admin to add new user',
   opeationId: 'addUser',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -449,6 +469,14 @@ export const updateUserDetails = {
   description:
     'This route allow logged in user to update his own profile details',
   opeationId: 'updateUserDetails',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -605,6 +633,14 @@ export const updateUserProfileImage = {
   description:
     'This route allow logged in user to update his own profile image',
   opeationId: 'updateUserProfileImage',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -673,6 +709,12 @@ export const deleteUser = {
   opeationId: 'deleteUser',
   parameters: [
     {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
+    {
       in: 'path',
       name: 'id',
       type: 'integer',
@@ -727,6 +769,14 @@ export const deleteMyAccount = {
   tags: ['User'],
   description: 'This route allow logged in user to delete his account',
   opeationId: 'deleteMyAccount',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   responses: {
     200: {
       description: 'Delete logged in user account',
