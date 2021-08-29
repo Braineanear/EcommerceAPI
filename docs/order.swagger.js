@@ -357,3 +357,227 @@ export const getAllOrders = {
     }
   }
 };
+
+export const getOrder = {
+  tags: ['Order'],
+  description:
+    "This route allow logged in user/seller/admin get specific order using it's ID",
+  opeationId: 'getOrder',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
+    {
+      in: 'path',
+      name: 'id',
+      type: 'integer',
+      description: 'Order ID'
+    }
+  ],
+  responses: {
+    200: {
+      description: "Get specific order using it's ID",
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Order found successfully.'
+              },
+              order: {
+                type: 'object',
+                properties: {
+                  products: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        _id: {
+                          type: 'string',
+                          example: '61251a32c34eabdac042b36f'
+                        },
+                        product: {
+                          type: 'string',
+                          example: '611f6385628e64b6ff96393c'
+                        },
+                        totalProductQuantity: {
+                          type: 'integer',
+                          example: 2
+                        },
+                        totalProductPrice: {
+                          type: 'integer',
+                          example: 6200
+                        }
+                      }
+                    }
+                  },
+                  totalPrice: {
+                    type: 'integer',
+                    example: 6200
+                  },
+                  isPaid: {
+                    type: 'boolean',
+                    example: true
+                  },
+                  isDelivered: {
+                    type: 'boolean',
+                    example: false
+                  },
+                  taxPrice: {
+                    type: 'integer',
+                    example: 0
+                  },
+                  shippingPrice: {
+                    type: 'integer',
+                    example: 0
+                  },
+                  status: {
+                    type: 'string',
+                    example: 'Not Processed'
+                  },
+                  _id: {
+                    type: 'string',
+                    example: '61251a43c34eabdac042b374'
+                  },
+                  user: {
+                    type: 'string',
+                    example: '611d0cf2ab79f9bb0c388234'
+                  },
+                  paidAt: {
+                    type: 'string',
+                    example: '2021-08-24T16:11:47.502Z'
+                  },
+                  shippingAddress: {
+                    type: 'object',
+                    properties: {
+                      address: {
+                        type: 'string',
+                        example: 'Toukh - Egypt'
+                      },
+                      city: {
+                        type: 'string',
+                        example: 'Toukh'
+                      },
+                      country: {
+                        type: 'string',
+                        example: 'Egypt'
+                      },
+                      postalCode: {
+                        type: 'string',
+                        example: '11311'
+                      }
+                    }
+                  },
+                  paymentMethod: {
+                    type: 'string',
+                    example: 'card'
+                  },
+                  phone: {
+                    type: 'string',
+                    example: '01004468937'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'No order found.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const cancelOrder = {
+  tags: ['Order'],
+  description:
+    "This route allow logged in user/seller/admin cancel specific order using it's ID",
+  opeationId: 'cancelOrder',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
+    {
+      in: 'path',
+      name: 'id',
+      type: 'integer',
+      description: 'Order ID'
+    }
+  ],
+  responses: {
+    200: {
+      description: "Cancel specific order using it's ID",
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Order cancelled successfully.'
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message1: {
+                type: 'string',
+                example: 'No order found.'
+              },
+              message2: {
+                type: 'string',
+                example: 'No product found with this ID.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
