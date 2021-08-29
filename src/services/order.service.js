@@ -224,6 +224,14 @@ export const cancelOrder = catchAsync(async (id) => {
   order.products.forEach(async (item) => {
     const product = await Product.findById(item.product);
 
+    if (!product) {
+      return {
+        type: 'Error',
+        message: 'noProductFound',
+        statusCode: 404
+      };
+    }
+
     await Product.findByIdAndUpdate(item.product, {
       quantity: product.quantity + item.totalProductQuantity,
       sold: product.sold - item.totalProductQuantity
