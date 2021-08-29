@@ -37,6 +37,7 @@ export const messages = {
       'Sorry you are not the creator of this review. You are not authorized to perform this action.',
     noUsersFound: 'No users found.',
     noUserFoundWithID: 'No user found with this ID.',
+    notFoundInFavoriteList: 'Product not found in favorite list.',
     passwordUpdateRoute:
       'Cannot update password from here, please go to update password route.',
     successfulSignUp: 'Account created successful, please verify your email!',
@@ -83,7 +84,10 @@ export const messages = {
     successfulUserImage: 'User image updated successfully.',
     successfulUserDelete: 'Account deleted successfully.',
     successfulDeleteYourAccount: 'Your account deleted successfully.',
-    productStatics: 'These are some statistics about products.'
+    productStatics: 'These are some statistics about products.',
+    successfulDeleteProductFromFavorite:
+      'Product deleted from favorite list successfully.',
+    successfulProductFoundInFavorite: 'Product in favorite list.'
   },
   ar: {
     profileImageRequired: 'الصورة الشخصية مطلوبة. رجاءً قم برفع صورة.',
@@ -124,6 +128,7 @@ export const messages = {
       'نأسف لكنك لست مالك هذا التقييم. لست مصرح بتنفيذ ذلك الأمر.',
     noUsersFound: 'لم يتم العثور علي أي مستخدمين.',
     noUserFoundWithID: 'لم يتم العثور علي المستخدم الذي رقمه.',
+    notFoundInFavoriteList: 'لم يتم العثور علي المنتج في قائمة المفضلة.',
     passwordUpdateRoute:
       'لا يمكنك تحديث كلمة المرور من هنا, برجاء الذهاب إلي المكان المخصص لتغيير كلمة المرور',
     successfulSignUp: 'تم إنشاء الحساب بنجاح. برجاء تفعيل البريد الإلكتروني.',
@@ -172,6 +177,9 @@ export const messages = {
     successfulUserImage: 'تم تحديث صورة المستخدم الشخصية بنجاح.',
     successfulUserDelete: 'تم حذف الحساب بنجاح.',
     successfulDeleteYourAccount: 'تم حذف حسابك بنجاح.',
-    productStatics: 'هذه بعض الإحصائيات عن المنتجات.'
+    productStatics: 'هذه بعض الإحصائيات عن المنتجات.',
+    successfulDeleteProductFromFavorite:
+      'تم حذف المنتج من قائمة المفضلة بنجاح.',
+    successfulProductFoundInFavorite: 'تم العثور علي المنتج في قائمة المفضلة'
   }
 };
