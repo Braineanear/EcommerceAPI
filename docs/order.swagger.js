@@ -2,6 +2,14 @@ export const createNewOrder = {
   tags: ['Order'],
   description: 'This route allow logged in user/seller/admin create new order',
   opeationId: 'createNewOrder',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
   requestBody: {
     required: true,
     content: {
@@ -181,8 +189,14 @@ export const createNewOrder = {
 export const getAllOrders = {
   tags: ['Order'],
   description: 'This route allow logged in user/seller/admin get his orders',
-  opeationId: 'createNewOrder',
+  opeationId: 'getAllOrders',
   parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
     {
       in: 'query',
       name: 'filter',
