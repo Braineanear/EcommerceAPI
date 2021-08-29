@@ -20,7 +20,9 @@ import {
   top5Cheap,
   productStats,
   addFavoriteProduct,
-  getFavoriteList
+  getFavoriteList,
+  deleteProductFromFavorite,
+  checkProductInFavoriteList
 } from './product.controller';
 
 import {
@@ -107,7 +109,9 @@ const productController = {
   top5Cheap,
   productStats,
   addFavoriteProduct,
-  getFavoriteList
+  getFavoriteList,
+  deleteProductFromFavorite,
+  checkProductInFavoriteList
 };
 
 const reviewController = {
