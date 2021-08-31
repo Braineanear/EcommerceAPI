@@ -176,8 +176,8 @@ const docs = {
     '/product/favorite/{id}': {
       delete: deleteProductFromFavorite
     },
-    '/product/favorite/check': {
-      post: checkProductInFavoriteList
+    '/product/favorite/check/{id}': {
+      get: checkProductInFavoriteList
     },
     '/cart': {
       get: getCart,

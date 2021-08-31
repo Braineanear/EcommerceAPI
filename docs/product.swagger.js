@@ -1543,6 +1543,12 @@ export const checkProductInFavoriteList = {
       name: 'Accept-Language',
       type: 'string',
       example: 'ar_MX'
+    },
+    {
+      in: 'path',
+      name: 'id',
+      type: 'integer',
+      description: 'Product ID'
     }
   ],
   responses: {
