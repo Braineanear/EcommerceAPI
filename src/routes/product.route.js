@@ -41,12 +41,12 @@ router
 
 router.delete('/favorite/:id', protect, deleteProductFromFavorite);
 
-router.post('/favorite/check', protect, checkProductInFavoriteList);
+router.get('/favorite/check/:id', protect, checkProductInFavoriteList);
 
 router.use('/:id/reviews', reviewRoute);
 
 // Get Top 5 Cheapeast Products Route
-router.get('/top-5-cheap', top5Cheap);
+router.get('/top-5-cheap', getAllProducts, top5Cheap);
 
 // Get Product Stats Route
 router.get('/product-stats', productStats);
