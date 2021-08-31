@@ -31,9 +31,9 @@ export const getAllCategories = {
       in: 'query',
       name: 'sort',
       type: 'string',
-      example: 'name',
+      example: '1, name',
       description:
-        'Sorting categories according to specified field for example the name field.'
+        'Sorting categories according to specified field for example the name field, and the number before the field name indicates the order of items: descending (-1) or ascending (1)'
     },
     {
       in: 'query',
