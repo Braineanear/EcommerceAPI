@@ -40,10 +40,13 @@ const apiFeatures = catchAsync(async (req, model, populate) => {
   if (req.query.sort) {
     const sortBy = req.query.sort.split(',');
     const obj = {};
+    const number = Number(sortBy[0]);
 
     sortBy.forEach((field) => {
-      obj[field] = -1;
+      obj[field] = number;
     });
+
+    delete obj[sortBy[0]];
 
     query = query.sort(obj);
   }
