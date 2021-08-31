@@ -73,7 +73,7 @@ export const addFavoriteProduct = catchAsync(async (req, res) => {
  * delete product from favorite list controller
  * @param     { Object } req
  * @param     { Object } res
- * @property  { String } req.params.productId
+ * @property  { String } req.params.id
  * @property  { Object }  req.user
  * @returns   { JSON }
  */
@@ -105,18 +105,18 @@ export const deleteProductFromFavorite = catchAsync(async (req, res) => {
  * Check if product in favorite list controller
  * @param     { Object } req
  * @param     { Object } res
- * @property  { String } req.body.productId
+ * @property  { String } req.params.id
  * @property  { Object }  req.user
  * @returns   { JSON }
  */
 export const checkProductInFavoriteList = catchAsync(async (req, res) => {
   // 1) Extract productId and user data
-  const { productId } = req.body;
+  const { id } = req.params;
   const { user } = req;
 
   // 2) Calling checkProductInFavoriteList service
   const { type, message, statusCode } =
-    await productService.checkProductInFavoriteList(user, productId);
+    await productService.checkProductInFavoriteList(user, id);
 
   // 3) Check if something went wrong
   if (type === 'Error') {
