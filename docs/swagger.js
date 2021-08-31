@@ -154,7 +154,7 @@ const docs = {
       get: getProduct,
       delete: deleteProduct
     },
-    '/product/top5Cheap': {
+    '/product/top-5-cheap': {
       get: top5Cheap
     },
     '/product/product-stats': {
