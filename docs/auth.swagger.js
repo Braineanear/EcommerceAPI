@@ -131,6 +131,10 @@ export const signUp = {
                   profileImageId: {
                     type: 'string',
                     example: 'EcommerceAPI/Users/admin/xxcrbfkwglqa5c5kay4u'
+                  },
+                  _id: {
+                    type: 'string',
+                    example: '613395db169b2d0004ddc900'
                   }
                 }
               },
@@ -309,6 +313,10 @@ export const signIn = {
                   profileImageId: {
                     type: 'string',
                     example: 'EcommerceAPI/Users/admin/xxcrbfkwglqa5c5kay4u'
+                  },
+                  _id: {
+                    type: 'string',
+                    example: '611d08a62fc210a30ecfb75b'
                   }
                 }
               },
