@@ -127,7 +127,7 @@ export const createOrder = catchAsync(async (body, user) => {
   });
 
   cart.items.forEach(async (item) => {
-    const { id } = item.product;
+    const id = item.product;
     const { totalProductQuantity } = item;
     const product = await Product.findById(id);
     const sold = product.sold + totalProductQuantity;
