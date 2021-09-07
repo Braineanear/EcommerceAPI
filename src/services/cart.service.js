@@ -133,7 +133,7 @@ export const reduceByOne = catchAsync(async (email, productId) => {
 
   // 5) Find Product Index Inside Cart
   const indexFound = cart.items.findIndex(
-    (item) => item.product.name === product.name
+    (item) => item.product.toString() === product._id.toString()
   );
 
   // 6) Check If Product Doesn't Exist In The Cart
@@ -212,7 +212,7 @@ export const increaseByOne = catchAsync(async (email, productId) => {
 
   // 5) Find Product Index Inside Cart
   const indexFound = cart.items.findIndex(
-    (item) => item.product.name === product.name
+    (item) => item.product.toString() === product._id.toString()
   );
 
   // 6) Check If Product Doesn't Exist In The Cart
