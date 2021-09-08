@@ -220,7 +220,7 @@ export const addReview = {
               type: 'string',
               required: true
             },
-            rateing: {
+            rating: {
               type: 'integer',
               required: true
             }
