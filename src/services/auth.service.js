@@ -174,7 +174,7 @@ export const signin = catchAsync(async (email, password) => {
   return {
     type: 'Success',
     statusCode: 200,
-    message: 'successfulogin',
+    message: 'successfulLogin',
     user,
     tokens
   };
