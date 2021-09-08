@@ -128,7 +128,7 @@ export const updateReview = catchAsync(async (user, id, body) => {
     };
   }
 
-  if (user._id !== review.user) {
+  if (user._id.toString() !== review.user.toString()) {
     return {
       type: 'Error',
       statusCode: 400,
