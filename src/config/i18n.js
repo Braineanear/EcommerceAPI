@@ -33,6 +33,7 @@ export const messages = {
     selectImages: 'Please select one or more images!',
     noReviewsFound: 'No reviews found.',
     noReviewFound: 'No review found with this ID',
+    onlyOneReview: 'Sorry, you cannot write more than one review.',
     notReviewCreator:
       'Sorry you are not the creator of this review. You are not authorized to perform this action.',
     noUsersFound: 'No users found.',
@@ -124,6 +125,7 @@ export const messages = {
     selectImages: 'برجاء اختيار صورة واحدة أو أكثر!',
     noReviewsFound: 'لم يتم العثور علي أي تقييمات.',
     noReviewFound: 'لم يتم العثور علي تقييم بهذا الرقم.',
+    onlyOneReview: 'عفواً, لا يمكنك كتابة اكثر من تقييم واحد.',
     notReviewCreator:
       'نأسف لكنك لست مالك هذا التقييم. لست مصرح بتنفيذ ذلك الأمر.',
     noUsersFound: 'لم يتم العثور علي أي مستخدمين.',
