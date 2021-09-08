@@ -136,6 +136,14 @@ export const updateReview = catchAsync(async (user, id, body) => {
     };
   }
 
+  if (body.rating < 1) {
+    return {
+      type: 'Error',
+      statusCode: 400,
+      message: 'ratingLessThanOne'
+    };
+  }
+
   // 3) Update Review
   const result = await Review.findByIdAndUpdate(id, body, {
     new: true,
