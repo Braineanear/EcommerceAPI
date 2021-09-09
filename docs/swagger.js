@@ -25,10 +25,6 @@ import {
   updateProductDetails,
   updateProductMainImage,
   updateProductImages,
-  addFavoriteProduct,
-  deleteProductFromFavorite,
-  checkProductInFavoriteList,
-  getFavoriteList,
   deleteProduct
 } from './product.swagger';
 
@@ -60,6 +56,13 @@ import {
 } from './user.swagger';
 
 import { createNewOrder, getAllOrders } from './order.swagger';
+
+import {
+  addFavoriteProduct,
+  deleteProductFromFavorite,
+  checkProductInFavoriteList,
+  getFavoriteList
+} from './favorite.swagger';
 
 const docs = {
   openapi: '3.0.3',
@@ -169,14 +172,14 @@ const docs = {
     '/product/{id}/images': {
       patch: updateProductImages
     },
-    '/product/favorite': {
+    '/favorite': {
       get: getFavoriteList,
       post: addFavoriteProduct
     },
-    '/product/favorite/{id}': {
+    '/favorite/{id}': {
       delete: deleteProductFromFavorite
     },
-    '/product/favorite/check/{id}': {
+    '/favorite/check/{id}': {
       get: checkProductInFavoriteList
     },
     '/cart': {
