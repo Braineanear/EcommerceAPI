@@ -64,6 +64,12 @@ import {
   getFavoriteList
 } from './favorite.swagger';
 
+import {
+  verifyDiscountCode,
+  getAllDiscountCodes,
+  generateDiscountCode
+} from './discount.swagger';
+
 const docs = {
   openapi: '3.0.3',
   info: {
@@ -181,6 +187,15 @@ const docs = {
     },
     '/favorite/check/{id}': {
       get: checkProductInFavoriteList
+    },
+    '/discount': {
+      get: getAllDiscountCodes
+    },
+    '/discount/verify': {
+      post: verifyDiscountCode
+    },
+    '/discount/generate': {
+      post: generateDiscountCode
     },
     '/cart': {
       get: getCart,
