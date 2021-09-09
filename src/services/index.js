@@ -56,11 +56,7 @@ import {
   updateProductMainImage,
   updateProductImages,
   deleteProduct,
-  getProductStats,
-  addFavoriteProduct,
-  getFavoriteList,
-  deleteProductFromFavorite,
-  checkProductInFavoriteList
+  getProductStats
 } from './product.service';
 
 import {
@@ -78,6 +74,19 @@ import {
   queryOrder,
   cancelOrder
 } from './order.service';
+
+import {
+  verifyDiscountCode,
+  getAllDiscountCodes,
+  generateDiscountCode
+} from './discount.service';
+
+import {
+  addFavoriteProduct,
+  getFavoriteList,
+  deleteProductFromFavorite,
+  checkProductInFavoriteList
+} from './favorite.service';
 
 const authService = {
   signin,
@@ -137,11 +146,7 @@ const productService = {
   updateProductMainImage,
   updateProductImages,
   deleteProduct,
-  getProductStats,
-  addFavoriteProduct,
-  getFavoriteList,
-  deleteProductFromFavorite,
-  checkProductInFavoriteList
+  getProductStats
 };
 
 const cartService = {
@@ -160,6 +165,19 @@ const orderService = {
   cancelOrder
 };
 
+const discountService = {
+  verifyDiscountCode,
+  getAllDiscountCodes,
+  generateDiscountCode
+};
+
+const favoriteService = {
+  addFavoriteProduct,
+  getFavoriteList,
+  deleteProductFromFavorite,
+  checkProductInFavoriteList
+};
+
 export {
   authService,
   tokenService,
@@ -169,5 +187,7 @@ export {
   productService,
   reviewService,
   cartService,
-  orderService
+  orderService,
+  discountService,
+  favoriteService
 };
