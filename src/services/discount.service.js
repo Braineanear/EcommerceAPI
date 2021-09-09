@@ -96,6 +96,20 @@ export const generateDiscountCode = catchAsync(
     availableStart,
     availableEnd
   ) => {
+    if (
+      !codeLength ||
+      !discountStart ||
+      !discountEnd ||
+      !availableStart ||
+      !availableEnd
+    ) {
+      return {
+        type: 'Error',
+        statusCode: 400,
+        message: 'fieldsRequired'
+      };
+    }
+
     const lowercaseAlphabet = 'abcdefghijklmnopqrstuvwxyz';
     const uppercaseAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers = '0123456789';
