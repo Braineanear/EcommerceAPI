@@ -28,6 +28,7 @@ export const messages = {
     categoryImageRequired: 'Image is required, please upload an image!',
     noOrders: 'No orders found',
     noOrder: 'No order found',
+    noFavoriteListFound: 'No favorite list found.',
     noProductsInFavorite: 'No products on the favorite list found',
     selectImage: 'Please select an image!',
     selectImages: 'Please select one or more images!',
@@ -38,6 +39,8 @@ export const messages = {
     notReviewCreator:
       'Sorry you are not the creator of this review. You are not authorized to perform this action.',
     noUsersFound: 'No users found.',
+    noDiscountCodeFound: 'No discount code found.',
+    noDiscountCodesFound: 'No discount codes found',
     noUserFoundWithID: 'No user found with this ID.',
     notFoundInFavoriteList: 'Product not found in favorite list.',
     passwordUpdateRoute:
@@ -89,7 +92,11 @@ export const messages = {
     productStatics: 'These are some statistics about products.',
     successfulDeleteProductFromFavorite:
       'Product deleted from favorite list successfully.',
-    successfulProductFoundInFavorite: 'Product in favorite list.'
+    successfulProductFoundInFavorite: 'Product in favorite list.',
+    successfulCodeVerification:
+      'Discount code verification completed successfully.',
+    successfulDiscountCodesFound: 'Discount codes found successfully.',
+    successfulCodeGeneration: 'Discount code generated successfully.'
   },
   ar: {
     profileImageRequired: 'الصورة الشخصية مطلوبة. رجاءً قم برفع صورة.',
@@ -121,6 +128,7 @@ export const messages = {
     categoryImageRequired: 'الصورة مطلوبة. برجاء رفع صورة!',
     noOrders: 'لم يتم العثور علي أي طلبات.',
     noOrder: 'لم يتم العثور علي ذلك الطلب.',
+    noFavoriteListFound: 'لم يتم العثور علي قائمة المفضلة.',
     noProductsInFavorite: 'لم يتم العثور علي أي منتجات في قائمة المفضلة.',
     selectImage: 'برجاء اختيار صورة!',
     selectImages: 'برجاء اختيار صورة واحدة أو أكثر!',
@@ -131,6 +139,8 @@ export const messages = {
     notReviewCreator:
       'نأسف لكنك لست مالك هذا التقييم. لست مصرح بتنفيذ ذلك الأمر.',
     noUsersFound: 'لم يتم العثور علي أي مستخدمين.',
+    noDiscountCodeFound: 'لم يتم العثور علي كود الخصم.',
+    noDiscountCodesFound: 'لم يتم العثور علي أكواد الخصم.',
     noUserFoundWithID: 'لم يتم العثور علي المستخدم الذي رقمه.',
     notFoundInFavoriteList: 'لم يتم العثور علي المنتج في قائمة المفضلة.',
     passwordUpdateRoute:
@@ -184,6 +194,9 @@ export const messages = {
     productStatics: 'هذه بعض الإحصائيات عن المنتجات.',
     successfulDeleteProductFromFavorite:
       'تم حذف المنتج من قائمة المفضلة بنجاح.',
-    successfulProductFoundInFavorite: 'تم العثور علي المنتج في قائمة المفضلة'
+    successfulProductFoundInFavorite: 'تم العثور علي المنتج في قائمة المفضلة',
+    successfulCodeVerification: 'تم التأكد من كود الخصم بنجاح.',
+    successfulDiscountCodesFound: 'تم العثور علي أكواد الخصم بنجاح.',
+    successfulCodeGeneration: 'تم انشاء كود خصم بنجاح.'
   }
 };
