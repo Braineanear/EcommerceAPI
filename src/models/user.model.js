@@ -79,12 +79,9 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true
     },
-    favoriteProducts: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: 'Product'
-      }
-    ]
+    discountCode: {
+      type: String
+    }
   },
   {
     timestamps: true
