@@ -18,11 +18,7 @@ import {
   updateProductImages,
   deleteProduct,
   top5Cheap,
-  productStats,
-  addFavoriteProduct,
-  getFavoriteList,
-  deleteProductFromFavorite,
-  checkProductInFavoriteList
+  productStats
 } from './product.controller';
 
 import {
@@ -68,6 +64,19 @@ import {
   cancelOrder
 } from './order.controller';
 
+import {
+  verifyDiscountCode,
+  getAllDiscountCodes,
+  generateDiscountCode
+} from './discount.controller';
+
+import {
+  addFavoriteProduct,
+  getFavoriteList,
+  deleteProductFromFavorite,
+  checkProductInFavoriteList
+} from './favorite.controller';
+
 const authController = {
   signin,
   signup,
@@ -107,11 +116,7 @@ const productController = {
   updateProductImages,
   deleteProduct,
   top5Cheap,
-  productStats,
-  addFavoriteProduct,
-  getFavoriteList,
-  deleteProductFromFavorite,
-  checkProductInFavoriteList
+  productStats
 };
 
 const reviewController = {
@@ -138,6 +143,19 @@ const orderController = {
   cancelOrder
 };
 
+const discountController = {
+  verifyDiscountCode,
+  getAllDiscountCodes,
+  generateDiscountCode
+};
+
+const favoriteController = {
+  addFavoriteProduct,
+  getFavoriteList,
+  deleteProductFromFavorite,
+  checkProductInFavoriteList
+};
+
 export {
   authController,
   userController,
@@ -145,5 +163,7 @@ export {
   categoryController,
   reviewController,
   cartController,
-  orderController
+  orderController,
+  discountController,
+  favoriteController
 };
