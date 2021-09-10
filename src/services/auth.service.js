@@ -6,24 +6,27 @@ import catchAsync from '../utils/catchAsync';
 import dataUri from '../utils/datauri';
 import { uploadFile } from '../utils/cloudinary';
 
+// Middlewares
+import {
+  verifyToken,
+  generateAuthTokens,
+  generateVerifyEmailToken
+} from '../middlewares/token';
+
 // Services
 import {
   sendAfterResetPasswordMessage,
   sendVerificationEmail
 } from './email.service';
-import {
-  verifyToken,
-  generateAuthTokens,
-  generateVerifyEmailToken
-} from './token.service';
 
 // Models
 import { User, Token } from '../models/index';
 
 /**
- * Sign Up Service
- * @param { Object } body
- * @param { Object } profileImage
+ * @desc    Sign Up Service
+ * @param   { Object } body - Body object data
+ * @param   { Object } profileImage - User profile image
+ * @return  { Object<type|statusCode|message|user|tokens> }
  */
 export const signup = catchAsync(async (body, profileImage) => {
   // 1) Check if profile image not provided
@@ -38,6 +41,7 @@ export const signup = catchAsync(async (body, profileImage) => {
   const { name, username, email, password, passwordConfirmation, role } = body;
   let { companyName, address, phone } = body;
 
+  // 2) Check all fields
   if (!companyName) companyName = '';
   if (!address) address = '';
   if (!phone) phone = '';
@@ -58,6 +62,7 @@ export const signup = catchAsync(async (body, profileImage) => {
     };
   }
 
+  // 3) Check if password length less than 8
   if (password.length < 8) {
     return {
       type: 'Error',
@@ -66,6 +71,7 @@ export const signup = catchAsync(async (body, profileImage) => {
     };
   }
 
+  // 4) Make admin role forbidden
   if (!['user', 'seller'].includes(role)) {
     return {
       type: 'Error',
@@ -74,9 +80,9 @@ export const signup = catchAsync(async (body, profileImage) => {
     };
   }
 
-  // 2) Check if the email already taken
   const isEmailTaken = await User.isEmailTaken(email);
 
+  // 5) Check if the email already taken
   if (isEmailTaken) {
     return {
       type: 'Error',
@@ -85,17 +91,17 @@ export const signup = catchAsync(async (body, profileImage) => {
     };
   }
 
-  // 3) Specifiy folder name where the images are going to be uploaded in cloudinary
+  // 5) Specifiy folder name where the images are going to be uploaded in cloudinary
   const folderName = `Users/${name.trim().split(' ').join('')}`;
 
-  // 4) Upload image to cloudinary
+  // 6) Upload image to cloudinary
   const image = await uploadFile(
     dataUri(profileImage).content,
     folderName,
     600
   );
 
-  // 5) Create new user account
+  // 7) Create new user account
   const user = await User.create({
     name,
     username,
@@ -110,19 +116,19 @@ export const signup = catchAsync(async (body, profileImage) => {
     profileImageId: image.public_id
   });
 
-  // 9) Generate tokens (access token & refresh token)
+  // 8) Generate tokens (access token & refresh token)
   const tokens = await generateAuthTokens(user);
 
-  // 10) Generate Verification Email Token
+  // 9) Generate Verification Email Token
   const verifyEmailToken = await generateVerifyEmailToken(user);
 
-  // 11) Sending Verification Email
+  // 10) Sending Verification Email
   await sendVerificationEmail(user.email, verifyEmailToken);
 
-  // 12) Remove the password from the output
+  // 11) Remove the password from the output
   user.password = undefined;
 
-  // 13) If everything is OK, send user data
+  // 12) If everything is OK, send user data
   return {
     type: 'Success',
     statusCode: 201,
@@ -133,9 +139,10 @@ export const signup = catchAsync(async (body, profileImage) => {
 });
 
 /**
- * Sign In Service
- * @param { String } email
- * @param { String } password
+ * @desc    Sign In Service
+ * @param   { String } email - User email address
+ * @param   { String } password - User password
+ * @return  { Object<type|statusCode|message|user|tokens> }
  */
 export const signin = catchAsync(async (email, password) => {
   // 1) Check if email and password exist
@@ -157,10 +164,9 @@ export const signin = catchAsync(async (email, password) => {
     };
   }
 
-  // 4) Match Passwords
   const isMatch = await user.isPasswordMatch(password);
 
-  // 5) Check if passwords match
+  // 4) Check if passwords match
   if (!isMatch) {
     return {
       statusCode: 401,
@@ -168,9 +174,10 @@ export const signin = catchAsync(async (email, password) => {
     };
   }
 
-  // 4) If everything ok, send token to client
+  // 5) Generate authentication tokens
   const tokens = await generateAuthTokens(user);
 
+  // 6) If everything ok, send data
   return {
     type: 'Success',
     statusCode: 200,
@@ -181,17 +188,18 @@ export const signin = catchAsync(async (email, password) => {
 });
 
 /**
- * Logout Service
- * @param { String } refreshToken
+ * @desc    Logout Service
+ * @param   { String } refreshToken - User's refresh token
+ * @return  { Object }
  */
 export const logout = catchAsync(async (refreshToken) => {
-  // 1) Find Token Document and Delete it
+  // 1) Find token document and delete it
   const refreshTokenDoc = await Token.findOneAndDelete({
     token: refreshToken,
     type: tokenTypes.REFRESH
   });
 
-  // 2) Check if Token Already Exist
+  // 2) Check if token already exist
   if (!refreshTokenDoc) {
     return {
       type: 'Error',
@@ -199,6 +207,8 @@ export const logout = catchAsync(async (refreshToken) => {
       message: 'loginAgain'
     };
   }
+
+  // 3) If everything ok, send data
   return {
     type: 'Success',
     statusCode: 200,
@@ -207,13 +217,15 @@ export const logout = catchAsync(async (refreshToken) => {
 });
 
 /**
- * Refresh Auth Tokens Service
- * @param { String } refreshToken
+ * @desc    Refresh Auth Tokens Service
+ * @param   { String } refreshToken - User's refresh token
+ * @return  { Object<type|statusCode|message|tokens> }
  */
 export const refreshAuth = catchAsync(async (refreshToken) => {
-  // 1) Verify Refresh Token
+  // 1) Verify refresh token
   const refreshTokenDoc = await verifyToken(refreshToken, tokenTypes.REFRESH);
 
+  // 2) Check if refresh token document already exist
   if (!refreshTokenDoc) {
     return {
       type: 'Error',
@@ -224,7 +236,7 @@ export const refreshAuth = catchAsync(async (refreshToken) => {
 
   const user = await User.findById(refreshTokenDoc.user);
 
-  // 3) Check if User Already Exist
+  // 3) Check if user already exist
   if (!user) {
     return {
       type: 'Error',
@@ -233,9 +245,10 @@ export const refreshAuth = catchAsync(async (refreshToken) => {
     };
   }
 
+  // 4) Generate authentication tokens
   const tokens = await generateAuthTokens(user);
 
-  // 4) If Everything is OK, Send Generate Tokens
+  // 5) If everything is OK, send data
   return {
     type: 'Success',
     statusCode: 200,
@@ -245,9 +258,11 @@ export const refreshAuth = catchAsync(async (refreshToken) => {
 });
 
 /**
- * Reset Password Service
- * @param { String } resetPasswordToken
- * @param { String } newPassword
+ * @desc    Reset Password Service
+ * @param   { String } token - Reset password token
+ * @param   { String } password - User's password
+ * @param   { String } passwordConfirmation - User's password confirmation
+ * @return  { Object<type|statusCode|message> }
  */
 export const resetPassword = catchAsync(
   async (token, password, passwordConfirmation) => {
@@ -259,13 +274,13 @@ export const resetPassword = catchAsync(
         message: 'passConfirm'
       };
     }
-    // 2) Verify Reset Password Token
+    // 2) Verify reset password token
     const resetPasswordTokenDoc = await verifyToken(
       token,
       tokenTypes.RESET_PASSWORD
     );
 
-    // 3) Check if token already exists
+    // 3) Check if reset password token document already exists
     if (!resetPasswordTokenDoc) {
       return {
         type: 'Error',
@@ -274,10 +289,9 @@ export const resetPassword = catchAsync(
       };
     }
 
-    // 4) Find User and Update it's Password
     const user = await User.findById(resetPasswordTokenDoc.user);
 
-    // 5) Check if user already exist
+    // 4) Check if user already exist
     if (!user) {
       return {
         type: 'Error',
@@ -286,20 +300,19 @@ export const resetPassword = catchAsync(
       };
     }
 
-    // 6) Save user password
+    // 5) Save user password
     user.password = password;
     await user.save();
 
-    // 7) Sending After Reset Password Mail
+    // 6) Sending after reset password mail
     await sendAfterResetPasswordMessage(user.email);
 
-    // 8) Deleteing User Reset Token
-    await Token.deleteMany({
-      user: user.id,
+    // 7) Deleteing user reset token
+    await Token.findByIdAndDelete(user.id, {
       type: tokenTypes.RESET_PASSWORD
     });
 
-    // 9) If everything is OK, send data
+    // 8) If everything is OK, send data
     return {
       type: 'Success',
       statusCode: 200,
@@ -309,20 +322,20 @@ export const resetPassword = catchAsync(
 );
 
 /**
- * Verify Email Service
- * @param { String } verifyEmailToken
+ * @desc    Verify Email Service
+ * @param   { String } verifyEmailToken - Email verification token
+ * @returns { Object<type|statusCode|message> }
  */
 export const verifyEmail = catchAsync(async (verifyEmailToken) => {
-  // 1) Verify Email Token
+  // 1) Verify email token
   const verifyEmailTokenDoc = await verifyToken(
     verifyEmailToken,
     tokenTypes.VERIFY_EMAIL
   );
 
-  // 2) Find User
   const user = await User.findById(verifyEmailTokenDoc.user);
 
-  // 3) Check if User Already Exist
+  // 2) Check if user already exist
   if (!user) {
     return {
       type: 'Error',
@@ -331,12 +344,13 @@ export const verifyEmail = catchAsync(async (verifyEmailToken) => {
     };
   }
 
-  // 4) Deleting User Verify Email Token
-  await Token.deleteMany({ user: user.id, type: tokenTypes.VERIFY_EMAIL });
+  // 3) Deleting user verify email token
+  await Token.findByIdAndDelete(user.id, { type: tokenTypes.VERIFY_EMAIL });
 
-  // 5) Update User isEmailVerified Filed (Set True)
+  // 4) Update user isEmailVerified filed (set true)
   await User.findByIdAndUpdate(user.id, { isEmailVerified: true });
 
+  // 5) If everything is OK, send data
   return {
     type: 'Sucess',
     statusCode: 200,
