@@ -1,5 +1,9 @@
 // Utils
 import catchAsync from '../utils/catchAsync';
+import {
+  sendResetPasswordEmail,
+  sendVerificationEmail as sendVerifyEmail
+} from '../utils/sendEmail';
 
 // Middlewares
 import {
@@ -8,7 +12,7 @@ import {
 } from '../middlewares/token';
 
 // Services
-import { authService, emailService } from '../services';
+import { authService } from '../services';
 
 /**
  * @desc      Sign Up Controller
@@ -147,7 +151,7 @@ export const forgotPassword = catchAsync(async (req, res) => {
   const resetPasswordToken = await generateResetPasswordToken(email);
 
   // 2) Sending reset link to user email
-  await emailService.sendResetPasswordEmail(email, resetPasswordToken);
+  await sendResetPasswordEmail(email, resetPasswordToken);
 
   // 3) If everything is OK, send data
   return res.status(200).json({
@@ -210,7 +214,7 @@ export const sendVerificationEmail = catchAsync(async (req, res) => {
   const verifyEmailToken = await generateVerifyEmailToken(user);
 
   // 3) Sending verification email to user email
-  await emailService.sendVerificationEmail(user.email, verifyEmailToken);
+  await sendVerifyEmail(user.email, verifyEmailToken);
 
   // 4) If everything is OK, send data
   return res.status(200).json({
