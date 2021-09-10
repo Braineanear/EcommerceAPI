@@ -5,12 +5,12 @@ import catchAsync from '../utils/catchAsync';
 import { discountService } from '../services';
 
 /**
- * Verify Discount Code Controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { Object } req.body
- * @property  { Object } req.user
- * @return    { JSON }
+ * @desc      Verify Discount Code Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { Object } req.body.discountCode - Discount code
+ * @property  { Object } req.user - An object contains logged in user data
+ * @return    { JSON } - A JSON object representing the type, message and the code
  */
 export const verifyDiscountCode = catchAsync(async (req, res) => {
   // 1) Verify discount code
@@ -34,11 +34,10 @@ export const verifyDiscountCode = catchAsync(async (req, res) => {
 });
 
 /**
- * Verify Discount Code Controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { Object } req
- * @return    { JSON }
+ * @desc    Verify Discount Code Controller
+ * @param   { Object } req - Request object
+ * @param   { Object } res - Response object
+ * @return  { JSON } - A JSON object representing the type, message and the codes
  */
 export const getAllDiscountCodes = catchAsync(async (req, res) => {
   // 1) Verify discount code
@@ -62,11 +61,15 @@ export const getAllDiscountCodes = catchAsync(async (req, res) => {
 });
 
 /**
- * Verify Discount Code Controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { Object } req
- * @return    { JSON }
+ * @desc      Verify Discount Code Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { Number } req.body.codeLength - Length of the discount code
+ * @property  { Number } req.body.discountStart - Start of the discount code
+ * @property  { Number } req.body.discountEnd - End of the discount code
+ * @property  { Number } req.body.availableStart - The begin number of available discount code
+ * @property  { Number } req.body.availableEnd - The end number of available discount code
+ * @return    { JSON } - A JSON object representing the type, message and the discount code
  */
 export const generateDiscountCode = catchAsync(async (req, res) => {
   const {

@@ -5,16 +5,16 @@ import catchAsync from '../utils/catchAsync';
 import { favoriteService } from '../services';
 
 /**
- * Get product's favorite list controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { Object }  req.user._id
- * @returns   { JSON }
+ * @desc      Get product's favorite list controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String }  req.user.id - User ID
+ * @returns   { JSON } - A JSON object representing the type, message and the favorite list
  */
 export const getFavoriteList = catchAsync(async (req, res) => {
   // 1) Calling addFavoriteProduct service
   const { type, message, statusCode, favorite } =
-    await favoriteService.getFavoriteList(req.user._id);
+    await favoriteService.getFavoriteList(req.user.id);
 
   // 2) Check if something went wrong
   if (type === 'Error') {
@@ -33,17 +33,17 @@ export const getFavoriteList = catchAsync(async (req, res) => {
 });
 
 /**
- * Add product to favorite list controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { String } req.body.productId
- * @property  { Object }  req.user._id
- * @returns   { JSON }
+ * @desc      Add product to favorite list controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.body.productId - Product ID
+ * @property  { String }  req.user.id - User ID
+ * @returns   { JSON } - A JSON object representing the type and message
  */
 export const addFavoriteProduct = catchAsync(async (req, res) => {
   // 1) Calling addFavoriteProduct service
   const { type, message, statusCode } =
-    await favoriteService.addFavoriteProduct(req.user._id, req.body.productId);
+    await favoriteService.addFavoriteProduct(req.user.id, req.body.productId);
 
   // 2) Check if something went wrong
   if (type === 'Error') {
@@ -61,20 +61,17 @@ export const addFavoriteProduct = catchAsync(async (req, res) => {
 });
 
 /**
- * delete product from favorite list controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { String } req.params.id
- * @property  { Object }  req.user._id
- * @returns   { JSON }
+ * @desc      delete product from favorite list controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.id - Product ID
+ * @property  { String }  req.user.id - User ID
+ * @returns   { JSON } - A JSON object representing the type and message
  */
 export const deleteProductFromFavorite = catchAsync(async (req, res) => {
   // 1) Calling deleteProductFromFavorite service
   const { type, message, statusCode } =
-    await favoriteService.deleteProductFromFavorite(
-      req.user._id,
-      req.params.id
-    );
+    await favoriteService.deleteProductFromFavorite(req.user.id, req.params.id);
 
   // 2) Check if something went wrong
   if (type === 'Error') {
@@ -92,18 +89,18 @@ export const deleteProductFromFavorite = catchAsync(async (req, res) => {
 });
 
 /**
- * Check if product in favorite list controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { String } req.params.id
- * @property  { Object }  req.user._id
- * @returns   { JSON }
+ * @desc      Check if product in favorite list controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response
+ * @property  { String } req.params.id - Product ID
+ * @property  { String }  req.user.id - User ID
+ * @returns   { JSON } - A JSON object representing the type and message
  */
 export const checkProductInFavoriteList = catchAsync(async (req, res) => {
   // 1) Calling checkProductInFavoriteList service
   const { type, message, statusCode } =
     await favoriteService.checkProductInFavoriteList(
-      req.user._id,
+      req.user.id,
       req.params.id
     );
 

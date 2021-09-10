@@ -5,14 +5,14 @@ import catchAsync from '../utils/catchAsync';
 import { productService } from '../services/index';
 
 /**
- * Get All Products Controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { String } req.query.sort
- * @property  { String }  req.query.select
- * @property  { Number }  req.query.page
- * @property  { Number }  req.query.limit
- * @returns   { JSON }
+ * @desc      Get All Products Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.query.sort - Sort returned data
+ * @property  { String } req.query.select - Select specific fields
+ * @property  { Number } req.query.page - Page number
+ * @property  { Number } req.query.limit - Maximum number of products
+ * @returns   { JSON } - A JSON object representing the type, message and the products
  */
 export const getAllProducts = catchAsync(async (req, res) => {
   let { page, sort, limit, select } = req.query;
@@ -44,18 +44,16 @@ export const getAllProducts = catchAsync(async (req, res) => {
 });
 
 /**
- * Get Product Using It's ID Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { ObjectId }  req.params.id
- * @returns   { JSON }
+ * @desc      Get Product Using It's ID Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.id - Product ID
+ * @returns   { JSON } - A JSON object representing the type, message, and the product
  */
 export const getProduct = catchAsync(async (req, res) => {
-  const { id } = req.params;
-
   // 1) Get product using it's ID
   const { type, message, statusCode, product } =
-    await productService.queryProductById(id);
+    await productService.queryProductById(req.params.id);
 
   // 2) Check if there is an error
   if (type === 'Error') {
@@ -74,13 +72,13 @@ export const getProduct = catchAsync(async (req, res) => {
 });
 
 /**
- * Create New Product Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { Object }    req.body
- * @property  { Object }    req.files
- * @property  { ObjectId }  req.user._id
- * @returns   { JSON }
+ * @desc      Create New Product Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { Object } req.body - Body object data
+ * @property  { Object } req.files - Product images
+ * @property  { String } req.user._id - User ID
+ * @returns   { JSON } - A JSON object representing the type, message and the product
  */
 export const addProduct = catchAsync(async (req, res) => {
   const { body, files, user } = req;
@@ -106,12 +104,12 @@ export const addProduct = catchAsync(async (req, res) => {
 });
 
 /**
- * Update Product Details Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { ObjectId }  req.params.id
- * @property  { Object }    req.body
- * @returns   { JSON }
+ * @desc      Update Product Details Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.id - Product ID
+ * @property  { Object } req.body - Body object data
+ * @returns   { JSON } - A JSON object representing the type, message and the product
  */
 export const updateProductDetails = catchAsync(async (req, res) => {
   // 1) Update product details using it's ID
@@ -135,12 +133,12 @@ export const updateProductDetails = catchAsync(async (req, res) => {
 });
 
 /**
- * Update Product Main Image Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { Object }    req.files
- * @property  { ObjectId }  req.params.id
- * @returns   { JSON }
+ * @desc      Update Product Main Image Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { Object } req.files - Product main image
+ * @property  { String } req.params.id - Product ID
+ * @returns   { JSON } - A JSON object representing the type, message, and the product
  */
 export const updateProductMainImage = catchAsync(async (req, res) => {
   // 1) Update product main image using it's ID
@@ -163,12 +161,12 @@ export const updateProductMainImage = catchAsync(async (req, res) => {
 });
 
 /**
- * Update Product Images Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { Object }    req.files
- * @property  { ObjectId }  req.params.id
- * @returns   { JSON }
+ * @desc      Update Product Images Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { Object } req.files - Product sub images
+ * @property  { String } req.params.id - Product ID
+ * @returns   { JSON } - A JSON object representing the type, message, and the product
  */
 export const updateProductImages = catchAsync(async (req, res) => {
   // 1) Update product images using it's ID
@@ -192,11 +190,11 @@ export const updateProductImages = catchAsync(async (req, res) => {
 });
 
 /**
- * Delete Product Controller
- * @param     { Object }     req
- * @param     { Object }     res
- * @property  { ObjectId }   req.params.id
- * @return    { JSON }
+ * @desc      Delete Product Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.id - Product ID
+ * @return    { JSON } - A JSON object representing the type and message
  */
 export const deleteProduct = catchAsync(async (req, res) => {
   // 1) Delete product using it's ID
@@ -220,10 +218,10 @@ export const deleteProduct = catchAsync(async (req, res) => {
 });
 
 /**
- * Get Top 5 Cheapeast Products Controller
- * @param   { Object } req
- * @param   { Object } res
- * @param   { Object } next
+ * @desc    Get Top 5 Cheapeast Products Controller
+ * @param   { Object } req - Request object
+ * @param   { Object } res - Response object
+ * @param   { Object } next - Next function
  */
 export const top5Cheap = catchAsync(async (req, res, next) => {
   // Limiting products to top 5 products
@@ -234,10 +232,10 @@ export const top5Cheap = catchAsync(async (req, res, next) => {
 });
 
 /**
- * Get Products Statics Controller
- * @param   { Object } req
- * @param   { Object } res
- * @return  { JSON }
+ * @desc    Get Products Statics Controller
+ * @param   { Object } req - Request object
+ * @param   { Object } res - Response object
+ * @return  { JSON } - A JSON object representing the type, message and the stats
  */
 export const productStats = catchAsync(async (req, res) => {
   // 1) Get product stats
@@ -245,7 +243,7 @@ export const productStats = catchAsync(async (req, res) => {
 
   // 2) If everything is OK, send data
   return res.status(200).json({
-    status: 'success',
+    type: 'Success',
     message: req.polyglot.t('productStatics'),
     stats
   });
