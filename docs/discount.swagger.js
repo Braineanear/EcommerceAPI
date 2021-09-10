@@ -270,9 +270,9 @@ export const verifyDiscountCode = {
                 type: 'string',
                 example: 'Discount code verification completed successfully.'
               },
-              code: {
-                type: 'string',
-                example: 'bbrgVdTh9i'
+              discount: {
+                type: 'number',
+                example: 29
               }
             }
           }
