@@ -317,6 +317,10 @@ export const signIn = {
                   _id: {
                     type: 'string',
                     example: '611d08a62fc210a30ecfb75b'
+                  },
+                  discountCode: {
+                    type: 'string',
+                    example: 'xvgVxIV0LJ'
                   }
                 }
               },
