@@ -5,6 +5,10 @@ import tokenTypes from '../config/tokens';
 import catchAsync from '../utils/catchAsync';
 import dataUri from '../utils/datauri';
 import { uploadFile } from '../utils/cloudinary';
+import {
+  sendVerificationEmail,
+  sendAfterResetPasswordMessage
+} from '../utils/sendEmail';
 
 // Middlewares
 import {
@@ -12,12 +16,6 @@ import {
   generateAuthTokens,
   generateVerifyEmailToken
 } from '../middlewares/token';
-
-// Services
-import {
-  sendAfterResetPasswordMessage,
-  sendVerificationEmail
-} from './email.service';
 
 // Models
 import { User, Token } from '../models/index';
