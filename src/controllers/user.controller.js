@@ -5,12 +5,12 @@ import catchAsync from '../utils/catchAsync';
 import { userService } from '../services/index';
 
 /**
- * Create New User Controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { Object } req.body
- * @property  { Object } req.file
- * @returns   { JSON }
+ * @desc      Create New User Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { Object } req.body - Body object data
+ * @property  { Object } req.file - User image
+ * @returns   { JSON } - A JSON object representing the type, message and user data
  */
 export const createUser = catchAsync(async (req, res) => {
   // 1) Create new user
@@ -36,14 +36,14 @@ export const createUser = catchAsync(async (req, res) => {
 });
 
 /**
- * Get All Users Controller
- * @param     { Object }  req
- * @param     { Object }  res
- * @property  { String }  req.query.sort
- * @property  { String }  req.query.select
- * @property  { Number }  req.query.page
- * @property  { Number }  req.query.limit
- * @returns   { JSON }
+ * @desc      Get All Users Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.query.sort - Sort returned data
+ * @property  { String } req.query.select - Select specific fields
+ * @property  { Number } req.query.page - Page number
+ * @property  { Number } req.query.limit - Maximum number of users in page
+ * @returns   { JSON } - A JSON object representing the type, message and users
  */
 export const getUsers = catchAsync(async (req, res) => {
   let { page, sort, limit, select } = req.query;
@@ -76,17 +76,17 @@ export const getUsers = catchAsync(async (req, res) => {
 });
 
 /**
- * Get User Data Using It's ID Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { ObjectId }  req.params.id
- * @returns   { JSON }
+ * @desc      Get User Data Using It's ID Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.id - User ID
+ * @returns   { JSON } - A JSON object representing the type, message, and user data
  */
 export const getUser = catchAsync(async (req, res) => {
-  const { id } = req.params;
-
   // 1) Find User Document By It's ID Controller
-  const { type, message, statusCode, user } = await userService.queryUser(id);
+  const { type, message, statusCode, user } = await userService.queryUser(
+    req.params.id
+  );
 
   // 2) Check if there is an error
   if (type === 'Error') {
@@ -105,12 +105,12 @@ export const getUser = catchAsync(async (req, res) => {
 });
 
 /**
- * Update User Details Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { Object }    req.body
- * @property  { Object }  req.user
- * @returns   { JSON }
+ * @desc      Update User Details Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { Object } req.body - Body object data
+ * @property  { Object } req.user - An object contains logged in user data
+ * @returns   { JSON } - A JSON object representing the type, message and user data
  */
 export const updateUserDetails = catchAsync(async (req, res) => {
   // 1) Find user document and update it's details
@@ -134,12 +134,12 @@ export const updateUserDetails = catchAsync(async (req, res) => {
 });
 
 /**
- * Update User Profile Image Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { Object }    req.file
- * @property  { Object }  req.user
- * @returns   { JSON }
+ * @desc      Update User Profile Image Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { Object } req.file - User image
+ * @property  { Object } req.user - An object contains logged in user data
+ * @returns   { JSON } - A JSON object representing the type, message and user data
  */
 export const updateUserProfileImage = catchAsync(async (req, res) => {
   // 1) Find user document and update it's profile image
@@ -163,11 +163,11 @@ export const updateUserProfileImage = catchAsync(async (req, res) => {
 });
 
 /**
- * Delete User's Data Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { ObjectId }  req.params.id
- * @returns   { JSON }
+ * @desc      Delete User's Data Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.id - User ID
+ * @returns   { JSON } - A JSON object representing the type and message
  */
 export const deleteUser = catchAsync(async (req, res) => {
   // 1) Find user document and delete it
@@ -191,11 +191,11 @@ export const deleteUser = catchAsync(async (req, res) => {
 });
 
 /**
- * Delete LoggedIn User's Data Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { Object }  req.user
- * @returns   { JSON }
+ * @desc      Delete LoggedIn User's Data Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { Object } req.user - An object contains logged in user data
+ * @returns   { JSON } - A JSON object representing the type and message
  */
 export const deleteMyAccount = catchAsync(async (req, res) => {
   // 1) Find user document and delete it

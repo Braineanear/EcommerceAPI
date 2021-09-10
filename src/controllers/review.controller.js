@@ -5,12 +5,12 @@ import catchAsync from '../utils/catchAsync';
 import { reviewService } from '../services/index';
 
 /**
- * Create New Review Controller
- * @param       { Object }    req
- * @param       { Object }    res
- * @property    { ObjectId }  req.params.id
- * @property    { ObjectId }  req.user.id
- * @returns     { JSON }
+ * @desc      Create New Review Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.id - Product ID
+ * @property  { String } req.user.id - User ID
+ * @returns   { JSON } - A JSON object representing the type, message and the review
  */
 export const addReview = catchAsync(async (req, res) => {
   // 1) Create new review
@@ -34,14 +34,14 @@ export const addReview = catchAsync(async (req, res) => {
 });
 
 /**
- * Get All Reviews Controller
- * @param     { Object }  req
- * @param     { Object }  res
- * @property  { String }  req.query.sort
- * @property  { String }  req.query.select
- * @property  { Number }  req.query.page
- * @property  { Number }  req.query.limit
- * @return    { JSON }
+ * @desc      Get All Reviews Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.query.sort - Sort returned data
+ * @property  { String } req.query.select - Select specific fields
+ * @property  { Number } req.query.page - Page number
+ * @property  { Number } req.query.limit - Maximum number of reviews on page
+ * @return    { JSON } - A JSON object representing the type, message and the reviews
  */
 export const getAllReviews = catchAsync(async (req, res) => {
   let { page, sort, limit, select } = req.query;
@@ -73,18 +73,16 @@ export const getAllReviews = catchAsync(async (req, res) => {
 });
 
 /**
- * Get Review Using It's ID Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { ObjectId }  req.params.reviewId
- * @return    { JSON }
+ * @desc      Get Review Using It's ID Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.reviewId - Review ID
+ * @return    { JSON } - A JSON object representing the type, message and the review
  */
 export const getReview = catchAsync(async (req, res) => {
-  const { reviewId } = req.params;
-
   // 1) Get review using it's ID
   const { type, message, statusCode, review } =
-    await reviewService.queryReviewById(reviewId);
+    await reviewService.queryReviewById(req.param.reviewId);
 
   // 2) Check if there is an error
   if (type === 'Error') {
@@ -103,11 +101,13 @@ export const getReview = catchAsync(async (req, res) => {
 });
 
 /**
- * Update Review Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { ObjectId }  req.params.reviewId
- * @return    { JSON }
+ * @desc      Update Review Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.reviewId - Review ID
+ * @property  { Object } req.user - An object contains logged in user data
+ * @property  { Object } req.body - Body object data
+ * @return    { JSON } - A JSON object representing the type, message and the review
  */
 export const updateReview = catchAsync(async (req, res) => {
   // 1) Update review using it's ID
@@ -131,11 +131,12 @@ export const updateReview = catchAsync(async (req, res) => {
 });
 
 /**
- * Delete Review Controller
- * @param   { Object }    req
- * @param   { Object }    res
- * @param   { ObjectId }  req.params.reviewId
- * @return  { JSON }
+ * @desc    Delete Review Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.reviewId - Review ID
+ * @property  { Object } req.user - An object contains logged in user data
+ * @return    { JSON } - A JSON object representing the type and message
  */
 export const deleteReview = catchAsync(async (req, res) => {
   // 1) Delete review using it's ID

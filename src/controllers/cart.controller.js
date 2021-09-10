@@ -5,22 +5,22 @@ import catchAsync from '../utils/catchAsync';
 import { cartService } from '../services/index';
 
 /**
- * Add Product To Cart Controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { String } req.body.productId
- * @property  { Number } req.body.quantity
- * @returns   { JSON }
+ * @desc      Add Product To Cart Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.body.productId - Product ID
+ * @property  { Number } req.body.quantity - Product quantity
+ * @property  { Object } req.user - An object contains logged in user data
+ * @returns   { JSON } - A JSON object representing the type, message, and the cart
  */
 export const addItemToCart = catchAsync(async (req, res) => {
-  // 1) Get productId & quantity from dody
   const { productId, quantity } = req.body;
 
-  // 2) Add product to cart
+  // 1) Add product to cart
   const { type, message, statusCode, cart } =
     await cartService.addProductToCart(req.user.email, productId, quantity);
 
-  // 3) Check if there is an error
+  // 2) Check if there is an error
   if (type === 'Error') {
     return res.status(statusCode).json({
       type,
@@ -28,7 +28,7 @@ export const addItemToCart = catchAsync(async (req, res) => {
     });
   }
 
-  // 4) If everything is OK, send data
+  // 3) If everything is OK, send data
   return res.status(statusCode).json({
     type,
     message: req.polyglot.t(message),
@@ -37,11 +37,12 @@ export const addItemToCart = catchAsync(async (req, res) => {
 });
 
 /**
- * Reduce Product By One Controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { String } req.body.productId
- * @returns   { JSON }
+ * @desc      Reduce Product By One Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { Object } req.user - An object contains logged in user data
+ * @property  { String } req.body.productId - Product ID
+ * @returns   { JSON } - A JSON object representing the type, message, and the cart
  */
 export const reduceByOne = catchAsync(async (req, res) => {
   // 1) Reduce product quantity by one from cart
@@ -67,11 +68,12 @@ export const reduceByOne = catchAsync(async (req, res) => {
 });
 
 /**
- * Increase Product By One Controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { String } req.body.productId
- * @returns   { JSON }
+ * @desc      Increase Product By One Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.body.productId - Product ID
+ * @property  { Object } req.user - An object contains logged in user data
+ * @returns   { JSON } - A JSON object representing the type, message, and the cart
  */
 export const increaseByOne = catchAsync(async (req, res) => {
   // 1) Increase product by one
@@ -97,11 +99,11 @@ export const increaseByOne = catchAsync(async (req, res) => {
 });
 
 /**
- * Get Cart By User Email Controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { String } req.query.email
- * @returns   { JSON }
+ * @desc      Get Cart By User Email Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.user.email - User email address
+ * @returns   { JSON } - A JSON object representing the type, message, and the cart
  */
 export const getCart = catchAsync(async (req, res) => {
   // 1) Get cart using user email
@@ -126,11 +128,11 @@ export const getCart = catchAsync(async (req, res) => {
 });
 
 /**
- * Delete Cart By User Email Controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { String } req.query.email
- * @returns   { JSON }
+ * @desc      Delete Cart By User Email Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.user.email - User email address
+ * @returns   { JSON } - A JSON object representing the type and message
  */
 export const deleteCart = catchAsync(async (req, res) => {
   // 1) Delete cart using user email
@@ -154,20 +156,18 @@ export const deleteCart = catchAsync(async (req, res) => {
 });
 
 /**
- * Delete Product From Cart Controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { String } req.params.productId
- * @property  { String } req.query.email
- * @returns   { JSON }
+ * @desc      Delete Product From Cart Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user.email - User email address
+ * @returns   { JSON } - A JSON object representing the type, message and the cart
  */
 export const deleteItem = catchAsync(async (req, res) => {
-  const { productId } = req.params;
-
   // 1) Delete product from cart
   const { type, message, statusCode, cart } = await cartService.deleteItem(
     req.user.email,
-    productId
+    req.params.productId
   );
 
   // 2) Check if there is an error

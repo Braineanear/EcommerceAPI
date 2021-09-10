@@ -5,12 +5,12 @@ import catchAsync from '../utils/catchAsync';
 import { orderService } from '../services/index';
 
 /**
- * Create New Order Controller
- * @param     { Object } req
- * @param     { Object } res
- * @property  { Object } req.body
- * @property  { Object } req.user
- * @return    { JSON }
+ * @desc      Create New Order Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { Object } req.body - Body object data
+ * @property  { Object } req.user - An object contains logged in user data
+ * @return    { JSON } - A JSON object representing the type, message and the order
  */
 export const createOrder = catchAsync(async (req, res) => {
   // 1) Create new order
@@ -36,14 +36,14 @@ export const createOrder = catchAsync(async (req, res) => {
 });
 
 /**
- * Get All Orders Controller
- * @param     { Object }  req
- * @param     { Object }  res
- * @property  { String }  req.query.sort
- * @property  { String }  req.query.select
- * @property  { Number }  req.query.page
- * @property  { Number }  req.query.limit
- * @return    { JSON }
+ * @desc      Get All Orders Controller
+ * @param     { Object }  req - Request object
+ * @param     { Object }  res - Response object
+ * @property  { String }  req.query.sort - Sort returned data
+ * @property  { String }  req.query.select - Select specific fields
+ * @property  { Number }  req.query.page - Page number
+ * @property  { Number }  req.query.limit - Limit number of items
+ * @return    { JSON } - A JSON object representing the type, message and the orders
  */
 export const getAllOrders = catchAsync(async (req, res) => {
   let { page, sort, limit, select } = req.query;
@@ -76,18 +76,16 @@ export const getAllOrders = catchAsync(async (req, res) => {
 });
 
 /**
- * Get Order Using It's ID Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { ObjectId }  req.params.id
- * @return    { JSON }
+ * @desc      Get Order Using It's ID Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.id - Order ID
+ * @return    { JSON } - A JSON object representing the type, message and the order
  */
 export const getOrder = catchAsync(async (req, res) => {
-  const { id } = req.params;
-
   // 1) Get order using it's ID
   const { type, message, statusCode, order } = await orderService.queryOrder(
-    id
+    req.params.id
   );
 
   // 2) Check if there is an error
@@ -107,17 +105,17 @@ export const getOrder = catchAsync(async (req, res) => {
 });
 
 /**
- * Cancel Order Controller
- * @param     { Object }    req
- * @param     { Object }    res
- * @property  { ObjectId }  req.params.id
- * @return    { JSON }
+ * @desc      Cancel Order Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.id - Order ID
+ * @return    { JSON } - A JSON object representing the type and message
  */
 export const cancelOrder = catchAsync(async (req, res) => {
-  const { id } = req.params;
-
   // 1) Cancel order using it's ID
-  const { type, message, statusCode } = await orderService.cancelOrder(id);
+  const { type, message, statusCode } = await orderService.cancelOrder(
+    req.params.id
+  );
 
   // 2) Check if there is an error
   if (type === 'Error') {
