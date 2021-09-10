@@ -9,10 +9,10 @@ import APIFeatures from '../utils/apiFeatures';
 import { User, Discount } from '../models';
 
 /**
- * Verfiy discount code
- * @param   {Object} body
- * @param   {Object} user
- * @returns {Object<type|message|statusCode|code>}
+ * @desc    Verfiy discount code
+ * @param   { Object } body - Body object data
+ * @param   { Object } user - User object data
+ * @returns { Object<type|message|statusCode|code> }
  */
 export const verifyDiscountCode = catchAsync(async (discountCode, user) => {
   // 1) Check If User Entered All Fields
@@ -24,10 +24,17 @@ export const verifyDiscountCode = catchAsync(async (discountCode, user) => {
     };
   }
 
-  // 2) Get Discount Code
+  if (user.discountCode) {
+    return {
+      type: 'Error',
+      message: 'haveDiscountCode',
+      statusCode: 400
+    };
+  }
+
   const discount = await Discount.findOne({ code: discountCode });
 
-  // 3) Check If discount document doesn't exist
+  // 2) Check if discount document doesn't exist
   if (!discount) {
     return {
       type: 'Error',
@@ -36,32 +43,32 @@ export const verifyDiscountCode = catchAsync(async (discountCode, user) => {
     };
   }
 
-  // 4) Update discount document with the new avalanche field
+  // 3) Update discount document with the new avalanche field
   discount.available -= 1;
 
   await discount.save();
 
-  // 5) Add code into user document
+  // 4) Add code into user document
   await User.findByIdAndUpdate(user._id, { discountCode: discount.code });
 
-  // 6) If everything is OK, send order data
+  // 5) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulCodeVerification',
     statusCode: 201,
-    code: discount.code
+    discount: discount.discount
   };
 });
 
 /**
- * Get all discount codes
- * @returns {Object<type|message|statusCode|codes>}
+ * @desc    Get all discount codes
+ * @param   { Object } req - Request object
+ * @returns { Object<type|message|statusCode|codes> }
  */
 export const getAllDiscountCodes = catchAsync(async (req) => {
-  // 1) Get all discount codes
   const codes = await APIFeatures(req, Discount);
 
-  // 2) Check if codes doesn't exist
+  // 1) Check if codes doesn't exist
   if (!codes) {
     return {
       type: 'Error',
@@ -70,7 +77,7 @@ export const getAllDiscountCodes = catchAsync(async (req) => {
     };
   }
 
-  // 3) If everything is OK, send data
+  // 2) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulDiscountCodesFound',
@@ -80,13 +87,13 @@ export const getAllDiscountCodes = catchAsync(async (req) => {
 });
 
 /**
- * Generate Discount Code
- * @param   {Number}  codeLength
- * @param   {Number}  discountStart
- * @param   {Number}  discountEnd
- * @param   {Number}  availableStart
- * @param   {Number}  availableEnd
- * @returns {Object<type|message|statusCode|code>}
+ * @desc    Generate Discount Code
+ * @param   { Number }  codeLength - Discount code length
+ * @param   { Number }  discountStart - Discount number start
+ * @param   { Number }  discountEnd - Discount number end
+ * @param   { Number }  availableStart - Available codes number start
+ * @param   { Number }  availableEnd - Available codes number end
+ * @returns { Object<type|message|statusCode|code> }
  */
 export const generateDiscountCode = catchAsync(
   async (
@@ -96,6 +103,7 @@ export const generateDiscountCode = catchAsync(
     availableStart,
     availableEnd
   ) => {
+    // 1) Check input fields
     if (
       !codeLength ||
       !discountStart ||
@@ -115,7 +123,7 @@ export const generateDiscountCode = catchAsync(
     const numbers = '0123456789';
     const All = lowercaseAlphabet + uppercaseAlphabet + numbers;
 
-    // 1) Generate discount code
+    // 2) Generate discount code
     let rb = crypto.randomBytes(codeLength);
     let code = '';
 
@@ -127,14 +135,14 @@ export const generateDiscountCode = catchAsync(
     const generateRandomNumber = (min, max) =>
       Math.floor(Math.random() * (max - min) + min);
 
-    // 2) Create new discount document
+    // 3) Create new discount document
     const discountCode = await Discount.create({
       code,
       discount: generateRandomNumber(discountStart, discountEnd),
       available: generateRandomNumber(availableStart, availableEnd)
     });
 
-    // 3) If everything is OK, send data
+    // 4) If everything is OK, send data
     return {
       type: 'Success',
       message: 'successfulCodeGeneration',
