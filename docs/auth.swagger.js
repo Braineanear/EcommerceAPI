@@ -135,6 +135,10 @@ export const signUp = {
                   _id: {
                     type: 'string',
                     example: '613395db169b2d0004ddc900'
+                  },
+                  discountCode: {
+                    type: 'string',
+                    example: ''
                   }
                 }
               },
