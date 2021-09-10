@@ -339,15 +339,14 @@ export const updateProductImages = catchAsync(async (id, images) => {
 });
 
 /**
- * Delete Product Using It's ID
- * @param   {ObjectId} id
- * @returns {Object<type|message|statusCode>}
+ * @desc    Delete Product Using It's ID
+ * @param   { String } id - Product ID
+ * @returns { Object<type|message|statusCode> }
  */
 export const deleteProduct = catchAsync(async (id) => {
-  // 1) Find Product Using It's ID
   const product = await Product.findById(id);
 
-  // 2) Check If Product Doesn't Exist
+  // 1) Check if product doesn't exist
   if (!product) {
     return {
       type: 'Error',
@@ -356,10 +355,10 @@ export const deleteProduct = catchAsync(async (id) => {
     };
   }
 
-  // 3) Delete Product Using It's ID
+  // 2) Delete product using it's ID
   await Product.findByIdAndDelete(id);
 
-  // 4) If Everything is OK, Send Message
+  // 4) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulProductDelete',
@@ -368,8 +367,8 @@ export const deleteProduct = catchAsync(async (id) => {
 });
 
 /**
- * Get Products Statics
- * @return  {Array<Stats>}
+ * @desc    Get Products Statics
+ * @return  { Array<Stats> }
  */
 export const getProductStats = catchAsync(async () => {
   const stats = await Product.aggregate([

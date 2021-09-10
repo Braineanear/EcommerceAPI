@@ -5,16 +5,15 @@ import catchAsync from '../utils/catchAsync';
 import { Favorite, Product } from '../models';
 
 /**
- * Add product to favorite list service
- * @param     { Object } user
- * @property  { String } productId
- * @returns   { JSON }
+ * @desc    Add product to favorite list service
+ * @param   { String } userId - User ID
+ * @param   { String } productId - Product ID
+ * @returns { Object<type|statusCode|message> }
  */
 export const addFavoriteProduct = catchAsync(async (userId, productId) => {
-  // 1) Get product data from database
   const product = await Product.findById(productId);
 
-  // 2) Check if product already exist
+  // 1) Check if product doesn't exist
   if (!product) {
     return {
       type: 'Error',
@@ -23,12 +22,12 @@ export const addFavoriteProduct = catchAsync(async (userId, productId) => {
     };
   }
 
-  // 3) Get favorite data from database
+  // 2) Get favorite data from database
   let favorite = await Favorite.findOne({ user: userId });
 
-  // 4) Check if favorite document exists
+  // 3) Check if favorite document exists
   if (favorite) {
-    // 5) Check if product already exist in favorite list
+    // Check if product already exist in favorite list
     if (favorite.products.includes(productId)) {
       return {
         type: 'Error',
@@ -37,12 +36,12 @@ export const addFavoriteProduct = catchAsync(async (userId, productId) => {
       };
     }
 
-    // 6) Push the productId into the new favorite products array
+    // Push the productId into the new favorite products array
     favorite.products.push(productId);
 
     await favorite.save();
 
-    // 7) If everything is OK, send data
+    // If everything is OK, send data
     return {
       type: 'Success',
       statusCode: 200,
@@ -50,12 +49,13 @@ export const addFavoriteProduct = catchAsync(async (userId, productId) => {
     };
   }
 
+  // 4) Create favorite data
   await Favorite.create({
     products: [productId],
     user: userId
   });
 
-  // 7) If everything is OK, send data
+  // 5) If everything is OK, send data
   return {
     type: 'Success',
     statusCode: 200,
@@ -64,15 +64,14 @@ export const addFavoriteProduct = catchAsync(async (userId, productId) => {
 });
 
 /**
- * Get product's favorite list service
- * @param     { Object } user
- * @returns   { JSON }
+ * @desc    Get product's favorite list service
+ * @param   { String } userId - User ID
+ * @returns { Object<type|message|statusCode|favorite> }
  */
 export const getFavoriteList = catchAsync(async (userId) => {
-  // 1) get favorite data from database
   const favorite = await Favorite.findOne({ user: userId });
 
-  // 2) Check if favorite document already exists
+  // 1) Check if favorite document doesn't exists
   if (!favorite) {
     return {
       type: 'Error',
@@ -81,7 +80,7 @@ export const getFavoriteList = catchAsync(async (userId) => {
     };
   }
 
-  // 3) Check if favorite products already exist
+  // 2) Check if favorite products already exist
   if (favorite.length === 0) {
     return {
       type: 'Error',
@@ -90,7 +89,7 @@ export const getFavoriteList = catchAsync(async (userId) => {
     };
   }
 
-  // 4) If everything is OK, send data
+  // 3) If everything is OK, send data
   return {
     type: 'Success',
     statusCode: 200,
@@ -100,17 +99,16 @@ export const getFavoriteList = catchAsync(async (userId) => {
 });
 
 /**
- * Remove product from favorite list service
- * @param     { ObjectId } productId
- * @param     { Object }   user
- * @returns   { JSON }
+ * @desc    Remove product from favorite list service
+ * @param   { String } productId - Product ID
+ * @param   { String } userId - User ID
+ * @returns { Object<type|message|statusCode> }
  */
 export const deleteProductFromFavorite = catchAsync(
   async (userId, productId) => {
-    // 1) Get favorite data from database
     const favorite = await Favorite.findOne({ user: userId });
 
-    // 2) Check if favorite document already exists
+    // 1) Check if favorite document doesn't exists
     if (!favorite) {
       return {
         type: 'Error',
@@ -119,7 +117,7 @@ export const deleteProductFromFavorite = catchAsync(
       };
     }
 
-    // 3) Check if favorite list includes the productId
+    // 2) Check if favorite list includes the productId
     if (favorite.products.includes(productId)) {
       favorite.products = favorite.products.filter(
         (item) => item.toString() !== productId.toString()
@@ -134,7 +132,7 @@ export const deleteProductFromFavorite = catchAsync(
 
     await favorite.save();
 
-    // 4) If everything is OK, send data
+    // 3) If everything is OK, send data
     return {
       type: 'Success',
       statusCode: 200,
@@ -144,17 +142,16 @@ export const deleteProductFromFavorite = catchAsync(
 );
 
 /**
- * Check if product in favorite list service
- * @param     { ObjectId } productId
- * @param     { Object }   user
- * @returns   { JSON }
+ * @desc    Check if product in favorite list service
+ * @param   { String } productId - Product ID
+ * @param   { String } userId - User ID
+ * @returns { Object<type|message|statusCode> }
  */
 export const checkProductInFavoriteList = catchAsync(
   async (userId, productId) => {
-    // 1) Get favorite data from database
     const favorite = await Favorite.findOne({ user: userId });
 
-    // 2) Check if favorite document already exists
+    // 1) Check if favorite document doesn't exists
     if (!favorite) {
       return {
         type: 'Error',
@@ -163,7 +160,7 @@ export const checkProductInFavoriteList = catchAsync(
       };
     }
 
-    // 3) Check if favorite list includes the productId
+    // 2) Check if favorite list includes the productId
     if (!favorite.products.includes(productId)) {
       return {
         type: 'Error',
@@ -172,7 +169,7 @@ export const checkProductInFavoriteList = catchAsync(
       };
     }
 
-    // 4) If everything is OK, send data
+    // 3) If everything is OK, send data
     return {
       type: 'Success',
       statusCode: '200',
