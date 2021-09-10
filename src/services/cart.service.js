@@ -31,7 +31,7 @@ export const addProductToCart = catchAsync(
     if (cart) {
       // Find product index in the cart
       const indexFound = cart.items.findIndex(
-        (item) => item.product.name === product.name
+        (item) => item.product.toString() === product.id.toString()
       );
 
       // Check product index
