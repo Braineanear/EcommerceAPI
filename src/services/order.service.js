@@ -1,3 +1,4 @@
+// Packages
 import STRIPE_SDK from 'stripe';
 import moment from 'moment';
 
@@ -14,17 +15,17 @@ import { Order, Cart, Product } from '../models/index';
 const stripe = STRIPE_SDK(config.stripe.secret_key);
 
 /**
- * Create New Order
- * @param   {Object} body
- * @param   {Object} user
- * @returns {Object<type|message|statusCode|order>}
+ * @desc    Create New Order
+ * @param   { Object } body - Body object data
+ * @param   { Object } user - An object contains logged in user data
+ * @returns { Object<type|message|statusCode|order> }
  */
 export const createOrder = catchAsync(async (body, user) => {
-  // 1) Extract Data From Parameters
+  // 1) Extract data from parameters
   const { shippingAddress, paymentMethod, phone } = body;
   const { address, city, country, postalCode } = shippingAddress;
 
-  // 2) Check If User Entered All Fields
+  // 2) Check if user entered all fields
   if (
     !address ||
     !city ||
@@ -40,10 +41,10 @@ export const createOrder = catchAsync(async (body, user) => {
     };
   }
 
-  // 3) Get User Cart
+  // 3) Get user cart
   const cart = await Cart.findOne({ email: user.email });
 
-  // 4) Check If Cart Doesn't Exist
+  // 4) Check if cart doesn't exist
   if (!cart) {
     return {
       type: 'Error',
@@ -52,9 +53,9 @@ export const createOrder = catchAsync(async (body, user) => {
     };
   }
 
-  // 4) Check Payment Method
+  // 4) Check payment method
   if (paymentMethod === 'cash') {
-    // 1) If Payment Method Is Cash The Create New Order For The Cash Method
+    // 1) If payment method is cash the create new order for the cash method
     const order = await Order.create({
       products: cart.items,
       user: user._id,
@@ -75,7 +76,7 @@ export const createOrder = catchAsync(async (body, user) => {
 
     await Cart.findByIdAndDelete(cart._id);
 
-    // 2) If Everything is OK, Send Order Data
+    // 2) If everything is OK, send data
     return {
       type: 'Success',
       message: 'successfulOrderCreate',
@@ -83,10 +84,10 @@ export const createOrder = catchAsync(async (body, user) => {
     };
   }
 
-  // 5) If Payment Method Is Card Then Extract Card Data From Body
+  // 5) If payment method is card then extract card data from body
   const { cardNumber, expMonth, expYear, cvc } = body;
 
-  // 6) Check If User Entered Card Data
+  // 6) Check if user entered card data
   if (!cardNumber || !expMonth || !expYear || !cvc) {
     return {
       type: 'Error',
@@ -95,7 +96,7 @@ export const createOrder = catchAsync(async (body, user) => {
     };
   }
 
-  // 7) Create Stripe Card Token
+  // 7) Create stripe card token
   const token = await stripe.tokens.create({
     card: {
       number: cardNumber,
@@ -105,7 +106,7 @@ export const createOrder = catchAsync(async (body, user) => {
     }
   });
 
-  // 8) Create Stripe Charge
+  // 8) Create stripe charge
   const charge = stripe.charges.create({
     amount: cart.totalPrice * 100,
     currency: 'egp',
@@ -113,7 +114,7 @@ export const createOrder = catchAsync(async (body, user) => {
     description: 'Charge For Products'
   });
 
-  // 9) Create Order With Payment Method Card
+  // 9) Create order with payment method card
   const order = await Order.create({
     products: cart.items,
     user: user._id,
@@ -137,7 +138,7 @@ export const createOrder = catchAsync(async (body, user) => {
 
   await Cart.findByIdAndDelete(cart._id);
 
-  // 10) If Everything is OK, Send Order Data
+  // 10) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulOrderCreate',
@@ -147,17 +148,17 @@ export const createOrder = catchAsync(async (body, user) => {
 });
 
 /**
- * Query Orders
- * @param   {Object} req
- * @returns {Object<type|message|statusCode|orders>}
+ * @desc    Query Orders
+ * @param   { Object } req - Request object
+ * @returns { Object<type|message|statusCode|orders> }
  */
 export const queryOrders = catchAsync(async (req) => {
   req.query.user = req.user._id;
 
-  // 1) Get All Orders
+  // 1) Get all orders
   const orders = await APIFeatures(req, Order);
 
-  // 2) Check If Orders Doesn't Exist
+  // 2) Check of orders doesn't exist
   if (!orders) {
     return {
       type: 'Error',
@@ -166,7 +167,7 @@ export const queryOrders = catchAsync(async (req) => {
     };
   }
 
-  // 3) If Everything is OK, Send Orders Data
+  // 3) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulOrdersFound',
@@ -176,15 +177,15 @@ export const queryOrders = catchAsync(async (req) => {
 });
 
 /**
- * Query Order Using It's ID
- * @param   {ObjectId} id - Order ID
- * @returns {Object<type|message|statusCode|order>}
+ * @desc    Query Order Using It's ID
+ * @param   { String } id - Order ID
+ * @returns { Object<type|message|statusCode|order> }
  */
 export const queryOrder = catchAsync(async (id) => {
-  // 1) Get Order Document Using It's ID
+  // 1) Get order document using it's ID
   const order = await Order.findById(id);
 
-  // 2) Check If Order Doesn't Exist
+  // 2) Check if order doesn't exist
   if (!order) {
     return {
       type: 'Error',
@@ -193,7 +194,7 @@ export const queryOrder = catchAsync(async (id) => {
     };
   }
 
-  // 3) If Everything is OK, Send Order Data
+  // 3) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulOrderFound',
@@ -203,15 +204,15 @@ export const queryOrder = catchAsync(async (id) => {
 });
 
 /**
- * Cancel Order
- * @param     {ObjectId} id
- * @returns   {Object<type|message|statusCode>}
+ * @desc    Cancel Order
+ * @param   { String } id - Order ID
+ * @returns { Object<type|message|statusCode> }
  */
 export const cancelOrder = catchAsync(async (id) => {
-  // 1) Find Order Document and Delete It
+  // 1) Find order document and delete it
   const order = await Order.findById(id);
 
-  // 2) Check If Order Doesn't Exist
+  // 2) Check if order doesn't exist
   if (!order) {
     return {
       type: 'Error',
@@ -240,7 +241,7 @@ export const cancelOrder = catchAsync(async (id) => {
 
   await Order.findByIdAndDelete(id);
 
-  // 4) If Everything is OK, Send Message
+  // 4) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulOrderCancel',
