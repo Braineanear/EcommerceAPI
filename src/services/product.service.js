@@ -8,15 +8,14 @@ import { uploadFile, destroyFile } from '../utils/cloudinary';
 import { Product } from '../models/index';
 
 /**
- * Query products
- * @param   {Object} request
- * @returns {Object<type|message|statusCode|products>}
+ * @desc    Query products
+ * @param   { Object } req - Request object
+ * @returns { Object<type|message|statusCode|products> }
  */
 export const queryProducts = catchAsync(async (req) => {
-  // 1) Get All Products
   const products = await APIFeatures(req, Product);
 
-  // 2) Check if Porducts Already Exist
+  // 1) Check if porducts doesn't exist
   if (!products) {
     return {
       type: 'Error',
@@ -25,7 +24,7 @@ export const queryProducts = catchAsync(async (req) => {
     };
   }
 
-  // 3) If Everything is OK, Send Products Data
+  // 3) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulProductsFound',
@@ -35,15 +34,14 @@ export const queryProducts = catchAsync(async (req) => {
 });
 
 /**
- * Query Product Using It's ID
- * @param   {ObjectId} productId
- * @returns {Object<type|message|statusCode|product>}
+ * @desc    Query Product Using It's ID
+ * @param   { String } productId - Product ID
+ * @returns { Object<type|message|statusCode|product> }
  */
 export const queryProductById = catchAsync(async (productId) => {
-  // 1) Get Product Using It's ID
-  const product = await Product.findById(productId).populate('user');
+  const product = await Product.findById(productId);
 
-  // 2) Check if Product Already Exist
+  // 1) Check if product doesn't exist
   if (!product) {
     return {
       type: 'Error',
@@ -52,7 +50,7 @@ export const queryProductById = catchAsync(async (productId) => {
     };
   }
 
-  // 3) If Everything is OK, Send Product
+  // 2) If everything is OK, send product
   return {
     type: 'Success',
     message: 'successfulProductFound',
@@ -62,11 +60,11 @@ export const queryProductById = catchAsync(async (productId) => {
 });
 
 /**
- * Create new product
- * @param   {Object}   body
- * @param   {Object}   files
- * @param   {ObjectId} seller
- * @returns {Object<type|message|statusCode|product>}
+ * @desc    Create new product
+ * @param   { Object } body - Body object data
+ * @param   { Object } files - Product images
+ * @param   { String } seller - Product seller ID
+ * @returns { Object<type|message|statusCode|product> }
  */
 export const createProduct = catchAsync(async (body, files, seller) => {
   const {
@@ -82,22 +80,22 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     isOutOfStock
   } = body;
 
-  // 1) Make Array Of Main Image (Single Image)
+  // 1) Make array Of main image (single image)
   const mainImage = files.filter((image) => image.fieldname === 'mainImage');
 
-  // 2) Make Array Of Product Images
+  // 2) Make array Of product images
   const images = files.filter((image) => image.fieldname === 'images');
 
-  // 3) Cloudinary Folder Name
+  // 3) Cloudinary folder name
   const folderName = `Products/${name.trim().split(' ').join('')}`;
 
-  // 4) Array Of Images Links
+  // 4) Array Of images links
   const imagesLink = [];
 
-  // 5) Array Of Images IDs
+  // 5) Array Of images IDs
   const imagesId = [];
 
-  // 6) Check If There Any Empty Field
+  // 6) Check if there any empty field
   if (
     !name ||
     !description ||
@@ -119,7 +117,7 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     };
   }
 
-  // 7) Upload Images To Cloudinary
+  // 7) Upload images to cloudinary
   const imagesPromises = images.map((image) =>
     uploadFile(dataUri(image).content, folderName)
   );
@@ -129,7 +127,7 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     folderName
   );
 
-  // 8) Push Images Links & Images IDs to The Arrays
+  // 8) Push images links & images IDs to the arrays
   imagesResult.forEach((image) => {
     imagesLink.push(image.secure_url);
     imagesId.push(image.public_id);
@@ -142,7 +140,7 @@ export const createProduct = catchAsync(async (body, files, seller) => {
       Number(price) - (Number(price) / 100) * Number(priceDiscount);
   }
 
-  // 9) Create Product
+  // 9) Create product
   let product = await Product.create({
     mainImage: imageResult.secure_url,
     mainImageId: imageResult.public_id,
@@ -162,7 +160,7 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     isOutOfStock
   });
 
-  // 10) If Everything is OK, Send Data
+  // 10) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulProductCreate',
@@ -172,15 +170,15 @@ export const createProduct = catchAsync(async (body, files, seller) => {
 });
 
 /**
- * Update Product Details
- * @param   {Object}    body
- * @param   {ObjectId}  id
- * @returns {Object<type|message|statusCode|product>}
+ * @desc    Update Product Details
+ * @param   { Object } body - Body object data
+ * @param   { String } id - Product ID
+ * @returns { Object<type|message|statusCode|product> }
  */
 export const updateProductDetails = catchAsync(async (id, body) => {
   const product = await Product.findById(id);
 
-  // 1) Check If Product Already Exist
+  // 1) Check if product doesn't exist
   if (!product) {
     return {
       type: 'Error',
@@ -189,13 +187,13 @@ export const updateProductDetails = catchAsync(async (id, body) => {
     };
   }
 
-  // 2) Update Product By It's ID
+  // 2) Update product by it's ID
   const result = await Product.findByIdAndUpdate(id, body, {
     new: true,
     runValidators: true
   });
 
-  // 3) If Everything is OK, Send Result
+  // 3) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulProductDetails',
@@ -205,13 +203,13 @@ export const updateProductDetails = catchAsync(async (id, body) => {
 });
 
 /**
- * Update Product Main Image
- * @param   {Object}    body
- * @param   {ObjectId}  id
- * @returns {Object<type|message|statusCode|product>}
+ * @desc    Update Product Main Image
+ * @param   { Object } image - Product main image
+ * @param   { String } id - Product ID
+ * @returns { Object<type|message|statusCode|product> }
  */
 export const updateProductMainImage = catchAsync(async (id, image) => {
-  // 1) Check If Image Provided
+  // 1) Check if image provided
   if (image.length === 0) {
     return {
       type: 'Error',
@@ -220,9 +218,9 @@ export const updateProductMainImage = catchAsync(async (id, image) => {
     };
   }
 
-  // 2) Check If Product Already Exist
   const product = await Product.findById(id);
 
+  // 2) Check if product doesn't exist
   if (!product) {
     return {
       type: 'Error',
@@ -231,32 +229,32 @@ export const updateProductMainImage = catchAsync(async (id, image) => {
     };
   }
 
-  // 3) Make Array Of Main Image (Single Image)
+  // 3) Make array of main image (single image)
   let mainImage = image.filter((img) => img.fieldname === 'mainImage');
 
-  // 4) Specifiy Folder Name Where The Images Are Going To Be Uploaded In Cloudinary
+  // 4) Specifiy folder name where the image is going to be uploaded in cloudinary
   const folderName = `Products/${product.name.trim().split(' ').join('')}`;
 
-  // 5) Destroy Image From Cloudinary
+  // 5) Destroy image from cloudinary
   const productMainImageID = product.mainImageId;
   destroyFile(productMainImageID);
 
-  // 6) Upload Image to Cloudinary
+  // 6) Upload image to cloudinary
   mainImage = await uploadFile(dataUri(mainImage[0]).content, folderName, 600);
 
-  // 7) Create Product Body
+  // 7) Create product body
   const productBody = {
     mainImage: mainImage.secure_url,
     mainImageId: mainImage.public_id
   };
 
-  // 8) Update Product Using It's ID
+  // 8) Update product using it's ID
   await Product.findByIdAndUpdate(id, productBody, {
     new: true,
     runValidators: true
   });
 
-  // 9) If Everything is OK, Send Product
+  // 9) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulProductMainImage',
@@ -265,13 +263,13 @@ export const updateProductMainImage = catchAsync(async (id, image) => {
 });
 
 /**
- * Update Product Images
- * @param   {Object}    images
- * @param   {ObjectId}  id
- * @returns {Object<type|message|statusCode|product>}
+ * @desc    Update Product Images
+ * @param   { Object } images - Product images
+ * @param   { String } id - Product ID
+ * @returns { Object<type|message|statusCode|product> }
  */
 export const updateProductImages = catchAsync(async (id, images) => {
-  // 1) Check If Images Provided
+  // 1) Check if images provided
   if (images.length === 0) {
     return {
       type: 'Error',
@@ -280,9 +278,9 @@ export const updateProductImages = catchAsync(async (id, images) => {
     };
   }
 
-  // 2) Check If Product Already Exist
   const product = await Product.findById(id);
 
+  // 2) Check if product doesn't exist
   if (!product) {
     return {
       type: 'Error',
@@ -291,48 +289,48 @@ export const updateProductImages = catchAsync(async (id, images) => {
     };
   }
 
-  // 3) Make Array Of Images
+  // 3) Make array of images
   images = images.filter((image) => image.fieldname === 'images');
 
-  // 4) Specifiy Folder Name Where The Images Are Going To Be Uploaded In Cloudinary
+  // 4) Specifiy folder name where the images are going to be uploaded in cloudinary
   const folderName = `Products/${product.name.trim().split(' ').join('')}`;
 
-  // 5) Array Of Images Links
+  // 5) Array of images links
   const imagesLinks = [];
 
-  // 6) Array Of Images IDs
+  // 6) Array of images IDs
   const imagesIDs = [];
 
-  // 7) Destroy Images From Cloudinary
+  // 7) Destroy images from cloudinary
   const productImagesID = product.imagesId;
   productImagesID.forEach((image) => destroyFile(image));
 
-  // 8) Upload Images to Cloudinary
+  // 8) Upload images to cloudinary
   const imagesPromises = images.map((image) =>
     uploadFile(dataUri(image).content, folderName, 600)
   );
 
   const imagesResult = await Promise.all(imagesPromises);
 
-  // 9) Push Images Links & IDs to The Arrays
+  // 9) Push images links & IDs to the arrays
   imagesResult.forEach((image) => {
     imagesLinks.push(image.secure_url);
     imagesIDs.push(image.public_id);
   });
 
-  // 10) Create Product Body
+  // 10) Create product body
   const productBody = {
     images: imagesLinks,
     ImagesId: imagesIDs
   };
 
-  // 11) Update Product Using It's ID
+  // 11) Update product using it's ID
   await Product.findByIdAndUpdate(id, productBody, {
     new: true,
     runValidators: true
   });
 
-  // 12) If Everything is OK, Send Result
+  // 12) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulProductSubImages',

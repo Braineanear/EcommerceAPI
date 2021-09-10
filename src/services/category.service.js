@@ -8,15 +8,15 @@ import { uploadFile, destroyFile } from '../utils/cloudinary';
 import { Category } from '../models/index';
 
 /**
- * Create New Category
- * @param   {Object} body
- * @param   {Object} file
- * @returns {Object<type|message|statusCode|category>}
+ * @desc    Create New Category
+ * @param   { Object } body - Body object data
+ * @param   { Object } file - Category image
+ * @returns { Object<type|message|statusCode|category> }
  */
 export const createCategory = catchAsync(async (body, file) => {
   const { name, description } = body;
 
-  // 1) Check If The User Entered All Fields
+  // 1) Check if the user entered all fields
   if (!name || !description || !file) {
     return {
       type: 'Error',
@@ -25,16 +25,16 @@ export const createCategory = catchAsync(async (body, file) => {
     };
   }
 
-  // 2) Specifiy Folder Name Where The Images Are Going To Be Uploaded In Cloudinary
+  // 2) Specifiy folder name where the images are going to be uploaded in cloudinary
   const folderName = `Category/${name.trim().split(' ').join('')}`;
 
-  // 3) Generate a Buffer instance from a Data URI string
+  // 3) Generate a buffer instance from a data uri string
   let image = dataUri(file);
 
-  // 4) Upload Image to Cloudinary
+  // 4) Upload image to cloudinary
   image = await uploadFile(image.content, folderName, 600);
 
-  // 5) Create Body
+  // 5) Create body
   const object = {
     name,
     description,
@@ -42,10 +42,10 @@ export const createCategory = catchAsync(async (body, file) => {
     imageId: image.public_id
   };
 
-  // 6) Create New Category & Save Data at Database
+  // 6) Create new category
   const category = await Category.create(object);
 
-  // 7) If Everything is OK, Send Data
+  // 7) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulCategoryCreate',
@@ -55,15 +55,15 @@ export const createCategory = catchAsync(async (body, file) => {
 });
 
 /**
- * Query Categories
- * @param   {Object} req
- * @returns {Object<type|message|statusCode|categories>}
+ * @desc    Query Categories
+ * @param   { Object } req - Request object
+ * @returns { Object<type|message|statusCode|categories> }
  */
 export const queryCategories = catchAsync(async (req) => {
-  // 1) Get All Categories
+  // 1) Get all categories
   const categories = await APIFeatures(req, Category);
 
-  // 2) Check If Category Already Exist
+  // 2) Check if there are no categories
   if (categories.length === 0) {
     return {
       type: 'Error',
@@ -71,7 +71,7 @@ export const queryCategories = catchAsync(async (req) => {
       statusCode: 404
     };
   }
-  // 3) If Everything is OK, Send Categories
+  // 3) If everything is OK, send categories
   return {
     type: 'Success',
     message: 'successfulCategoriesFound',
@@ -81,15 +81,14 @@ export const queryCategories = catchAsync(async (req) => {
 });
 
 /**
- * Query Category Using It's ID
- * @param   {String} id
- * @returns {Object<type|message|statusCode|category>}
+ * @desc    Query Category Using It's ID
+ * @param   { String } id - Category ID
+ * @returns { Object<type|message|statusCode|category> }
  */
 export const queryCategory = catchAsync(async (id) => {
-  // 1) Get Category From Database
   const category = await Category.findById(id);
 
-  // 2) Check If Category Already Exist
+  // 1) Check if category doesn't exist
   if (!category) {
     return {
       type: 'Error',
@@ -98,7 +97,7 @@ export const queryCategory = catchAsync(async (id) => {
     };
   }
 
-  // 3) If Everything is OK, Send Category
+  // 2) If everything is OK, send date
   return {
     type: 'Success',
     message: 'successfulCategoryFound',
@@ -108,16 +107,15 @@ export const queryCategory = catchAsync(async (id) => {
 });
 
 /**
- * Update Category Details
- * @param   {String} id
- * @param   {Object} body
- * @returns {Object<type|message|statusCode|category>}
+ * @desc    Update Category Details
+ * @param   { String } id - Category ID
+ * @param   { Object } body - Category details
+ * @returns { Object<type|message|statusCode|category> }
  */
 export const updateCategoryDetails = catchAsync(async (id, body) => {
-  // 1) Find Category Document
   let category = await Category.findById(id);
 
-  // 2) Check If Category Already Exist
+  // 1) Check if category doesn't exist
   if (!category) {
     return {
       type: 'Error',
@@ -126,13 +124,13 @@ export const updateCategoryDetails = catchAsync(async (id, body) => {
     };
   }
 
-  // 3) Update Category
+  // 2) Update category
   category = await Category.findByIdAndUpdate(id, body, {
     new: true,
     runValidators: true
   });
 
-  // 3) If Everything is OK, Send Result
+  // 3) If everything is OK, send date
   return {
     type: 'Success',
     message: 'successfulCategoryDetails',
@@ -142,12 +140,13 @@ export const updateCategoryDetails = catchAsync(async (id, body) => {
 });
 
 /**
- * Update Category Image
- * @param   {ObjectId}  id
- * @param   {Object}    image
- * @returns {Object<type|message|statusCode|category>}
+ * @desc    Update Category Image
+ * @param   { String } id - Category ID
+ * @param   { Object } image - Category image
+ * @returns { Object<type|message|statusCode|category> }
  */
 export const updateCategoryImage = catchAsync(async (id, image) => {
+  // 1) Check if image provided
   if (image === undefined) {
     return {
       type: 'Error',
@@ -156,10 +155,9 @@ export const updateCategoryImage = catchAsync(async (id, image) => {
     };
   }
 
-  // 1) Get Category Data
   let category = await Category.findById(id);
 
-  // 2) Check If Category Already Exist
+  // 2) Check if category doesn't exist
   if (!category) {
     return {
       type: 'Error',
@@ -168,27 +166,27 @@ export const updateCategoryImage = catchAsync(async (id, image) => {
     };
   }
 
-  // 3) Destroy Category Current Image From Cloudinary
+  // 3) Destroy category current image from cloudinary
   destroyFile(category.imageId);
 
-  // 4) Specifiy Folder Name Where The Images Are Going To Be Uploaded In Cloudinary
+  // 4) Specifiy folder name where the images are going to be uploaded in cloudinary
   const folderName = `Category/${category.name.trim().split(' ').join('')}`;
   image = dataUri(image);
   image = await uploadFile(image.content, folderName, 600);
 
-  // 5) Create Category Body Object
+  // 5) Create category body object
   const body = {
     image: image.secure_url,
     imageId: image.public_id
   };
 
-  // 6) Update Category
+  // 6) Update category
   category = await Category.findByIdAndUpdate(id, body, {
     new: true,
     runValidators: true
   });
 
-  // 7) If Everything is OK, Send Result
+  // 7) If everything is OK, send date
   return {
     type: 'Success',
     message: 'successfulCategoryImage',
@@ -198,15 +196,14 @@ export const updateCategoryImage = catchAsync(async (id, image) => {
 });
 
 /**
- * Delete Category
- * @param   {ObjectId} id
- * @returns {Object<type|message|statusCode>}
+ * @desc    Delete Category
+ * @param   { String } id - Category ID
+ * @returns { Object<type|message|statusCode> }
  */
 export const deleteCategoryById = catchAsync(async (id) => {
-  // 1) Find Category Document
   const category = await Category.findById(id);
 
-  // 2) Check If Category Already Exist
+  // 1) Check if category doesn't exist
   if (!category) {
     return {
       type: 'Error',
@@ -215,12 +212,13 @@ export const deleteCategoryById = catchAsync(async (id) => {
     };
   }
 
+  // 2) Destroy category image
   destroyFile(category.imageId);
 
-  // 3) Delete Category
+  // 3) Delete category
   await Category.findByIdAndDelete(id);
 
-  // 4) If Everything is OK, Send Message
+  // 4) If everything is OK, send date
   return {
     type: 'Success',
     message: 'successfulCategoryDelete',
