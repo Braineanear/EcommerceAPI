@@ -5,20 +5,18 @@ import catchAsync from '../utils/catchAsync';
 import { Cart, Product } from '../models/index';
 
 /**
- * Add Product To Cart
- * @param     {String}    email
- * @param     {ObjectId}  productId
- * @param     {Number}    quantity
- * @returns   {Object<type|message|statusCode|cart>}
+ * @desc    Add Product To Cart
+ * @param   { String } email - User email address
+ * @param   { String } productId - Product ID
+ * @param   { Number } quantity - Product quantity
+ * @returns { Object<type|message|statusCode|cart> }
  */
 export const addProductToCart = catchAsync(
   async (email, productId, quantity) => {
-    // 1) Get Cart Using User Email
-    let cart = await Cart.findOne({ email });
-
-    // 2) Get Product Using It's ID
+    const cart = await Cart.findOne({ email });
     const product = await Product.findById(productId);
 
+    // 1) Check if product doesn't exist
     if (!product) {
       return {
         type: 'Error',
@@ -27,33 +25,34 @@ export const addProductToCart = catchAsync(
       };
     }
 
-    // 3) Get Product Price
     const { price } = product;
 
-    // 4) Check If Cart Exist
+    // 2) Check if cart exist
     if (cart) {
-      // 1) Find Product Index In The Cart
+      // Find product index in the cart
       const indexFound = cart.items.findIndex(
         (item) => item.product.name === product.name
       );
 
-      // 2) Check If Product Index
+      // Check product index
       if (indexFound !== -1 && quantity <= 0) {
         cart.items.splice(indexFound, 1);
       } else if (indexFound !== -1) {
-        // In Case Product Exist In The Cart
+        // In case product exist in the cart
         cart.items[indexFound].totalProductQuantity += quantity;
         cart.items[indexFound].totalProductPrice += price * quantity;
         cart.totalQuantity += quantity;
         cart.totalPrice += price * quantity;
       } else if (quantity > 0) {
-        // In Case Product Doesn't Exist & There Is Other Products In The Cart
-        // Then Push The New Product To The Items Array In The Cart & Update totalQuantity & totalPrice
+        // In case product doesn't exist & there is other products in the cart
+        // then push the new product to the items array in the cart
+        // Update totalQuantity & totalPrice
         cart.items.push({
           product: productId,
           totalProductQuantity: quantity,
           totalProductPrice: price * quantity
         });
+
         cart.totalQuantity += quantity;
         cart.totalPrice += price * quantity;
       } else {
@@ -64,10 +63,10 @@ export const addProductToCart = catchAsync(
         };
       }
 
-      // 3) Save Cart Data
-      cart = await cart.save();
+      // Save cart data
+      await cart.save();
 
-      // 4) If Everything is OK, Send Cart
+      // If everything is OK, send cart
       return {
         type: 'Success',
         message: 'successfulItemAddToCart',
@@ -76,7 +75,7 @@ export const addProductToCart = catchAsync(
       };
     }
 
-    // 5) In Case User Doesn't Have Cart, Then Create New Cart For The User
+    // 3) In case user doesn't have cart, then create new cart for the user
     const cartData = {
       email,
       items: [
@@ -90,39 +89,31 @@ export const addProductToCart = catchAsync(
       totalPrice: price * quantity
     };
 
-    // 6) Create New Cart
-    cart = await Cart.create(cartData);
+    // 4) Create new cart
+    const createdCart = await Cart.create(cartData);
 
-    // 7) We Didnt' Return The Result Of The Created Cart, Because We Want To Populate Product ID
-    cart = await Cart.findById(cart._id);
-
-    // 8) If Everything is OK, Send Cart
+    // 5) If everything is OK, send cart
     return {
       type: 'Success',
       message: 'successfulItemAddToCart',
       statusCode: 200,
-      cart
+      cart: createdCart
     };
   }
 );
 
 /**
- * Reduce Product Quantity By One
- * @param     {String}    email
- * @param     {ObjectId}  productId
- * @returns   {Object<type|message|statusCode|cart>}
+ * @desc    Reduce Product Quantity By One
+ * @param   { String } email - User email address
+ * @param   { String } productId - Product ID
+ * @returns { Object<type|message|statusCode|cart> }
  */
 export const reduceByOne = catchAsync(async (email, productId) => {
-  // 1) Find Cart Using User Email
-  let cart = await Cart.findOne({ email });
-
-  // 2) Find Product Using It's ID
+  const cart = await Cart.findOne({ email });
   const product = await Product.findById(productId);
-
-  // 3) Get Product Price
   const { price } = product;
 
-  // 4) Check If Cart Already Exist
+  // 1) Check if cart already exist
   if (!cart) {
     return {
       type: 'Error',
@@ -131,12 +122,12 @@ export const reduceByOne = catchAsync(async (email, productId) => {
     };
   }
 
-  // 5) Find Product Index Inside Cart
+  // 2) Find product index inside cart
   const indexFound = cart.items.findIndex(
     (item) => item.product.toString() === product._id.toString()
   );
 
-  // 6) Check If Product Doesn't Exist In The Cart
+  // 3) Check if product doesn't exist in the cart
   if (indexFound === -1) {
     return {
       type: 'Error',
@@ -145,7 +136,7 @@ export const reduceByOne = catchAsync(async (email, productId) => {
     };
   }
 
-  // 7) Update Cart & Product Data
+  // 4) Update cart & product data
   const updatedProductTotalQuantity =
     cart.items[indexFound].totalProductQuantity - 1;
   const updatedProductTotalPrice =
@@ -162,34 +153,32 @@ export const reduceByOne = catchAsync(async (email, productId) => {
     cart.totalPrice = updatedCartTotalPrice;
   }
 
-  // 8) Save Updated Data
-  cart = await cart.save();
+  // 5) Save updated data
+  await cart.save();
 
-  // 9) Find Cart Using It's ID
-  cart = await Cart.findById(cart._id);
+  // 6) Find cart using it's ID
+  const updatedCart = await Cart.findById(cart._id);
 
-  // 10) If Everything is OK, Send Cart
+  // 7) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulReduceByOne',
     statusCode: 200,
-    cart
+    cart: updatedCart
   };
 });
 
 /**
- * Increase Product Quantity By One
- * @param     {String}    email
- * @param     {ObjectId}  productId
- * @returns   {Object<type|message|statusCode|cart>}
+ * @desc    Increase Product Quantity By One
+ * @param   { String } email - User email address
+ * @param   { String } productId - Product ID
+ * @returns { Object<type|message|statusCode|cart> }
  */
 export const increaseByOne = catchAsync(async (email, productId) => {
-  // 1) Find Cart Using User Email
   let cart = await Cart.findOne({ email });
-
-  // 2) Find Product Using It's ID
   const product = await Product.findById(productId);
 
+  // 1) Check if product doesn't exist
   if (!product) {
     return {
       type: 'Error',
@@ -198,10 +187,9 @@ export const increaseByOne = catchAsync(async (email, productId) => {
     };
   }
 
-  // 3) Get Product Price
   const { price } = product;
 
-  // 4) Check If Cart Already Exist
+  // 2) Check if cart doesn't exist
   if (!cart) {
     return {
       type: 'Error',
@@ -210,12 +198,12 @@ export const increaseByOne = catchAsync(async (email, productId) => {
     };
   }
 
-  // 5) Find Product Index Inside Cart
+  // 3) Find product index inside cart
   const indexFound = cart.items.findIndex(
     (item) => item.product.toString() === product._id.toString()
   );
 
-  // 6) Check If Product Doesn't Exist In The Cart
+  // 4) Check if product doesn't exist in the cart
   if (indexFound === -1) {
     return {
       type: 'Error',
@@ -224,7 +212,7 @@ export const increaseByOne = catchAsync(async (email, productId) => {
     };
   }
 
-  // 7) Update Cart & Product Data
+  // 5) Update cart & product data
   const updatedProductTotalQuantity =
     cart.items[indexFound].totalProductQuantity + 1;
   const updatedProductTotalPrice =
@@ -241,31 +229,30 @@ export const increaseByOne = catchAsync(async (email, productId) => {
     cart.totalPrice = updatedCartTotalPrice;
   }
 
-  // 8) Save Updated Data
-  cart = await cart.save();
+  // 6) Save updated data
+  await cart.save();
 
-  // 9) Find Cart Using It's ID
-  cart = await Cart.findById(cart._id);
+  // 7) Find cart using it's ID
+  const updatedCart = await Cart.findById(cart._id);
 
-  // 10) If Everything is OK, Send Cart
+  // 8) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulIncreaseByOne',
     statusCode: 200,
-    cart
+    cart: updatedCart
   };
 });
 
 /**
- * Get Cart
- * @param     {String}    email
- * @returns   {Object<type|message|statusCode|cart>}
+ * @desc    Get Cart
+ * @param   { String } email - User email address
+ * @returns { Object<type|message|statusCode|cart> }
  */
 export const queryCart = catchAsync(async (email) => {
-  // 1) Find Cart Using User Email
   const cart = await Cart.findOne({ email });
 
-  // 2) Check If Cart Doesn't Exist
+  // 1) Check if cart doesn't exist
   if (!cart) {
     return {
       type: 'Error',
@@ -274,7 +261,7 @@ export const queryCart = catchAsync(async (email) => {
     };
   }
 
-  // 3) If Everything is OK, Send Cart
+  // 2) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulCartFound',
@@ -284,15 +271,14 @@ export const queryCart = catchAsync(async (email) => {
 });
 
 /**
- * Delete Cart
- * @param     {String}    email
- * @return    {Object<type|message|statusCode>}
+ * @desc    Delete Cart
+ * @param   { String } email - User email address
+ * @return  { Object<type|message|statusCode> }
  */
 export const deleteCart = catchAsync(async (email) => {
-  // 1) Get Cart Using User Email
   const cart = await Cart.findOne({ email });
 
-  // 2) Check If Cart Doesn't Exist
+  // 1) Check if cart doesn't exist
   if (!cart) {
     return {
       type: 'Error',
@@ -301,10 +287,10 @@ export const deleteCart = catchAsync(async (email) => {
     };
   }
 
-  // 3) Delete Cart
+  // 2) Delete cart
   await Cart.findOneAndDelete({ email });
 
-  // 4) If Everything is OK, Send Message
+  // 3) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulCartDelete',
@@ -313,16 +299,15 @@ export const deleteCart = catchAsync(async (email) => {
 });
 
 /**
- * Delete Cart Item
- * @param     {String}    email
- * @param     {String}    productId
- * @returns   {Object<type|message|statusCode|cart>}
+ * @desc    Delete Cart Item
+ * @param   { String } email - User email address
+ * @param   { String } productId - Product ID
+ * @returns { Object<type|message|statusCode|cart> }
  */
 export const deleteItem = catchAsync(async (email, productId) => {
-  // 1) Get Cart Using User Email
   let cart = await Cart.findOne({ email });
 
-  // 2) Check If Cart Doesn't Exist
+  // 1) Check if cart doesn't exist
   if (!cart) {
     return {
       type: 'Error',
@@ -331,10 +316,9 @@ export const deleteItem = catchAsync(async (email, productId) => {
     };
   }
 
-  // 3) Get Product Using It's ID
   const product = await Product.findById(productId);
 
-  // 4) Check If Product Doesn't Exist
+  // 2) Check if product doesn't exist
   if (!product) {
     return {
       type: 'Error',
@@ -351,7 +335,7 @@ export const deleteItem = catchAsync(async (email, productId) => {
   const totalQuantity =
     cart.totalQuantity - cart.items[indexFound].totalProductQuantity;
 
-  // 5) Update Cart By Deleting Product
+  // 3) Update cart by deleting product
   cart = await Cart.findOneAndUpdate(
     { email },
     {
@@ -362,7 +346,7 @@ export const deleteItem = catchAsync(async (email, productId) => {
     { new: true }
   );
 
-  // 6) If Everything is OK, Send Cart
+  // 4) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulDeleteItemFromCart',

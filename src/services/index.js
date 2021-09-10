@@ -8,12 +8,6 @@ import {
 } from './auth.service';
 
 import {
-  generateAuthTokens,
-  generateResetPasswordToken,
-  generateVerifyEmailToken
-} from './token.service';
-
-import {
   createReview,
   queryReviews,
   queryReviewById,
@@ -97,12 +91,6 @@ const authService = {
   verifyEmail
 };
 
-const tokenService = {
-  generateAuthTokens,
-  generateResetPasswordToken,
-  generateVerifyEmailToken
-};
-
 const reviewService = {
   createReview,
   queryReviews,
@@ -180,7 +168,6 @@ const favoriteService = {
 
 export {
   authService,
-  tokenService,
   userService,
   emailService,
   categoryService,

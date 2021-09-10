@@ -8,12 +8,13 @@ import { uploadFile, destroyFile } from '../utils/cloudinary';
 import { User } from '../models/index';
 
 /**
- * Create New User
- * @param     {Object} body
- * @param     {Object} profileImage
- * @returns   {Object<type|message|statusCode|user>}
+ * @docs    Create New User
+ * @param   { Object } body - Body object data
+ * @param   { Object } profileImage - User profile image
+ * @returns { Object<type|message|statusCode|user> }
  */
 export const createUser = catchAsync(async (body, profileImage) => {
+  // 1) Check if profile image provided
   if (profileImage === undefined) {
     return {
       type: 'Error',
@@ -21,15 +22,15 @@ export const createUser = catchAsync(async (body, profileImage) => {
       statusCode: 400
     };
   }
+
   const { name, username, email, password, passwordConfirmation, role } = body;
   let { companyName, address, phone } = body;
 
   if (!companyName) companyName = '';
-
   if (!address) address = '';
-
   if (!phone) phone = '';
 
+  // 2) Check required fields
   if (
     !name ||
     !username ||
@@ -46,10 +47,9 @@ export const createUser = catchAsync(async (body, profileImage) => {
     };
   }
 
-  // 1) Check if The Email Already Taken
   const isEmailTaken = await User.isEmailTaken(email);
 
-  // 2) If The Email Taken
+  // 3) Check if email already taken
   if (isEmailTaken) {
     return {
       type: 'Error',
@@ -58,17 +58,17 @@ export const createUser = catchAsync(async (body, profileImage) => {
     };
   }
 
-  // 3) Specifiy Folder Name Where The Images Are Going To Be Uploaded In Cloudinary
+  // 4) Specifiy folder name where the images are going to be uploaded in cloudinary
   const folderName = `Users/${name.trim().split(' ').join('')}`;
 
-  // 4) Upload Image to Cloudinary
+  // 5) Upload image to cloudinary
   const image = await uploadFile(
     dataUri(profileImage).content,
     folderName,
     600
   );
 
-  // 3) Create New User
+  // 6) Create new user
   const user = await User.create({
     name,
     username,
@@ -83,7 +83,7 @@ export const createUser = catchAsync(async (body, profileImage) => {
     profileImageId: image.public_id
   });
 
-  // 4) If Everything is OK, Send User Data
+  // 7) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulSignUp',
@@ -93,15 +93,14 @@ export const createUser = catchAsync(async (body, profileImage) => {
 });
 
 /**
- * Query Users
- * @param     {Object} req - Request
- * @returns   {Object<type|message|statusCode|users>}
+ * @desc    Query Users
+ * @param   { Object } req - Request object
+ * @returns { Object<type|message|statusCode|users> }
  */
 export const queryUsers = catchAsync(async (req) => {
-  // 1) Get All Users
   const users = await APIFeatures(req, User);
 
-  // 2) Check If Users Doesn't Exist'
+  // 1) Check if users doesn't exist
   if (users.length === 0) {
     return {
       type: 'Error',
@@ -110,7 +109,7 @@ export const queryUsers = catchAsync(async (req) => {
     };
   }
 
-  // 3) If Everything is OK, Send Users Data
+  // 2) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulUsersFound',
@@ -120,15 +119,14 @@ export const queryUsers = catchAsync(async (req) => {
 });
 
 /**
- * Query User Using It's ID
- * @param     {Object} id - User ID
- * @return    {Object<type|message|statusCode|user>}
+ * @desc    Query User Using It's ID
+ * @param   { Object } id - User ID
+ * @return  { Object<type|message|statusCode|user> }
  */
 export const queryUser = catchAsync(async (id) => {
-  // 1) Get User Using It's ID
   const user = await User.findById(id);
 
-  // 2) Check If User Doesn't Exist
+  // 1) Check if user doesn't exist
   if (!user) {
     return {
       type: 'Error',
@@ -137,7 +135,7 @@ export const queryUser = catchAsync(async (id) => {
     };
   }
 
-  // 3) If Everything is OK, Send User Data;
+  // 2) If everything is OK, send data;
   return {
     type: 'Success',
     message: 'successfulUserFound',
@@ -147,14 +145,16 @@ export const queryUser = catchAsync(async (id) => {
 });
 
 /**
- * Update User Details Using It's ID
- * @param     {Object}  user - User Data
- * @param     {Object}    body - Updated Body
- * @returns   {Object<type|message|statusCode|user>}
+ * @desc    Update User Details Using It's ID
+ * @param   { Object } user - An object contains logged in user data
+ * @param   { Object } body - Body object data
+ * @returns { Object<type|message|statusCode|user> }
  */
 export const updateUserDetails = catchAsync(async (user, body) => {
   const { id } = user;
   const { password, passwordConfirmation, email } = body;
+
+  // 1) Check if password and passwordConfirmation are provided
   if (password || passwordConfirmation) {
     return {
       type: 'Error',
@@ -163,9 +163,9 @@ export const updateUserDetails = catchAsync(async (user, body) => {
     };
   }
 
-  // 2) Check if Email Taken Or Not
   const isEmailTaken = await User.isEmailTaken(email, id);
 
+  // 2) Check if email taken or not
   if (email && isEmailTaken) {
     return {
       type: 'Error',
@@ -174,13 +174,13 @@ export const updateUserDetails = catchAsync(async (user, body) => {
     };
   }
 
-  // 3) Find User Document and Update it
+  // 3) Find user document and update it
   user = await User.findByIdAndUpdate(id, body, {
     new: true,
     runValidators: true
   });
 
-  // 4) If Everything is OK, Send User Data
+  // 4) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulUserDetails',
@@ -190,12 +190,13 @@ export const updateUserDetails = catchAsync(async (user, body) => {
 });
 
 /**
- * Update User Profile Image Using It's ID
- * @param     {Object}  user - User Data
- * @param     {Object}    profileImage - Updated Profile Image
- * @returns   {Object<type|message|statusCode|user>}
+ * @desc    Update User Profile Image Using It's ID
+ * @param   { Object } user - An object contains logged in user data
+ * @param   { Object } profileImage - Updated Profile Image
+ * @returns { Object<type|message|statusCode|user> }
  */
 export const updateUserProfileImage = catchAsync(async (user, profileImage) => {
+  // 1) Check if profile imae is provided
   if (profileImage === undefined) {
     return {
       type: 'Error',
@@ -205,20 +206,21 @@ export const updateUserProfileImage = catchAsync(async (user, profileImage) => {
   }
 
   const { name, profileImageId, id } = user;
-  // 2) Specifiy Folder Name Where The Profile Image Is Going To Be Uploaded In Cloudinary
+
+  // 2) Specifiy folder name where the profile image is going to be uploaded in cloudinary
   const folderName = `Users/${name.trim().split(' ').join('')}`;
 
-  // 3) Destroy Image From Cloudinary
+  // 3) Destroy image from cloudinary
   destroyFile(profileImageId);
 
-  // 4) Upload Image to Cloudinary
+  // 4) Upload image to cloudinary
   const image = await uploadFile(
     dataUri(profileImage).content,
     folderName,
     600
   );
 
-  // 5) Find User Document and Update it
+  // 5) Find user document and update it
   user = await User.findByIdAndUpdate(
     id,
     {
@@ -231,7 +233,7 @@ export const updateUserProfileImage = catchAsync(async (user, profileImage) => {
     }
   );
 
-  // 6) If Everything is OK, Send User Data
+  // 6) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulUserImage',
@@ -240,15 +242,14 @@ export const updateUserProfileImage = catchAsync(async (user, profileImage) => {
 });
 
 /**
- * Delete User Using It's ID
- * @param     {ObjectId} id - User ID,
- * @returns   {Object<type|message|statusCode>}
+ * @desc    Delete User Using It's ID
+ * @param   { String } id - User ID,
+ * @returns { Object<type|message|statusCode> }
  */
 export const deleteUser = catchAsync(async (id) => {
-  // 1) Find User Document and Delete it
   const user = await User.findByIdAndDelete(id);
 
-  // 2) Check if User Already Exist
+  // 1) Check if user doesn't exist
   if (!user) {
     return {
       type: 'Error',
@@ -257,10 +258,10 @@ export const deleteUser = catchAsync(async (id) => {
     };
   }
 
-  // 3) Delete User Profile Image
+  // 2) Delete user profile image
   destroyFile(user.profileImageId);
 
-  // 4) If Everything is OK, Send Message
+  // 4) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulUserDelete',
@@ -269,20 +270,20 @@ export const deleteUser = catchAsync(async (id) => {
 });
 
 /**
- * Delete LoggedIn User Data Service
- * @param     {ObjectId} id - User ID,
- * @returns   {Object<type|message|statusCode>}
+ * @desc    Delete LoggedIn User Data Service
+ * @param   { String } id - User ID,
+ * @returns { Object<type|message|statusCode> }
  */
 export const deleteMyAccount = catchAsync(async (user) => {
   const { id, profileImageId } = user;
 
-  // 1) Delete User Profile Image
+  // 1) Delete user profile image
   destroyFile(profileImageId);
 
-  // 2) Delete User Data
+  // 2) Delete user data
   await User.findByIdAndDelete(id);
 
-  // 3) If Everything is OK, Send Message
+  // 3) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulDeleteYourAccount',
