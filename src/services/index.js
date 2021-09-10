@@ -16,14 +16,6 @@ import {
 } from './review.service';
 
 import {
-  transport,
-  sendEmail,
-  sendResetPasswordEmail,
-  sendAfterResetPasswordMessage,
-  sendVerificationEmail
-} from './email.service';
-
-import {
   createUser,
   queryUsers,
   queryUser,
@@ -99,14 +91,6 @@ const reviewService = {
   deleteReview
 };
 
-const emailService = {
-  transport,
-  sendEmail,
-  sendResetPasswordEmail,
-  sendAfterResetPasswordMessage,
-  sendVerificationEmail
-};
-
 const userService = {
   createUser,
   queryUsers,
@@ -169,7 +153,6 @@ const favoriteService = {
 export {
   authService,
   userService,
-  emailService,
   categoryService,
   productService,
   reviewService,
