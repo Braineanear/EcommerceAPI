@@ -40,6 +40,8 @@ export const messages = {
       'Sorry you are not the creator of this review. You are not authorized to perform this action.',
     noUsersFound: 'No users found.',
     noDiscountCodeFound: 'No discount code found.',
+    haveDiscountCode:
+      'You have now a discount code, please use it before using another one.',
     noDiscountCodesFound: 'No discount codes found',
     noUserFoundWithID: 'No user found with this ID.',
     notFoundInFavoriteList: 'Product not found in favorite list.',
@@ -141,6 +143,8 @@ export const messages = {
     noUsersFound: 'لم يتم العثور علي أي مستخدمين.',
     noDiscountCodeFound: 'لم يتم العثور علي كود الخصم.',
     noDiscountCodesFound: 'لم يتم العثور علي أكواد الخصم.',
+    haveDiscountCode:
+      'لديك حاليا كود خصم, برجاء استخدامه قبل ادخال كود خصم أخر.',
     noUserFoundWithID: 'لم يتم العثور علي المستخدم الذي رقمه.',
     notFoundInFavoriteList: 'لم يتم العثور علي المنتج في قائمة المفضلة.',
     passwordUpdateRoute:
