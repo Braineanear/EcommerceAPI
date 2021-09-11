@@ -137,16 +137,18 @@ export const reduceByOne = catchAsync(async (email, productId) => {
   }
 
   // 4) Update cart & product data
-  const updatedProductTotalQuantity =
-    cart.items[indexFound].totalProductQuantity - 1;
-  const updatedProductTotalPrice =
-    cart.items[indexFound].totalProductPrice - price;
-  const updatedCartTotalQuantity = cart.totalQuantity - 1;
-  const updatedCartTotalPrice = cart.totalPrice - price;
-
-  if (updatedProductTotalQuantity <= 0 && updatedProductTotalPrice <= 0) {
+  if (cart.items[indexFound].totalProductQuantity === 1) {
     cart.items.splice(indexFound, 1);
+    cart.totalQuantity -= 1;
+    cart.totalPrice -= price;
   } else {
+    const updatedProductTotalQuantity =
+      cart.items[indexFound].totalProductQuantity - 1;
+    const updatedProductTotalPrice =
+      cart.items[indexFound].totalProductPrice - price;
+    const updatedCartTotalQuantity = cart.totalQuantity - 1;
+    const updatedCartTotalPrice = cart.totalPrice - price;
+
     cart.items[indexFound].totalProductQuantity = updatedProductTotalQuantity;
     cart.items[indexFound].totalProductPrice = updatedProductTotalPrice;
     cart.totalQuantity = updatedCartTotalQuantity;
