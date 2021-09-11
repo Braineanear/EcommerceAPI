@@ -31,7 +31,7 @@ export const addProductToCart = catchAsync(
     if (cart) {
       // Find product index in the cart
       const indexFound = cart.items.findIndex(
-        (item) => item.product.toString() === product.id.toString()
+        (item) => item.product.toString() === productId.toString()
       );
 
       // Check product index
@@ -124,7 +124,7 @@ export const reduceByOne = catchAsync(async (email, productId) => {
 
   // 2) Find product index inside cart
   const indexFound = cart.items.findIndex(
-    (item) => item.product.toString() === product._id.toString()
+    (item) => item.product.toString() === productId.toString()
   );
 
   // 3) Check if product doesn't exist in the cart
@@ -202,7 +202,7 @@ export const increaseByOne = catchAsync(async (email, productId) => {
 
   // 3) Find product index inside cart
   const indexFound = cart.items.findIndex(
-    (item) => item.product.toString() === product._id.toString()
+    (item) => item.product.toString() === productId.toString()
   );
 
   // 4) Check if product doesn't exist in the cart
@@ -330,7 +330,7 @@ export const deleteItem = catchAsync(async (email, productId) => {
   }
 
   const indexFound = cart.items.findIndex(
-    (item) => item.product.name === product.name
+    (item) => item.product.toString() === productId.toString()
   );
 
   const totalPrice = cart.totalPrice - cart.items[indexFound].totalProductPrice;
