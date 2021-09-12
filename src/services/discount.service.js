@@ -179,3 +179,47 @@ export const deleteDiscountCode = catchAsync(async (codeId) => {
     statusCode: 200
   };
 });
+
+/**
+ * @desc    Cancel Discount Code
+ * @param   { String } code - Discount code
+ * @param   { String } userId - ID of user
+ * @return  { Object<type|message|statusCode> }
+ */
+export const cancelDiscountCode = catchAsync(async (code, userId) => {
+  const discountCode = await Discount.findOne({ code });
+
+  // 1) Check if discount code doesn't exist
+  if (!discountCode) {
+    return {
+      type: 'Error',
+      message: 'noDiscountCodeFound',
+      statusCode: 404
+    };
+  }
+
+  const user = await User.findById(userId);
+
+  // 2) Check if user doesn't exist
+  if (!user) {
+    return {
+      type: 'Error',
+      message: 'noUserFound',
+      statusCode: 404
+    };
+  }
+
+  // 3) Update user and discount code documents
+  user.discountCode = '';
+  discountCode.available += 1;
+
+  await user.save();
+  await discountCode.save();
+
+  // 4) If everything is OK, send data
+  return {
+    type: 'Success',
+    message: 'discountCodeCanceled',
+    statusCode: 200
+  };
+});
