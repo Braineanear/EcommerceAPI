@@ -383,3 +383,63 @@ export const verifyDiscountCode = {
     }
   }
 };
+
+export const cancelDiscountCode = {
+  tags: ['Discount'],
+  description: 'This route allow logged in user to cancel discount code',
+  opeationId: 'cancelDiscountCode',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
+  responses: {
+    200: {
+      description: 'Cancel discount code',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Discount code cancelled from order successfully.'
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message1: {
+                type: 'string',
+                example: 'No discount code found.'
+              },
+              message2: {
+                type: 'string',
+                example: 'No user found.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
