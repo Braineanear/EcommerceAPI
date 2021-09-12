@@ -104,3 +104,30 @@ export const generateDiscountCode = catchAsync(async (req, res) => {
     discountCode
   });
 });
+
+/**
+ * @desc      Delete Discount Code
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.id - ID of discount code
+ * @return    { JSON } - A JSON object representing the type and message
+ */
+export const deleteDiscountCode = catchAsync(async (req, res) => {
+  // 1) Delete discount code
+  const { type, message, statusCode } =
+    await discountService.deleteDiscountCode(req.params.id);
+
+  // 2) Check if there is an error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message: req.polyglot.t(message)
+    });
+  }
+
+  // 3) If everything is OK, send data
+  return res.status(statusCode).json({
+    type,
+    message: req.polyglot.t(message)
+  });
+});
