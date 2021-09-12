@@ -50,7 +50,7 @@
 
 ## Deployed Version
 
-Live demo (Feel free to visit) 👉 :  <a href="https://e-commerce-a-p-i.herokuapp.com/api">E-commerce API</a>
+Live demo (Feel free to visit) 👉 :  <a href="https://e-commerce-a-p-i.herokuapp.com/api-docs">E-commerce API</a>
 
 ## Key Features
 
