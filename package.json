@@ -60,7 +60,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.25.1",
     "mocha": "^9.1.1",
-    "prettier": "^2.3.2",
+    "prettier": "^2.4.0",
     "supertest": "^6.1.6"
   },
   "repository": "https://github.com/Braineanear/EcommerceAPI.git"
