@@ -56,6 +56,7 @@ import {
 
 import {
   createOrder,
+  orderStatus,
   queryOrders,
   queryOrder,
   cancelOrder
@@ -132,6 +133,7 @@ const cartService = {
 
 const orderService = {
   createOrder,
+  orderStatus,
   queryOrders,
   queryOrder,
   cancelOrder
