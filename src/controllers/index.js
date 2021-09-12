@@ -69,7 +69,8 @@ import {
   verifyDiscountCode,
   getAllDiscountCodes,
   generateDiscountCode,
-  deleteDiscountCode
+  deleteDiscountCode,
+  cancelDiscountCode
 } from './discount.controller';
 
 import {
@@ -150,7 +151,8 @@ const discountController = {
   verifyDiscountCode,
   getAllDiscountCodes,
   generateDiscountCode,
-  deleteDiscountCode
+  deleteDiscountCode,
+  cancelDiscountCode
 };
 
 const favoriteController = {
