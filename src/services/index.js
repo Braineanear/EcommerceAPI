@@ -66,7 +66,8 @@ import {
   verifyDiscountCode,
   getAllDiscountCodes,
   generateDiscountCode,
-  deleteDiscountCode
+  deleteDiscountCode,
+  cancelDiscountCode
 } from './discount.service';
 
 import {
@@ -144,7 +145,8 @@ const discountService = {
   verifyDiscountCode,
   getAllDiscountCodes,
   generateDiscountCode,
-  deleteDiscountCode
+  deleteDiscountCode,
+  cancelDiscountCode
 };
 
 const favoriteService = {
