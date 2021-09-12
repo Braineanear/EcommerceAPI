@@ -12,7 +12,8 @@ const {
   verifyDiscountCode,
   getAllDiscountCodes,
   generateDiscountCode,
-  deleteDiscountCode
+  deleteDiscountCode,
+  cancelDiscountCode
 } = discountController;
 
 const router = express.Router();
@@ -20,6 +21,8 @@ const router = express.Router();
 router.use(protect);
 
 router.post('/verify', verifyDiscountCode);
+
+router.delete('/cancel', cancelDiscountCode);
 
 router.use(restrictedTo('admin'));
 
