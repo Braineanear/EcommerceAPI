@@ -73,7 +73,8 @@ import {
 import {
   verifyDiscountCode,
   getAllDiscountCodes,
-  generateDiscountCode
+  generateDiscountCode,
+  deleteDiscountCode
 } from './discount.swagger';
 
 const docs = {
@@ -202,6 +203,9 @@ const docs = {
     },
     '/discount/generate': {
       post: generateDiscountCode
+    },
+    '/discount/{id}': {
+      delete: deleteDiscountCode
     },
     '/cart': {
       get: getCart,

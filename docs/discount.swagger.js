@@ -226,6 +226,68 @@ export const getAllDiscountCodes = {
   }
 };
 
+export const deleteDiscountCode = {
+  tags: ['Discount'],
+  description: 'This route allow logged in admin to delete discount code',
+  opeationId: 'deleteDiscountCode',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
+    {
+      in: 'path',
+      name: 'id',
+      type: 'integer',
+      description: 'Discount Code ID'
+    }
+  ],
+  responses: {
+    200: {
+      description: 'Delete discount code',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Discount code deleted successfully.'
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'No discount code found.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
 export const verifyDiscountCode = {
   tags: ['Discount'],
   description: 'This route allow logged in user/seller to verify discount code',
@@ -313,69 +375,6 @@ export const verifyDiscountCode = {
               message: {
                 type: 'string',
                 example: 'No discount code found.'
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-};
-
-export const checkProductInFavoriteList = {
-  tags: ['Favorite'],
-  description:
-    'This route allow logged in user/seller/admin to check if product in favorite list',
-  opeationId: 'checkProductInFavoriteList',
-  parameters: [
-    {
-      in: 'header',
-      name: 'Accept-Language',
-      type: 'string',
-      example: 'ar_MX'
-    },
-    {
-      in: 'path',
-      name: 'id',
-      type: 'integer',
-      description: 'Product ID'
-    }
-  ],
-  responses: {
-    200: {
-      description: 'Check if Product in Favorite List',
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              type: {
-                type: 'string',
-                example: 'Success'
-              },
-              message: {
-                type: 'string',
-                example: 'Product in favorite list.'
-              }
-            }
-          }
-        }
-      }
-    },
-    404: {
-      description: 'Error: 404',
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              type: {
-                type: 'string',
-                example: 'Error'
-              },
-              message: {
-                type: 'string',
-                example: 'Product not found in favorite list.'
               }
             }
           }
