@@ -36,6 +36,36 @@ export const createOrder = catchAsync(async (req, res) => {
 });
 
 /**
+ * @desc      Update order status Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.body.status - Order status
+ * @property  { String } req.params.id - Order ID
+ * @return    { JSON } - A JSON object representing the type, message and the order
+ */
+export const orderStatus = catchAsync(async (req, res) => {
+  // 1) Update order status
+  const { type, message, statusCode } = await orderService.orderStatus(
+    req.body.status,
+    req.params.id
+  );
+
+  // 2) Check if there is an error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message: req.polyglot.t(message)
+    });
+  }
+
+  // 3) If everything is OK, send data
+  return res.status(statusCode).json({
+    type,
+    message: req.polyglot.t(message)
+  });
+});
+
+/**
  * @desc      Get All Orders Controller
  * @param     { Object }  req - Request object
  * @param     { Object }  res - Response object

@@ -59,6 +59,7 @@ import {
 
 import {
   createOrder,
+  orderStatus,
   getAllOrders,
   getOrder,
   cancelOrder
@@ -138,6 +139,7 @@ const cartController = {
 
 const orderController = {
   createOrder,
+  orderStatus,
   getAllOrders,
   getOrder,
   cancelOrder
