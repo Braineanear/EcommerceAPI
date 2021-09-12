@@ -55,7 +55,13 @@ import {
   deleteMyAccount
 } from './user.swagger';
 
-import { createNewOrder, getAllOrders } from './order.swagger';
+import {
+  createNewOrder,
+  getAllOrders,
+  getOrder,
+  orderStatus,
+  cancelOrder
+} from './order.swagger';
 
 import {
   addFavoriteProduct,
@@ -214,6 +220,11 @@ const docs = {
     '/order': {
       get: getAllOrders,
       post: createNewOrder
+    },
+    '/order/{id}': {
+      get: getOrder,
+      patch: orderStatus,
+      delete: cancelOrder
     },
     '/product/{productId}/reviews': {
       get: getAllProductReviews,
