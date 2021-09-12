@@ -151,3 +151,31 @@ export const generateDiscountCode = catchAsync(
     };
   }
 );
+
+/**
+ * @desc    Delete Discount Code
+ * @param   { String } codeId - ID of discount code
+ * @return  { Object<type|message|statusCode> }
+ */
+export const deleteDiscountCode = catchAsync(async (codeId) => {
+  const discountCode = await Discount.findById(codeId);
+
+  // 1) Check if discount code doesn't exist
+  if (!discountCode) {
+    return {
+      type: 'Error',
+      message: 'noDiscountCodeFound',
+      statusCode: 404
+    };
+  }
+
+  // 2) Delete discount code document
+  await Discount.findByIdAndDelete(codeId);
+
+  // 3) If everything is OK, send data
+  return {
+    type: 'Success',
+    message: 'discountCodeDeleted',
+    statusCode: 200
+  };
+});
