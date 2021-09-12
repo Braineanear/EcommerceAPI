@@ -45,7 +45,7 @@ export const createOrder = catchAsync(async (body, user) => {
   const cart = await Cart.findOne({ email: user.email });
 
   // 4) Check if cart doesn't exist
-  if (!cart) {
+  if (!cart || cart.items.length === 0) {
     return {
       type: 'Error',
       message: 'noCartFound',
@@ -108,8 +108,8 @@ export const createOrder = catchAsync(async (body, user) => {
 
   // 8) Create stripe charge
   const charge = stripe.charges.create({
-    amount: cart.totalPrice * 100,
-    currency: 'egp',
+    amount: Math.round(cart.totalPrice),
+    currency: 'usd',
     source: token.id,
     description: 'Charge For Products'
   });
@@ -144,6 +144,91 @@ export const createOrder = catchAsync(async (body, user) => {
     message: 'successfulOrderCreate',
     statusCode: 201,
     order
+  };
+});
+
+/**
+ * @desc    Update Order Status
+ * @param   { String } status - Order status
+ * @param   { String } id - Order ID
+ * @returns { Object<type|message|statusCode> }
+ */
+export const orderStatus = catchAsync(async (status, id) => {
+  // 1) All fields are required
+  if (!status) {
+    return {
+      type: 'Error',
+      message: 'fieldsRequired',
+      statusCode: 400
+    };
+  }
+
+  // 2) Check if status doesn't meet the enum
+  if (
+    ![
+      'Not Processed',
+      'Processing',
+      'Shipped',
+      'Delivered',
+      'Cancelled'
+    ].includes(status)
+  ) {
+    return {
+      type: 'Error',
+      message: 'notInStatusEnum',
+      statusCode: 400
+    };
+  }
+
+  const order = await Order.findById(id);
+
+  // 3) Check if order doesn't exist
+  if (!order) {
+    return {
+      type: 'Error',
+      message: 'noOrder',
+      statusCode: 404
+    };
+  }
+
+  // 4) Check if order have been cancelled
+  if (status === 'Cancelled') {
+    order.products.forEach(async (item) => {
+      const product = await Product.findById(item.product);
+
+      if (!product) {
+        return {
+          type: 'Error',
+          message: 'noProductFound',
+          statusCode: 404
+        };
+      }
+
+      await Product.findByIdAndUpdate(item.product, {
+        quantity: product.quantity + item.totalProductQuantity,
+        sold: product.sold - item.totalProductQuantity
+      });
+    });
+
+    await Order.findByIdAndDelete(id);
+
+    return {
+      type: 'Success',
+      message: 'successfulOrderCancel',
+      statusCode: 200
+    };
+  }
+
+  // 5) Save order new status
+  order.status = status;
+
+  await order.save();
+
+  // 6) If everything is OK, send data
+  return {
+    type: 'Success',
+    message: 'successfulStatusUpdate',
+    statusCode: 200
   };
 });
 
