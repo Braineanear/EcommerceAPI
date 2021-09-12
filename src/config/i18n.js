@@ -45,6 +45,8 @@ export const messages = {
     noDiscountCodesFound: 'No discount codes found',
     noUserFoundWithID: 'No user found with this ID.',
     notFoundInFavoriteList: 'Product not found in favorite list.',
+    notInStatusEnum:
+      'Sorry by status must be one of the following: Not Processed, Processing, Shipped, Delivered, Cancelled.',
     passwordUpdateRoute:
       'Cannot update password from here, please go to update password route.',
     successfulSignUp: 'Account created successful, please verify your email!',
@@ -98,7 +100,8 @@ export const messages = {
     successfulCodeVerification:
       'Discount code verification completed successfully.',
     successfulDiscountCodesFound: 'Discount codes found successfully.',
-    successfulCodeGeneration: 'Discount code generated successfully.'
+    successfulCodeGeneration: 'Discount code generated successfully.',
+    successfulStatusUpdate: 'Order status updated successfully.'
   },
   ar: {
     profileImageRequired: 'الصورة الشخصية مطلوبة. رجاءً قم برفع صورة.',
@@ -147,6 +150,8 @@ export const messages = {
       'لديك حاليا كود خصم, برجاء استخدامه قبل ادخال كود خصم أخر.',
     noUserFoundWithID: 'لم يتم العثور علي المستخدم الذي رقمه.',
     notFoundInFavoriteList: 'لم يتم العثور علي المنتج في قائمة المفضلة.',
+    notInStatusEnum:
+      'عذراً ولكن حالة الطلب يجب ان تكون واحدة من الآتي: Not Processed, Processing, Shipped, Delivered, Cancelled.',
     passwordUpdateRoute:
       'لا يمكنك تحديث كلمة المرور من هنا, برجاء الذهاب إلي المكان المخصص لتغيير كلمة المرور',
     successfulSignUp: 'تم إنشاء الحساب بنجاح. برجاء تفعيل البريد الإلكتروني.',
@@ -201,6 +206,7 @@ export const messages = {
     successfulProductFoundInFavorite: 'تم العثور علي المنتج في قائمة المفضلة',
     successfulCodeVerification: 'تم التأكد من كود الخصم بنجاح.',
     successfulDiscountCodesFound: 'تم العثور علي أكواد الخصم بنجاح.',
-    successfulCodeGeneration: 'تم انشاء كود خصم بنجاح.'
+    successfulCodeGeneration: 'تم انشاء كود خصم بنجاح.',
+    successfulStatusUpdate: 'تم تحديث حالة الطلب بنجاح.'
   }
 };
