@@ -65,7 +65,8 @@ import {
 import {
   verifyDiscountCode,
   getAllDiscountCodes,
-  generateDiscountCode
+  generateDiscountCode,
+  deleteDiscountCode
 } from './discount.service';
 
 import {
@@ -142,7 +143,8 @@ const orderService = {
 const discountService = {
   verifyDiscountCode,
   getAllDiscountCodes,
-  generateDiscountCode
+  generateDiscountCode,
+  deleteDiscountCode
 };
 
 const favoriteService = {
