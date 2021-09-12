@@ -74,7 +74,8 @@ import {
   verifyDiscountCode,
   getAllDiscountCodes,
   generateDiscountCode,
-  deleteDiscountCode
+  deleteDiscountCode,
+  cancelDiscountCode
 } from './discount.swagger';
 
 const docs = {
@@ -200,6 +201,9 @@ const docs = {
     },
     '/discount/verify': {
       post: verifyDiscountCode
+    },
+    '/discount/cancel': {
+      delete: cancelDiscountCode
     },
     '/discount/generate': {
       post: generateDiscountCode
