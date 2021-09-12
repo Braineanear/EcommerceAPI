@@ -96,13 +96,21 @@ Live demo (Feel free to visit) 👉 :  <a href="https://e-commerce-a-p-i.herokua
   * Delete Product Using It's ID [User]
   * Get Products Statics [Admin]
   * Top 5 Cheapeast Products [Public]
+* Favorite Services
   * Get Favorite Products List [User]
   * Add Product to Favorite List [User]
+  * Delete Product From Favorite List [User]
+  * Check If Product In Favorite List [User]
+* Discount Services
+  * Generate Discount Code [Admin]
+  * Get All Discount Codes [Admin]
+  * Verify Discount Code [User]
 * Order Services
   * Create New Order [User]
   * Query Orders [User]
   * Query Order Using It's ID [User]
   * Cancel Order [User]
+  * Update Order Status [Admin]
 * Category Services
   * Create New Category [User]
   * Query Categories [Public]
