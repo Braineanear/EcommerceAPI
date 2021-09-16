@@ -226,6 +226,66 @@ export const getAllDiscountCodes = {
   }
 };
 
+export const getDiscount = {
+  tags: ['Discount'],
+  description: 'This route allow user to get discount amount',
+  opeationId: 'getDiscount',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    }
+  ],
+  responses: {
+    200: {
+      description: 'Get Discount',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Discount found successfully.'
+              },
+              discount: {
+                type: 'number',
+                example: 25
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'No discount codes found'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
 export const deleteDiscountCode = {
   tags: ['Discount'],
   description: 'This route allow logged in admin to delete discount code',
