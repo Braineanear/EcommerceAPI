@@ -138,27 +138,8 @@ export const getAllProducts = {
                         'Lenovo Yoga 9 14ITL5 Laptop - Intel Core i7-1185G7, 14 Inch UHD, 1TB SSD, 16 GB RAM, Integrated Intel Iris Xe Graphics, Windows - Shadow Black'
                     },
                     category: {
-                      type: 'object',
-                      properties: {
-                        _id: {
-                          type: 'string',
-                          example: '611ed87e7ae59e944d27920a'
-                        },
-                        name: {
-                          type: 'string',
-                          example: 'Laptop'
-                        },
-                        description: {
-                          type: 'string',
-                          example:
-                            "This category contains all products related to Laptops, it's components and accessories"
-                        },
-                        image: {
-                          type: 'string',
-                          example:
-                            'https://res.cloudinary.com/dknma8cck/image/upload/v1629411453/EcommerceAPI/Category/Laptop/hqbknfppz8src5szz2w9.webp'
-                        }
-                      }
+                      type: 'string',
+                      example: '611ed87e7ae59e944d27920a'
                     },
                     priceDiscount: {
                       type: 'integer',
@@ -168,47 +149,17 @@ export const getAllProducts = {
                       type: 'integer',
                       example: 2635
                     },
-                    color: {
-                      type: 'string',
-                      example: 'Black'
+                    colors: {
+                      type: 'array',
+                      items: ['Black']
                     },
-                    size: {
-                      type: 'string',
-                      example: 'Large'
+                    sizes: {
+                      type: 'array',
+                      items: ['Large']
                     },
                     seller: {
-                      type: 'object',
-                      properties: {
-                        _id: {
-                          type: 'string',
-                          example: '611f62e28fa5d0a76cefbc96'
-                        },
-                        name: {
-                          type: 'string',
-                          example: 'Ali Yasser'
-                        },
-                        email: {
-                          type: 'string',
-                          example: 'mle.ali.yasser@gmail.com'
-                        },
-                        companyName: {
-                          type: 'string',
-                          example: 'Souq'
-                        },
-                        address: {
-                          type: 'string',
-                          example: 'Cairo - Egypt'
-                        },
-                        phone: {
-                          type: 'string',
-                          example: '01541258221'
-                        },
-                        profileImage: {
-                          type: 'string',
-                          example:
-                            'https://res.cloudinary.com/dknma8cck/image/upload/v1629446881/EcommerceAPI/Users/AliYasser/kfexgexhxzleszejxrkn.webp'
-                        }
-                      }
+                      type: 'string',
+                      example: '611f62e28fa5d0a76cefbc96'
                     },
                     createdAt: {
                       type: 'string',
@@ -359,27 +310,8 @@ export const getProduct = {
                       'Lenovo Yoga 9 14ITL5 Laptop - Intel Core i7-1185G7, 14 Inch UHD, 1TB SSD, 16 GB RAM, Integrated Intel Iris Xe Graphics, Windows - Shadow Black'
                   },
                   category: {
-                    type: 'object',
-                    properties: {
-                      _id: {
-                        type: 'string',
-                        example: '611ed87e7ae59e944d27920a'
-                      },
-                      name: {
-                        type: 'string',
-                        example: 'Laptop'
-                      },
-                      description: {
-                        type: 'string',
-                        example:
-                          "This category contains all products related to Laptops, it's components and accessories"
-                      },
-                      image: {
-                        type: 'string',
-                        example:
-                          'https://res.cloudinary.com/dknma8cck/image/upload/v1629411453/EcommerceAPI/Category/Laptop/hqbknfppz8src5szz2w9.webp'
-                      }
-                    }
+                    type: 'string',
+                    example: '611ed87e7ae59e944d27920a'
                   },
                   priceDiscount: {
                     type: 'integer',
@@ -389,47 +321,17 @@ export const getProduct = {
                     type: 'integer',
                     example: 2635
                   },
-                  color: {
-                    type: 'string',
-                    example: 'Black'
+                  colors: {
+                    type: 'array',
+                    items: ['Black']
                   },
-                  size: {
-                    type: 'string',
-                    example: 'Large'
+                  sizes: {
+                    type: 'array',
+                    items: ['Large']
                   },
                   seller: {
-                    type: 'object',
-                    properties: {
-                      _id: {
-                        type: 'string',
-                        example: '611f62e28fa5d0a76cefbc96'
-                      },
-                      name: {
-                        type: 'string',
-                        example: 'Ali Yasser'
-                      },
-                      email: {
-                        type: 'string',
-                        example: 'mle.ali.yasser@gmail.com'
-                      },
-                      companyName: {
-                        type: 'string',
-                        example: 'Souq'
-                      },
-                      address: {
-                        type: 'string',
-                        example: 'Cairo - Egypt'
-                      },
-                      phone: {
-                        type: 'string',
-                        example: '01541258221'
-                      },
-                      profileImage: {
-                        type: 'string',
-                        example:
-                          'https://res.cloudinary.com/dknma8cck/image/upload/v1629446881/EcommerceAPI/Users/AliYasser/kfexgexhxzleszejxrkn.webp'
-                      }
-                    }
+                    type: 'string',
+                    example: '611f62e28fa5d0a76cefbc96'
                   },
                   createdAt: {
                     type: 'string',
@@ -513,13 +415,15 @@ export const addProduct = {
               type: 'integer',
               required: true
             },
-            color: {
+            colors: {
               type: 'string',
-              required: true
+              required: true,
+              example: 'Red, Green, Black'
             },
-            size: {
-              type: 'string',
-              required: true
+            sizes: {
+              type: 'array',
+              required: true,
+              example: 'S, M, L'
             },
             quantity: {
               type: 'integer',
@@ -644,13 +548,13 @@ export const addProduct = {
                     type: 'integer',
                     example: 2635
                   },
-                  color: {
-                    type: 'string',
-                    example: 'Black'
+                  colors: {
+                    type: 'array',
+                    items: ['Black']
                   },
-                  size: {
-                    type: 'string',
-                    example: 'Large'
+                  sizes: {
+                    type: 'array',
+                    items: ['Large']
                   },
                   seller: {
                     type: 'string',
@@ -831,27 +735,8 @@ export const top5Cheap = {
                         'Lenovo Yoga 9 14ITL5 Laptop - Intel Core i7-1185G7, 14 Inch UHD, 1TB SSD, 16 GB RAM, Integrated Intel Iris Xe Graphics, Windows - Shadow Black'
                     },
                     category: {
-                      type: 'object',
-                      properties: {
-                        _id: {
-                          type: 'string',
-                          example: '611ed87e7ae59e944d27920a'
-                        },
-                        name: {
-                          type: 'string',
-                          example: 'Laptop'
-                        },
-                        description: {
-                          type: 'string',
-                          example:
-                            "This category contains all products related to Laptops, it's components and accessories"
-                        },
-                        image: {
-                          type: 'string',
-                          example:
-                            'https://res.cloudinary.com/dknma8cck/image/upload/v1629411453/EcommerceAPI/Category/Laptop/hqbknfppz8src5szz2w9.webp'
-                        }
-                      }
+                      type: 'string',
+                      example: '611ed87e7ae59e944d27920a'
                     },
                     priceDiscount: {
                       type: 'integer',
@@ -861,47 +746,17 @@ export const top5Cheap = {
                       type: 'integer',
                       example: 2635
                     },
-                    color: {
-                      type: 'string',
-                      example: 'Black'
+                    colors: {
+                      type: 'array',
+                      items: ['Black']
                     },
-                    size: {
-                      type: 'string',
-                      example: 'Large'
+                    sizes: {
+                      type: 'array',
+                      items: ['Large']
                     },
                     seller: {
-                      type: 'object',
-                      properties: {
-                        _id: {
-                          type: 'string',
-                          example: '611f62e28fa5d0a76cefbc96'
-                        },
-                        name: {
-                          type: 'string',
-                          example: 'Ali Yasser'
-                        },
-                        email: {
-                          type: 'string',
-                          example: 'mle.ali.yasser@gmail.com'
-                        },
-                        companyName: {
-                          type: 'string',
-                          example: 'Souq'
-                        },
-                        address: {
-                          type: 'string',
-                          example: 'Cairo - Egypt'
-                        },
-                        phone: {
-                          type: 'string',
-                          example: '01541258221'
-                        },
-                        profileImage: {
-                          type: 'string',
-                          example:
-                            'https://res.cloudinary.com/dknma8cck/image/upload/v1629446881/EcommerceAPI/Users/AliYasser/kfexgexhxzleszejxrkn.webp'
-                        }
-                      }
+                      type: 'string',
+                      example: '611f62e28fa5d0a76cefbc96'
                     },
                     createdAt: {
                       type: 'string',
@@ -1070,11 +925,11 @@ export const updateProductDetails = {
             priceDiscount: {
               type: 'integer'
             },
-            color: {
-              type: 'string'
+            colors: {
+              type: 'array'
             },
-            size: {
-              type: 'string'
+            sizes: {
+              type: 'array'
             },
             quantity: {
               type: 'integer'
