@@ -65,6 +65,7 @@ export const createOrder = catchAsync(async (body, user) => {
       phone
     });
 
+    // 2) Update product sold and quantity fields
     cart.items.forEach(async (item) => {
       const { id } = item.product;
       const { totalProductQuantity } = item;
@@ -74,9 +75,14 @@ export const createOrder = catchAsync(async (body, user) => {
       await Product.findByIdAndUpdate(id, { sold, quantity });
     });
 
+    // 3) Delete cart
     await Cart.findByIdAndDelete(cart._id);
 
-    // 2) If everything is OK, send data
+    // 4) Remove user discount code
+    user.discountCode = '';
+    await user.save();
+
+    // 5) If everything is OK, send data
     return {
       type: 'Success',
       message: 'successfulOrderCreate',
@@ -127,6 +133,7 @@ export const createOrder = catchAsync(async (body, user) => {
     phone
   });
 
+  // 10) Update product sold and quantity fields
   cart.items.forEach(async (item) => {
     const id = item.product;
     const { totalProductQuantity } = item;
@@ -136,9 +143,15 @@ export const createOrder = catchAsync(async (body, user) => {
     await Product.findByIdAndUpdate(id, { sold, quantity });
   });
 
+  // 11) Delete cart
   await Cart.findByIdAndDelete(cart._id);
 
-  // 10) If everything is OK, send data
+
+  // 12) Remove user discount code
+  user.discountCode = '';
+  await user.save();
+
+  // 13) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulOrderCreate',
