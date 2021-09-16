@@ -103,7 +103,8 @@ export const messages = {
     successfulCodeGeneration: 'Discount code generated successfully.',
     successfulStatusUpdate: 'Order status updated successfully.',
     discountCodeDeleted: 'Discount code deleted successfully.',
-    discountCodeCanceled: 'Discount code cancelled from order successfully.'
+    discountCodeCanceled: 'Discount code cancelled from order successfully.',
+    successfulGetDiscount: 'Discount found successfully.'
   },
   ar: {
     profileImageRequired: 'الصورة الشخصية مطلوبة. رجاءً قم برفع صورة.',
@@ -211,6 +212,7 @@ export const messages = {
     successfulCodeGeneration: 'تم انشاء كود خصم بنجاح.',
     successfulStatusUpdate: 'تم تحديث حالة الطلب بنجاح.',
     discountCodeDeleted: 'تم حذف كود الخصم بنجاح.',
-    discountCodeCanceled: 'تم إلغاء كود الخصم من الطلب بنجاح.'
+    discountCodeCanceled: 'تم إلغاء كود الخصم من الطلب بنجاح.',
+    successfulGetDiscount: 'تم العثور علي الخصم بنجاح.'
   }
 };
