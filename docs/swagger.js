@@ -72,6 +72,7 @@ import {
 
 import {
   verifyDiscountCode,
+  getDiscount,
   getAllDiscountCodes,
   generateDiscountCode,
   deleteDiscountCode,
@@ -204,6 +205,9 @@ const docs = {
     },
     '/discount/cancel': {
       delete: cancelDiscountCode
+    },
+    '/discount/find': {
+      get: getDiscount
     },
     '/discount/generate': {
       post: generateDiscountCode
