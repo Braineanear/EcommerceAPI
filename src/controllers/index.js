@@ -66,8 +66,9 @@ import {
 } from './order.controller';
 
 import {
-  verifyDiscountCode,
   getAllDiscountCodes,
+  getDiscount,
+  verifyDiscountCode,
   generateDiscountCode,
   deleteDiscountCode,
   cancelDiscountCode
@@ -148,8 +149,9 @@ const orderController = {
 };
 
 const discountController = {
-  verifyDiscountCode,
   getAllDiscountCodes,
+  getDiscount,
+  verifyDiscountCode,
   generateDiscountCode,
   deleteDiscountCode,
   cancelDiscountCode

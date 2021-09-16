@@ -5,6 +5,61 @@ import catchAsync from '../utils/catchAsync';
 import { discountService } from '../services';
 
 /**
+ * @desc    Verify Discount Code Controller
+ * @param   { Object } req - Request object
+ * @param   { Object } res - Response object
+ * @return  { JSON } - A JSON object representing the type, message and the codes
+ */
+export const getAllDiscountCodes = catchAsync(async (req, res) => {
+  // 1) Verify discount code
+  const { type, message, statusCode, codes } =
+    await discountService.getAllDiscountCodes(req);
+
+  // 2) Check if there is an error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message: req.polyglot.t(message)
+    });
+  }
+
+  // 3) If everything is OK, send data
+  return res.status(statusCode).json({
+    type,
+    message: req.polyglot.t(message),
+    codes
+  });
+});
+
+/**
+ * @desc      Get Discount
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.user.discountCode - Discount code
+ * @return    { JSON } - A JSON object representing the type, message and discount
+ */
+export const getDiscount = catchAsync(async (req, res) => {
+  // 1) Cancel discount code
+  const { type, message, statusCode, discount } =
+    await discountService.getDiscount(req.user.discountCode);
+
+  // 2) Check if there is an error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message: req.polyglot.t(message)
+    });
+  }
+
+  // 3) If everything is OK, send data
+  return res.status(statusCode).json({
+    type,
+    message: req.polyglot.t(message),
+    discount
+  });
+});
+
+/**
  * @desc      Verify Discount Code Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
@@ -30,33 +85,6 @@ export const verifyDiscountCode = catchAsync(async (req, res) => {
     type,
     message: req.polyglot.t(message),
     discount
-  });
-});
-
-/**
- * @desc    Verify Discount Code Controller
- * @param   { Object } req - Request object
- * @param   { Object } res - Response object
- * @return  { JSON } - A JSON object representing the type, message and the codes
- */
-export const getAllDiscountCodes = catchAsync(async (req, res) => {
-  // 1) Verify discount code
-  const { type, message, statusCode, codes } =
-    await discountService.getAllDiscountCodes(req);
-
-  // 2) Check if there is an error
-  if (type === 'Error') {
-    return res.status(statusCode).json({
-      type,
-      message: req.polyglot.t(message)
-    });
-  }
-
-  // 3) If everything is OK, send data
-  return res.status(statusCode).json({
-    type,
-    message: req.polyglot.t(message),
-    codes
   });
 });
 
