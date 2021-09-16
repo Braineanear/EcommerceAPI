@@ -9,8 +9,9 @@ import protect from '../middlewares/protect';
 import restrictedTo from '../middlewares/restrictedTo';
 
 const {
-  verifyDiscountCode,
   getAllDiscountCodes,
+  getDiscount,
+  verifyDiscountCode,
   generateDiscountCode,
   deleteDiscountCode,
   cancelDiscountCode
@@ -23,6 +24,8 @@ router.use(protect);
 router.post('/verify', verifyDiscountCode);
 
 router.delete('/cancel', cancelDiscountCode);
+
+router.get('/find', getDiscount);
 
 router.use(restrictedTo('admin'));
 
