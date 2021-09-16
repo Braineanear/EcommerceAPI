@@ -73,37 +73,25 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     category,
     price,
     priceDiscount,
-    color,
-    size,
+    colors,
+    sizes,
     quantity,
     sold,
     isOutOfStock
   } = body;
 
-  // 1) Make array Of main image (single image)
   const mainImage = files.filter((image) => image.fieldname === 'mainImage');
-
-  // 2) Make array Of product images
   const images = files.filter((image) => image.fieldname === 'images');
 
-  // 3) Cloudinary folder name
-  const folderName = `Products/${name.trim().split(' ').join('')}`;
-
-  // 4) Array Of images links
-  const imagesLink = [];
-
-  // 5) Array Of images IDs
-  const imagesId = [];
-
-  // 6) Check if there any empty field
+  // 1) Check if there any empty field
   if (
     !name ||
     !description ||
     !category ||
     !price ||
     !priceDiscount ||
-    !color ||
-    !size ||
+    !colors ||
+    !sizes ||
     !quantity ||
     !sold ||
     !isOutOfStock ||
@@ -117,7 +105,9 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     };
   }
 
-  // 7) Upload images to cloudinary
+  const folderName = `Products/${name.trim().split(' ').join('')}`;
+
+  // 2) Upload images to cloudinary
   const imagesPromises = images.map((image) =>
     uploadFile(dataUri(image).content, folderName)
   );
@@ -127,7 +117,10 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     folderName
   );
 
-  // 8) Push images links & images IDs to the arrays
+  const imagesLink = [];
+  const imagesId = [];
+
+  // 3) Push images links & images IDs to the arrays
   imagesResult.forEach((image) => {
     imagesLink.push(image.secure_url);
     imagesId.push(image.public_id);
@@ -140,7 +133,7 @@ export const createProduct = catchAsync(async (body, files, seller) => {
       Number(price) - (Number(price) / 100) * Number(priceDiscount);
   }
 
-  // 9) Create product
+  // 4) Create product
   let product = await Product.create({
     mainImage: imageResult.secure_url,
     mainImageId: imageResult.public_id,
@@ -152,8 +145,8 @@ export const createProduct = catchAsync(async (body, files, seller) => {
     price: Number(price),
     priceAfterDiscount,
     priceDiscount: Number(priceDiscount),
-    color,
-    size,
+    colors: colors.split(',').map((color) => color.trim()),
+    sizes: sizes.split(',').map((size) => size.trim()),
     seller,
     quantity: Number(quantity),
     sold: Number(sold),
