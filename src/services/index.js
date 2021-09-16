@@ -63,8 +63,9 @@ import {
 } from './order.service';
 
 import {
-  verifyDiscountCode,
   getAllDiscountCodes,
+  getDiscount,
+  verifyDiscountCode,
   generateDiscountCode,
   deleteDiscountCode,
   cancelDiscountCode
@@ -142,8 +143,9 @@ const orderService = {
 };
 
 const discountService = {
-  verifyDiscountCode,
   getAllDiscountCodes,
+  getDiscount,
+  verifyDiscountCode,
   generateDiscountCode,
   deleteDiscountCode,
   cancelDiscountCode

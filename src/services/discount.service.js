@@ -9,6 +9,58 @@ import APIFeatures from '../utils/apiFeatures';
 import { User, Discount } from '../models';
 
 /**
+ * @desc    Get all discount codes
+ * @param   { Object } req - Request object
+ * @returns { Object<type|message|statusCode|codes> }
+ */
+export const getAllDiscountCodes = catchAsync(async (req) => {
+  const codes = await APIFeatures(req, Discount);
+
+  // 1) Check if codes doesn't exist
+  if (!codes) {
+    return {
+      type: 'Error',
+      message: 'noDiscountCodesFound',
+      statusCode: 404
+    };
+  }
+
+  // 2) If everything is OK, send data
+  return {
+    type: 'Success',
+    message: 'successfulDiscountCodesFound',
+    statusCode: 200,
+    codes
+  };
+});
+
+/**
+ * @desc    Get Discount
+ * @param   { String } code - Discount code
+ * @return  { Object<type|message|statusCode|discount> }
+ */
+export const getDiscount = catchAsync(async (code) => {
+  const discountCode = await Discount.findOne({ code });
+
+  // 1) Check if discount code doesn't exist
+  if (!discountCode) {
+    return {
+      type: 'Error',
+      message: 'noDiscountCodeFound',
+      statusCode: 404
+    };
+  }
+
+  // 2) If everything is OK, send data
+  return {
+    type: 'Success',
+    message: 'successfulGetDiscount',
+    statusCode: 200,
+    discount: discountCode.discount
+  };
+});
+
+/**
  * @desc    Verfiy discount code
  * @param   { Object } body - Body object data
  * @param   { Object } user - User object data
@@ -57,32 +109,6 @@ export const verifyDiscountCode = catchAsync(async (discountCode, user) => {
     message: 'successfulCodeVerification',
     statusCode: 201,
     discount: discount.discount
-  };
-});
-
-/**
- * @desc    Get all discount codes
- * @param   { Object } req - Request object
- * @returns { Object<type|message|statusCode|codes> }
- */
-export const getAllDiscountCodes = catchAsync(async (req) => {
-  const codes = await APIFeatures(req, Discount);
-
-  // 1) Check if codes doesn't exist
-  if (!codes) {
-    return {
-      type: 'Error',
-      message: 'noDiscountCodesFound',
-      statusCode: 404
-    };
-  }
-
-  // 2) If everything is OK, send data
-  return {
-    type: 'Success',
-    message: 'successfulDiscountCodesFound',
-    statusCode: 200,
-    codes
   };
 });
 
