@@ -9,7 +9,6 @@ const productSchema = mongoose.Schema(
     name: {
       type: String,
       required: [true, 'A product must have a name'],
-      unique: true,
       trim: true
     },
     slug: String,
@@ -17,16 +16,12 @@ const productSchema = mongoose.Schema(
       type: String,
       required: [true, 'A product must have a main image']
     },
-    mainImageId: {
-      type: String
-    },
+    mainImageId: String,
     images: {
       type: [String],
       required: [true, 'A product must have sub images']
     },
-    imagesId: {
-      type: [String]
-    },
+    imagesId: Array,
     description: {
       type: String,
       required: [true, 'A product must have a description']
@@ -59,12 +54,8 @@ const productSchema = mongoose.Schema(
         message: 'Discount price ({VALUE}) should be below regular price'
       }
     },
-    color: {
-      type: String
-    },
-    size: {
-      type: String
-    },
+    colors: Array,
+    sizes: Array,
     quantity: {
       type: Number,
       default: 0
@@ -115,21 +106,6 @@ productSchema.virtual('reviews', {
 // DOCUMENT MIDDLEWARE: runs before .save() and .create() !.update()
 productSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
-  next();
-});
-
-productSchema.pre(/^find/, function (next) {
-  this.populate([
-    {
-      path: 'seller',
-      select: 'name email profileImage companyName address phone'
-    },
-    {
-      path: 'category',
-      select: 'name description image status'
-    }
-  ]);
-
   next();
 });
 
