@@ -17,6 +17,10 @@ const {
   getAllProducts,
   getProduct,
   addProduct,
+  addProductColor,
+  addProductSize,
+  deleteProductColor,
+  deleteProductSize,
   updateProductDetails,
   updateProductMainImage,
   updateProductImages,
@@ -25,39 +29,35 @@ const {
   productStats
 } = productController;
 
-// Router Initialization
 const router = express.Router();
 
-router.use('/:id/reviews', reviewRoute);
+router.use('/:productId/reviews', reviewRoute);
 
-// Get Top 5 Cheapeast Products Route
 router.get('/top-5-cheap', getAllProducts, top5Cheap);
 
-// Get Product Stats Route
 router.get('/product-stats', productStats);
 
-// Get ALl Products Route
 router.get('/', getAllProducts);
 
-// Get Product Route
-router.get('/:id', getProduct);
+router.get('/:productId', getProduct);
 
-// Protect All Next Routes
 router.use(protect);
 
-// Add Product (Multer Middleware) Route
+router
+  .route('/color/:productId')
+  .post(addProductColor)
+  .delete(deleteProductColor);
+
+router.route('/size/:productId').post(addProductSize).delete(deleteProductSize);
+
 router.post('/', anyMulter(), addProduct);
 
-// Update Product Details Route
-router.patch('/:id/details', updateProductDetails);
+router.patch('/:productId/details', updateProductDetails);
 
-// Update Product Main Image (Multer Middleware) Route
-router.patch('/:id/main-image', anyMulter(), updateProductMainImage);
+router.patch('/:productId/main-image', anyMulter(), updateProductMainImage);
 
-// Update Product Images (Multer Middleware) Route
-router.patch('/:id/images', anyMulter(), updateProductImages);
+router.patch('/:productId/images', anyMulter(), updateProductImages);
 
-// Delete Product Route
-router.delete('/:id', deleteProduct);
+router.delete('/:productId', deleteProduct);
 
 export default router;
