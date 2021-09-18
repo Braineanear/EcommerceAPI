@@ -7,6 +7,8 @@ import Order from './order.model';
 import Token from './token.model';
 import Discount from './discount.model';
 import Favorite from './favorite.model';
+import Color from './color.model';
+import Size from './size.model';
 
 export {
   User,
@@ -17,5 +19,7 @@ export {
   Order,
   Token,
   Discount,
-  Favorite
+  Favorite,
+  Color,
+  Size
 };
