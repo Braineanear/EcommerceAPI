@@ -169,7 +169,7 @@ export const getAllProducts = {
                       type: 'array',
                       items: {
                         type: 'object',
-                        properites: {
+                        properties: {
                           _id: {
                             type: 'string',
                             example: '6145a458d495858ff0d6e8a5'
@@ -365,7 +365,7 @@ export const getProduct = {
                     type: 'array',
                     items: {
                       type: 'object',
-                      properites: {
+                      properties: {
                         _id: {
                           type: 'string',
                           example: '6145a458d495858ff0d6e8a5'
