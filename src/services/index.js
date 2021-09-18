@@ -4,7 +4,8 @@ import {
   logout,
   refreshAuth,
   resetPassword,
-  verifyEmail
+  verifyEmail,
+  changePassword
 } from './auth.service';
 
 import {
@@ -39,6 +40,10 @@ import {
   queryProductById,
   createProduct,
   updateProductDetails,
+  addProductColor,
+  addProductSize,
+  deleteProductColor,
+  deleteProductSize,
   updateProductMainImage,
   updateProductImages,
   deleteProduct,
@@ -84,7 +89,8 @@ const authService = {
   logout,
   refreshAuth,
   resetPassword,
-  verifyEmail
+  verifyEmail,
+  changePassword
 };
 
 const reviewService = {
@@ -119,6 +125,10 @@ const productService = {
   queryProductById,
   createProduct,
   updateProductDetails,
+  addProductColor,
+  addProductSize,
+  deleteProductColor,
+  deleteProductSize,
   updateProductMainImage,
   updateProductImages,
   deleteProduct,
