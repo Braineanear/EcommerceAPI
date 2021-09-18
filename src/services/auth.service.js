@@ -256,6 +256,40 @@ export const refreshAuth = catchAsync(async (refreshToken) => {
 });
 
 /**
+ * @desc    Change Password Service
+ * @param   { String } password - User's password
+ * @param   { String } passwordConfirmation - User's password confirmation
+ * @return  { Object<type|statusCode|message> }
+ */
+export const changePassword = catchAsync(
+  async (password, passwordConfirmation, userId) => {
+    // 1) Check if password and passwordConfirmation are not the same
+    if (password !== passwordConfirmation) {
+      return {
+        type: 'Error',
+        statusCode: 400,
+        message: 'passConfirm'
+      };
+    }
+
+    // 2) Update user password
+    const user = await User.findById(userId);
+
+    user.password = password;
+    user.passwordConfirmation = passwordConfirmation;
+
+    await user.save();
+
+    // 8) If everything is OK, send data
+    return {
+      type: 'Success',
+      statusCode: 200,
+      message: 'successfulPasswordChange'
+    };
+  }
+);
+
+/**
  * @desc    Reset Password Service
  * @param   { String } token - Reset password token
  * @param   { String } password - User's password
