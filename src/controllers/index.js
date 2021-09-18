@@ -6,7 +6,8 @@ import {
   forgotPassword,
   resetPassword,
   verifyEmail,
-  sendVerificationEmail
+  sendVerificationEmail,
+  changePassword
 } from './auth.controller';
 
 import {
@@ -14,6 +15,10 @@ import {
   getProduct,
   addProduct,
   updateProductDetails,
+  addProductColor,
+  addProductSize,
+  deleteProductColor,
+  deleteProductSize,
   updateProductMainImage,
   updateProductImages,
   deleteProduct,
@@ -89,7 +94,8 @@ const authController = {
   forgotPassword,
   resetPassword,
   verifyEmail,
-  sendVerificationEmail
+  sendVerificationEmail,
+  changePassword
 };
 
 const userController = {
@@ -116,6 +122,10 @@ const productController = {
   getProduct,
   addProduct,
   updateProductDetails,
+  addProductColor,
+  addProductSize,
+  deleteProductColor,
+  deleteProductSize,
   updateProductMainImage,
   updateProductImages,
   deleteProduct,

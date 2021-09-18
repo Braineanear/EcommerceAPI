@@ -77,7 +77,7 @@ export const getProduct = catchAsync(async (req, res) => {
  * @param     { Object } res - Response object
  * @property  { Object } req.body - Body object data
  * @property  { Object } req.files - Product images
- * @property  { String } req.user._id - User ID
+ * @property  { String } req.user.id - User ID
  * @returns   { JSON } - A JSON object representing the type, message and the product
  */
 export const addProduct = catchAsync(async (req, res) => {
@@ -85,7 +85,7 @@ export const addProduct = catchAsync(async (req, res) => {
 
   // 1) Create product
   const { type, message, statusCode, product } =
-    await productService.createProduct(body, files, user._id);
+    await productService.createProduct(body, files, user.id);
 
   // 2) Check if there is an error
   if (type === 'Error') {
@@ -104,17 +104,90 @@ export const addProduct = catchAsync(async (req, res) => {
 });
 
 /**
+ * @desc      Add Product Color Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user.id - Seller ID
+ * @property  { String } req.body.color - Product color
+ * @returns   { JSON } - A JSON object representing the type, message and the product
+ */
+export const addProductColor = catchAsync(async (req, res) => {
+  // 1) Add product color
+  const { type, message, statusCode, color } =
+    await productService.addProductColor(
+      req.params.productId,
+      req.user.id,
+      req.body.color
+    );
+
+  // 2) Check if there is an error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message: req.polyglot.t(message)
+    });
+  }
+
+  // 3) If everything is OK, send product
+  return res.status(statusCode).json({
+    type,
+    message: req.polyglot.t(message),
+    color
+  });
+});
+
+/**
+ * @desc      Add Product Size Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user.id - Seller ID
+ * @property  { String } req.body.size - Product size
+ * @returns   { JSON } - A JSON object representing the type, message and the product
+ */
+export const addProductSize = catchAsync(async (req, res) => {
+  // 1) Add product size
+  const { type, message, statusCode, size } =
+    await productService.addProductSize(
+      req.params.productId,
+      req.user.id,
+      req.body.size
+    );
+
+  // 2) Check if there is an error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message: req.polyglot.t(message)
+    });
+  }
+
+  // 3) If everything is OK, send product
+  return res.status(statusCode).json({
+    type,
+    message: req.polyglot.t(message),
+    size
+  });
+});
+
+/**
  * @desc      Update Product Details Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
- * @property  { String } req.params.id - Product ID
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user.id - Seller ID
  * @property  { Object } req.body - Body object data
  * @returns   { JSON } - A JSON object representing the type, message and the product
  */
 export const updateProductDetails = catchAsync(async (req, res) => {
   // 1) Update product details using it's ID
   const { type, message, statusCode, product } =
-    await productService.updateProductDetails(req.params.id, req.body);
+    await productService.updateProductDetails(
+      req.params.productId,
+      req.user.id,
+      req.body
+    );
 
   // 2) Check if there is an error
   if (type === 'Error') {
@@ -136,14 +209,19 @@ export const updateProductDetails = catchAsync(async (req, res) => {
  * @desc      Update Product Main Image Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user.id - Seller ID
  * @property  { Object } req.files - Product main image
- * @property  { String } req.params.id - Product ID
  * @returns   { JSON } - A JSON object representing the type, message, and the product
  */
 export const updateProductMainImage = catchAsync(async (req, res) => {
   // 1) Update product main image using it's ID
   const { type, message, statusCode, product } =
-    await productService.updateProductMainImage(req.params.id, req.files);
+    await productService.updateProductMainImage(
+      req.params.productId,
+      req.user.id,
+      req.files
+    );
 
   // 2) Check if there is an error
   if (type === 'Error') {
@@ -164,14 +242,19 @@ export const updateProductMainImage = catchAsync(async (req, res) => {
  * @desc      Update Product Images Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user.id - Seller ID
  * @property  { Object } req.files - Product sub images
- * @property  { String } req.params.id - Product ID
  * @returns   { JSON } - A JSON object representing the type, message, and the product
  */
 export const updateProductImages = catchAsync(async (req, res) => {
   // 1) Update product images using it's ID
   const { type, message, statusCode, product } =
-    await productService.updateProductImages(req.params.id, req.files);
+    await productService.updateProductImages(
+      req.params.productId,
+      req.user.id,
+      req.files
+    );
 
   // 2) Check if there is an error
   if (type === 'Error') {
@@ -193,13 +276,79 @@ export const updateProductImages = catchAsync(async (req, res) => {
  * @desc      Delete Product Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
- * @property  { String } req.params.id - Product ID
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user.id - Seller ID
  * @return    { JSON } - A JSON object representing the type and message
  */
 export const deleteProduct = catchAsync(async (req, res) => {
   // 1) Delete product using it's ID
   const { type, message, statusCode } = await productService.deleteProduct(
-    req.params.id
+    req.params.productId,
+    req.user.id
+  );
+
+  // 2) Check if there is an error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message: req.polyglot.t(message)
+    });
+  }
+
+  // 3) If everything is OK, send data
+  return res.status(statusCode).json({
+    type,
+    message: req.polyglot.t(message)
+  });
+});
+
+/**
+ * @desc      Delete Product Color Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user.id - Seller ID
+ * @property  { String } req.body.color - Product color
+ * @return    { JSON } - A JSON object representing the type and message
+ */
+export const deleteProductColor = catchAsync(async (req, res) => {
+  // 1) Delete product color
+  const { type, message, statusCode } = await productService.deleteProductColor(
+    req.params.productId,
+    req.user.id,
+    req.body.color
+  );
+
+  // 2) Check if there is an error
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message: req.polyglot.t(message)
+    });
+  }
+
+  // 3) If everything is OK, send data
+  return res.status(statusCode).json({
+    type,
+    message: req.polyglot.t(message)
+  });
+});
+
+/**
+ * @desc      Delete Product Size Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.params.productId - Product ID
+ * @property  { String } req.user.id - Seller ID
+ * @property  { String } req.body.size - Product size
+ * @return    { JSON } - A JSON object representing the type and message
+ */
+export const deleteProductSize = catchAsync(async (req, res) => {
+  // 1) Delete product size
+  const { type, message, statusCode } = await productService.deleteProductSize(
+    req.params.productId,
+    req.user.id,
+    req.body.size
   );
 
   // 2) Check if there is an error
