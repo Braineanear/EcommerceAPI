@@ -54,8 +54,18 @@ const productSchema = mongoose.Schema(
         message: 'Discount price ({VALUE}) should be below regular price'
       }
     },
-    colors: Array,
-    sizes: Array,
+    colors: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: 'Color'
+      }
+    ],
+    sizes: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: 'Size'
+      }
+    ],
     quantity: {
       type: Number,
       default: 0
