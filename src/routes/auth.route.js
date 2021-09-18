@@ -7,6 +7,9 @@ import { authController } from '../controllers/index';
 // Utils
 import { singleFile } from '../utils/multer';
 
+// Middlewares
+import protect from '../middlewares/protect';
+
 const {
   signin,
   signup,
@@ -15,34 +18,30 @@ const {
   forgotPassword,
   resetPassword,
   verifyEmail,
-  sendVerificationEmail
+  sendVerificationEmail,
+  changePassword
 } = authController;
 
-// Router Initialization
 const router = express.Router();
 
-// Login Route
 router.post('/login', signin);
 
-// Register Route (Multer Middleware)
 router.post('/register', singleFile('image'), signup);
 
-// Logout Route
 router.post('/logout', logout);
 
-// Refresh Token Route
 router.post('/tokens', refreshTokens);
 
-// Forgot Password Route
 router.post('/forgot-password', forgotPassword);
 
-// Reset Password Route
 router.post('/reset-password', resetPassword);
 
-// Send Verification Email Route
+router.post('/verify-email', verifyEmail);
+
+router.use(protect);
+
 router.post('/send-verification-email', sendVerificationEmail);
 
-// Verify Email Route
-router.post('/verify-email', verifyEmail);
+router.patch('/change-password', changePassword);
 
 export default router;
