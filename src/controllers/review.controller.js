@@ -8,14 +8,19 @@ import { reviewService } from '../services/index';
  * @desc      Create New Review Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
- * @property  { String } req.params.id - Product ID
+ * @property  { String } req.params.productId - Product ID
  * @property  { String } req.user.id - User ID
+ * @property  { Object } req.body - Body object data
  * @returns   { JSON } - A JSON object representing the type, message and the review
  */
 export const addReview = catchAsync(async (req, res) => {
   // 1) Create new review
   const { type, message, statusCode, review } =
-    await reviewService.createReview(req.params.id, req.user.id, req.body);
+    await reviewService.createReview(
+      req.params.productId,
+      req.user.id,
+      req.body
+    );
 
   // 2) Check if there is an error
   if (type === 'Error') {
