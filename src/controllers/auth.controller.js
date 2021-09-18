@@ -164,9 +164,9 @@ export const forgotPassword = catchAsync(async (req, res) => {
  * @desc      Reset Password Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
- * @property  { Object } req.query.token - Token from request query
- * @property  { Object } req.body.password - The new user password
- * @property  { Object } req.body.passwordConfirmation - The new user password confirmation
+ * @property  { String } req.query.token - Token from request query
+ * @property  { String } req.body.password - The new user password
+ * @property  { String } req.body.passwordConfirmation - The new user password confirmation
  * @returns   { JSON } - A JSON object representing the type and message
  */
 export const resetPassword = catchAsync(async (req, res) => {
@@ -175,6 +175,38 @@ export const resetPassword = catchAsync(async (req, res) => {
     req.query.token,
     req.body.password,
     req.body.passwordConfirmation
+  );
+
+  // 2) Check if something went wrong
+  if (type === 'Error') {
+    return res.status(statusCode).json({
+      type,
+      message: req.polyglot.t(message)
+    });
+  }
+
+  // 3) If everything is OK, send data
+  return res.status(statusCode).json({
+    type,
+    message: req.polyglot.t(message)
+  });
+});
+
+/**
+ * @desc      Change Password Controller
+ * @param     { Object } req - Request object
+ * @param     { Object } res - Response object
+ * @property  { String } req.body.password - The new user password
+ * @property  { String } req.body.passwordConfirmation - The new user password confirmation
+ * @property  { String } req.user.id - User ID
+ * @returns   { JSON } - A JSON object representing the type and message
+ */
+export const changePassword = catchAsync(async (req, res) => {
+  // 1) Calling reset password service
+  const { type, message, statusCode } = await authService.changePassword(
+    req.body.password,
+    req.body.passwordConfirmation,
+    req.user.id
   );
 
   // 2) Check if something went wrong
