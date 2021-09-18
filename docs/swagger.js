@@ -4,7 +4,8 @@ import {
   logout,
   generateTokens,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  changePassword
 } from './auth.swagger';
 
 import {
@@ -25,7 +26,11 @@ import {
   updateProductDetails,
   updateProductMainImage,
   updateProductImages,
-  deleteProduct
+  deleteProduct,
+  addProductColor,
+  addProductSize,
+  deleteProductColor,
+  deleteProductSize
 } from './product.swagger';
 
 import {
@@ -135,11 +140,14 @@ const docs = {
     '/auth/reset-password': {
       post: resetPassword
     },
+    '/auth/change-password': {
+      patch: changePassword
+    },
     '/user': {
       get: getAllUsers,
       post: addUser
     },
-    '/user/:id': {
+    '/user/{userId}': {
       get: getUser,
       delete: deleteUser
     },
@@ -156,19 +164,19 @@ const docs = {
       get: getAllCategories,
       post: addCategory
     },
-    '/category/{id}': {
+    '/category/{categoryId}': {
       get: getCategory,
       patch: updateCategoryDetails,
       delete: deleteCategory
     },
-    '/category/{id}/image': {
+    '/category/{categoryId}/image': {
       patch: updateCategoryImage
     },
     '/product': {
       get: getAllProducts,
       post: addProduct
     },
-    '/product/:id': {
+    '/product/{productId}': {
       get: getProduct,
       delete: deleteProduct
     },
@@ -178,23 +186,31 @@ const docs = {
     '/product/product-stats': {
       get: productStats
     },
-    '/product/{id}/details': {
+    '/product/{productId}/details': {
       patch: updateProductDetails
     },
-    '/product/{id}/main-image': {
+    '/product/{productId}/main-image': {
       patch: updateProductMainImage
     },
-    '/product/{id}/images': {
+    '/product/{productId}/images': {
       patch: updateProductImages
+    },
+    '/product/color/{productId}': {
+      post: addProductColor,
+      delete: deleteProductColor
+    },
+    '/product/size/{productId}': {
+      post: addProductSize,
+      delete: deleteProductSize
     },
     '/favorite': {
       get: getFavoriteList,
       post: addFavoriteProduct
     },
-    '/favorite/{id}': {
+    '/favorite/{productId}': {
       delete: deleteProductFromFavorite
     },
-    '/favorite/check/{id}': {
+    '/favorite/check/{productId}': {
       get: checkProductInFavoriteList
     },
     '/discount': {
@@ -212,7 +228,7 @@ const docs = {
     '/discount/generate': {
       post: generateDiscountCode
     },
-    '/discount/{id}': {
+    '/discount/{discountId}': {
       delete: deleteDiscountCode
     },
     '/cart': {
@@ -226,14 +242,14 @@ const docs = {
     '/cart/reduce-one': {
       patch: reduceProductQuantityByOne
     },
-    '/cart/:id': {
+    '/cart/:productId': {
       delete: deleteProductFromCart
     },
     '/order': {
       get: getAllOrders,
       post: createNewOrder
     },
-    '/order/{id}': {
+    '/order/{orderId}': {
       get: getOrder,
       patch: orderStatus,
       delete: cancelOrder

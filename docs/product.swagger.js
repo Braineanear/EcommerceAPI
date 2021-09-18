@@ -151,11 +151,35 @@ export const getAllProducts = {
                     },
                     colors: {
                       type: 'array',
-                      items: ['Black']
+                      items: {
+                        type: 'object',
+                        properties: {
+                          _id: {
+                            type: 'string',
+                            example: '6145a457d495858ff0d6e8a2'
+                          },
+                          color: {
+                            type: 'string',
+                            example: 'Black'
+                          }
+                        }
+                      }
                     },
                     sizes: {
                       type: 'array',
-                      items: ['Large']
+                      items: {
+                        type: 'object',
+                        properites: {
+                          _id: {
+                            type: 'string',
+                            example: '6145a458d495858ff0d6e8a5'
+                          },
+                          size: {
+                            type: 'string',
+                            example: 'Large'
+                          }
+                        }
+                      }
                     },
                     seller: {
                       type: 'string',
@@ -195,7 +219,7 @@ export const getAllProducts = {
               },
               message: {
                 type: 'string',
-                example: 'No Products Found'
+                example: 'No products found.'
               }
             }
           }
@@ -221,7 +245,7 @@ export const getProduct = {
     },
     {
       in: 'path',
-      name: 'id',
+      name: 'productId',
       type: 'integer',
       description: 'Product ID'
     }
@@ -323,11 +347,35 @@ export const getProduct = {
                   },
                   colors: {
                     type: 'array',
-                    items: ['Black']
+                    items: {
+                      type: 'object',
+                      properties: {
+                        _id: {
+                          type: 'string',
+                          example: '6145a457d495858ff0d6e8a2'
+                        },
+                        color: {
+                          type: 'string',
+                          example: 'Black'
+                        }
+                      }
+                    }
                   },
                   sizes: {
                     type: 'array',
-                    items: ['Large']
+                    items: {
+                      type: 'object',
+                      properites: {
+                        _id: {
+                          type: 'string',
+                          example: '6145a458d495858ff0d6e8a5'
+                        },
+                        size: {
+                          type: 'string',
+                          example: 'Large'
+                        }
+                      }
+                    }
                   },
                   seller: {
                     type: 'string',
@@ -366,7 +414,7 @@ export const getProduct = {
               },
               message: {
                 type: 'string',
-                example: 'No Product Found With This ID: {productId}'
+                example: 'No product found with this ID.'
               }
             }
           }
@@ -418,10 +466,10 @@ export const addProduct = {
             colors: {
               type: 'string',
               required: true,
-              example: 'Red, Green, Black'
+              example: 'Red, Green, Blue'
             },
             sizes: {
-              type: 'array',
+              type: 'string',
               required: true,
               example: 'S, M, L'
             },
@@ -550,11 +598,17 @@ export const addProduct = {
                   },
                   colors: {
                     type: 'array',
-                    items: ['Black']
+                    items: {
+                      type: 'string',
+                      example: '6145a457d495858ff0d6e8a2'
+                    }
                   },
                   sizes: {
                     type: 'array',
-                    items: ['Large']
+                    items: {
+                      type: 'string',
+                      example: '6145a458d495858ff0d6e8a5'
+                    }
                   },
                   seller: {
                     type: 'string',
@@ -593,7 +647,7 @@ export const addProduct = {
               },
               message: {
                 type: 'string',
-                example: 'All Fields Are Required'
+                example: 'All fields are required.'
               }
             }
           }
@@ -748,11 +802,35 @@ export const top5Cheap = {
                     },
                     colors: {
                       type: 'array',
-                      items: ['Black']
+                      items: {
+                        type: 'object',
+                        properties: {
+                          _id: {
+                            type: 'string',
+                            example: '6145a457d495858ff0d6e8a2'
+                          },
+                          color: {
+                            type: 'string',
+                            example: 'Black'
+                          }
+                        }
+                      }
                     },
                     sizes: {
                       type: 'array',
-                      items: ['Large']
+                      items: {
+                        type: 'object',
+                        properties: {
+                          _id: {
+                            type: 'string',
+                            example: '6145a458d495858ff0d6e8a5'
+                          },
+                          size: {
+                            type: 'string',
+                            example: 'Large'
+                          }
+                        }
+                      }
                     },
                     seller: {
                       type: 'string',
@@ -792,7 +870,7 @@ export const top5Cheap = {
               },
               message: {
                 type: 'string',
-                example: 'No Products Found'
+                example: 'No products found.'
               }
             }
           }
@@ -884,6 +962,240 @@ export const productStats = {
   }
 };
 
+export const addProductColor = {
+  tags: ['Product'],
+  description: 'This route allow only admin or seller add new product color',
+  opeationId: 'addProductColor',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
+    {
+      in: 'path',
+      name: 'productId',
+      type: 'integer',
+      description: 'Product ID'
+    }
+  ],
+  requestBody: {
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            color: {
+              type: 'string'
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    200: {
+      description: 'Add Product Color',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Color added successfully.'
+              },
+              color: {
+                type: 'object',
+                properties: {
+                  _id: {
+                    type: 'string',
+                    example: '6145e6f059b4c663fa7e0da2'
+                  },
+                  color: {
+                    type: 'string',
+                    example: 'Red'
+                  },
+                  product: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                      example: '6145a457d495858ff0d6e89f'
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    401: {
+      description: 'Error: 401',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'Color already exists.'
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'No product found with this ID.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const addProductSize = {
+  tags: ['Product'],
+  description: 'This route allow only admin or seller add new product size',
+  opeationId: 'addProductSize',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    },
+    {
+      in: 'path',
+      name: 'productId',
+      type: 'integer',
+      description: 'Product ID'
+    }
+  ],
+  requestBody: {
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            size: {
+              type: 'string'
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    200: {
+      description: 'Add Product Size',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Size added successfully.'
+              },
+              color: {
+                type: 'object',
+                properties: {
+                  _id: {
+                    type: 'string',
+                    example: '6145e6f059b4c663fa7e0da2'
+                  },
+                  size: {
+                    type: 'string',
+                    example: 'Large'
+                  },
+                  product: {
+                    type: 'array',
+                    items: {
+                      type: 'string',
+                      example: '6145a457d495858ff0d6e89f'
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    401: {
+      description: 'Error: 401',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'Size already exists.'
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'No product found with this ID.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
 export const updateProductDetails = {
   tags: ['Product'],
   description:
@@ -898,7 +1210,7 @@ export const updateProductDetails = {
     },
     {
       in: 'path',
-      name: 'id',
+      name: 'productId',
       type: 'integer',
       description: 'Product ID'
     }
@@ -924,12 +1236,6 @@ export const updateProductDetails = {
             },
             priceDiscount: {
               type: 'integer'
-            },
-            colors: {
-              type: 'array'
-            },
-            sizes: {
-              type: 'array'
             },
             quantity: {
               type: 'integer'
@@ -959,7 +1265,7 @@ export const updateProductDetails = {
               },
               message: {
                 type: 'string',
-                example: 'Product Details Updated Successfully.'
+                example: 'Product details updated successfully.'
               }
             }
           }
@@ -979,7 +1285,7 @@ export const updateProductDetails = {
               },
               message: {
                 type: 'string',
-                example: 'No Product Found With This ID: {id}'
+                example: 'No product found with this ID.'
               }
             }
           }
@@ -1003,7 +1309,7 @@ export const updateProductMainImage = {
     },
     {
       in: 'path',
-      name: 'id',
+      name: 'productId',
       type: 'integer',
       description: 'Product ID'
     }
@@ -1038,7 +1344,7 @@ export const updateProductMainImage = {
               },
               message: {
                 type: 'string',
-                example: 'Product Main Image Updated Successfully.'
+                example: 'Product main image updated successfully.'
               }
             }
           }
@@ -1058,7 +1364,7 @@ export const updateProductMainImage = {
               },
               message: {
                 type: 'string',
-                example: 'No Product Found With This ID: {id}'
+                example: 'No product found with this ID.'
               }
             }
           }
@@ -1082,7 +1388,7 @@ export const updateProductImages = {
     },
     {
       in: 'path',
-      name: 'id',
+      name: 'productId',
       type: 'integer',
       description: 'Product ID'
     }
@@ -1117,7 +1423,7 @@ export const updateProductImages = {
               },
               message: {
                 type: 'string',
-                example: 'Product Images Updated Successfully.'
+                example: 'Product images updated successfully.'
               }
             }
           }
@@ -1137,7 +1443,7 @@ export const updateProductImages = {
               },
               message: {
                 type: 'string',
-                example: 'Please Select One or More Image'
+                example: 'Please select one or more image.'
               }
             }
           }
@@ -1157,7 +1463,7 @@ export const updateProductImages = {
               },
               message: {
                 type: 'string',
-                example: 'No Product Found With This ID: {id}'
+                example: 'No product found with this ID.'
               }
             }
           }
@@ -1178,6 +1484,12 @@ export const deleteProduct = {
       name: 'Accept-Language',
       type: 'string',
       example: 'en_MX'
+    },
+    {
+      in: 'path',
+      name: 'productId',
+      type: 'integer',
+      description: 'Product ID'
     }
   ],
   responses: {
@@ -1194,7 +1506,7 @@ export const deleteProduct = {
               },
               message: {
                 type: 'string',
-                example: 'Product Deleted Successfully.'
+                example: 'Product deleted successfully.'
               }
             }
           }
@@ -1214,7 +1526,141 @@ export const deleteProduct = {
               },
               message: {
                 type: 'string',
-                example: 'No Product Found With This ID: {id}'
+                example: 'No product found with this ID.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const deleteProductColor = {
+  tags: ['Product'],
+  description:
+    "This route allow logged in seller/admin to delete product color using it's ID",
+  opeationId: 'deleteProductColor',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    },
+    {
+      in: 'path',
+      name: 'productId',
+      type: 'integer',
+      description: 'Product ID'
+    }
+  ],
+  responses: {
+    200: {
+      description: 'Delete Product Color',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Product color deleted successfully.'
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message1: {
+                type: 'string',
+                example: 'No product found with this ID.'
+              },
+              message2: {
+                type: 'string',
+                example: 'Color does not exist.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
+
+export const deleteProductSize = {
+  tags: ['Product'],
+  description:
+    "This route allow logged in seller/admin to delete product size using it's ID",
+  opeationId: 'deleteProductSize',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'en_MX'
+    },
+    {
+      in: 'path',
+      name: 'productId',
+      type: 'integer',
+      description: 'Product ID'
+    }
+  ],
+  responses: {
+    200: {
+      description: 'Delete product size',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Size deleted successfully.'
+              }
+            }
+          }
+        }
+      }
+    },
+    404: {
+      description: 'Error: 404',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message1: {
+                type: 'string',
+                example: 'No product found with this ID.'
+              },
+              message2: {
+                type: 'string',
+                example: 'Size does not exist.'
               }
             }
           }
