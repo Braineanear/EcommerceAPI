@@ -704,3 +704,79 @@ export const resetPassword = {
     }
   }
 };
+
+export const changePassword = {
+  tags: ['Auth'],
+  description: 'This route allow you to user to change his password',
+  opeationId: 'changePassword',
+  parameters: [
+    {
+      in: 'header',
+      name: 'Accept-Language',
+      type: 'string',
+      example: 'ar_MX'
+    }
+  ],
+  requestBody: {
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            password: {
+              type: 'string',
+              required: true
+            },
+            passwordConfirmation: {
+              type: 'string',
+              required: true
+            }
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    200: {
+      description: 'Change password.',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Success'
+              },
+              message: {
+                type: 'string',
+                example: 'Password changed successfully.'
+              }
+            }
+          }
+        }
+      }
+    },
+    400: {
+      description: 'Error: 400',
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              type: {
+                type: 'string',
+                example: 'Error'
+              },
+              message: {
+                type: 'string',
+                example: 'Password and passwordConfirmation must be the same.'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+};
