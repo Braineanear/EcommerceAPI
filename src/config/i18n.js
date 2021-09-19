@@ -12,6 +12,8 @@ export const messages = {
     incorrectEmailOrPassword: 'Incorrect email or password.',
     passConfirm: 'Password and passwordConfirmation must be the same.',
     invalidLink: 'Invalid link or expired',
+    notSamePassword:
+      'This is not your password. Please enter the correct current password.',
     loginAgain: 'Please login again!',
     noTokenFound: 'No token found.',
     noUserFound: 'No user found.',
@@ -138,6 +140,8 @@ export const messages = {
     productExist: 'المنتج موجود بالفعل.',
     emailVerified: 'البريد الإلكتروني مفعلا.',
     invalidRequest: 'طلب مرفوض.',
+    notSamePassword:
+      'هذه ليست كلمة المرور الخاصة بك. برجاء ادخال كلمة المرور الحالية.',
     noCartForUser:
       'لم يتم العثور علي السلة الخاصة بالمسخدم الذي بريده الإلكتروني.',
     noCartFound: 'لم يتم العثور علي سلة المشتريات.',
