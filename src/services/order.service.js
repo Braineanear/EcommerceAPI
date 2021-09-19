@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 // Packages
 import STRIPE_SDK from 'stripe';
 import moment from 'moment';
@@ -66,14 +67,14 @@ export const createOrder = catchAsync(async (body, user) => {
     });
 
     // 2) Update product sold and quantity fields
-    cart.items.forEach(async (item) => {
+    for (const item of cart.items) {
       const { id } = item.product;
       const { totalProductQuantity } = item;
       const product = await Product.findById(id);
       const sold = product.sold + totalProductQuantity;
       const quantity = product.quantity - totalProductQuantity;
       await Product.findByIdAndUpdate(id, { sold, quantity });
-    });
+    }
 
     // 3) Delete cart
     await Cart.findByIdAndDelete(cart._id);
@@ -134,18 +135,17 @@ export const createOrder = catchAsync(async (body, user) => {
   });
 
   // 10) Update product sold and quantity fields
-  cart.items.forEach(async (item) => {
+  for (const item of cart.items) {
     const id = item.product;
     const { totalProductQuantity } = item;
     const product = await Product.findById(id);
     const sold = product.sold + totalProductQuantity;
     const quantity = product.quantity - totalProductQuantity;
     await Product.findByIdAndUpdate(id, { sold, quantity });
-  });
+  }
 
   // 11) Delete cart
   await Cart.findByIdAndDelete(cart._id);
-
 
   // 12) Remove user discount code
   user.discountCode = '';
@@ -206,7 +206,7 @@ export const orderStatus = catchAsync(async (status, id) => {
 
   // 4) Check if order have been cancelled
   if (status === 'Cancelled') {
-    order.products.forEach(async (item) => {
+    for (const item of order.products) {
       const product = await Product.findById(item.product);
 
       if (!product) {
@@ -221,7 +221,7 @@ export const orderStatus = catchAsync(async (status, id) => {
         quantity: product.quantity + item.totalProductQuantity,
         sold: product.sold - item.totalProductQuantity
       });
-    });
+    }
 
     await Order.findByIdAndDelete(id);
 
@@ -320,7 +320,7 @@ export const cancelOrder = catchAsync(async (id) => {
   }
 
   // 3) Increase product quantity and reduce product sold
-  order.products.forEach(async (item) => {
+  for (const item of order.products) {
     const product = await Product.findById(item.product);
 
     if (!product) {
@@ -335,7 +335,7 @@ export const cancelOrder = catchAsync(async (id) => {
       quantity: product.quantity + item.totalProductQuantity,
       sold: product.sold - item.totalProductQuantity
     });
-  });
+  }
 
   await Order.findByIdAndDelete(id);
 
