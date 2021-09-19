@@ -724,6 +724,10 @@ export const changePassword = {
         schema: {
           type: 'object',
           properties: {
+            currentPassword: {
+              type: 'string',
+              required: true
+            },
             password: {
               type: 'string',
               required: true
