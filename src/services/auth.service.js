@@ -257,12 +257,14 @@ export const refreshAuth = catchAsync(async (refreshToken) => {
 
 /**
  * @desc    Change Password Service
+ * @param   { String } currentPassword - Current user password
  * @param   { String } password - User's password
  * @param   { String } passwordConfirmation - User's password confirmation
+ * @param   { String } userId - User ID
  * @return  { Object<type|statusCode|message> }
  */
 export const changePassword = catchAsync(
-  async (password, passwordConfirmation, userId) => {
+  async (currentPassword, password, passwordConfirmation, user) => {
     // 1) Check if password and passwordConfirmation are not the same
     if (password !== passwordConfirmation) {
       return {
@@ -272,15 +274,22 @@ export const changePassword = catchAsync(
       };
     }
 
-    // 2) Update user password
-    const user = await User.findById(userId);
+    // 2) Check if currentPassword isn't the same of user password
+    if (currentPassword !== user.password) {
+      return {
+        type: 'Error',
+        message: 'notSamePassword',
+        statusCode: 400
+      };
+    }
 
+    // 3) Update user password
     user.password = password;
     user.passwordConfirmation = passwordConfirmation;
 
     await user.save();
 
-    // 8) If everything is OK, send data
+    // 4) If everything is OK, send data
     return {
       type: 'Success',
       statusCode: 200,
@@ -306,6 +315,7 @@ export const resetPassword = catchAsync(
         message: 'passConfirm'
       };
     }
+
     // 2) Verify reset password token
     const resetPasswordTokenDoc = await verifyToken(
       token,
@@ -334,6 +344,7 @@ export const resetPassword = catchAsync(
 
     // 5) Save user password
     user.password = password;
+
     await user.save();
 
     // 6) Sending after reset password mail
