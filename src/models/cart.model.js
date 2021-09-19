@@ -1,6 +1,35 @@
 import mongoose from 'mongoose';
 import toJSON from './plugins/index';
 
+const cartItemSchema = mongoose.Schema(
+  {
+    product: {
+      type: mongoose.Types.ObjectId,
+      ref: 'Product',
+      required: true
+    },
+    selectedColor: {
+      type: mongoose.Types.ObjectId,
+      ref: 'Color',
+      required: true
+    },
+    selectedSize: {
+      type: mongoose.Types.ObjectId,
+      ref: 'Size',
+      required: true
+    },
+    totalProductQuantity: {
+      type: Number,
+      required: true
+    },
+    totalProductPrice: {
+      type: Number,
+      required: true
+    }
+  },
+  { timestamps: true }
+);
+
 const cartSchema = mongoose.Schema(
   {
     email: {
@@ -11,23 +40,7 @@ const cartSchema = mongoose.Schema(
         'The value of path {PATH} ({VALUE}) is not a valid email address.'
       ]
     },
-    items: [
-      {
-        product: {
-          type: mongoose.Types.ObjectId,
-          ref: 'Product',
-          required: true
-        },
-        totalProductQuantity: {
-          type: Number,
-          required: true
-        },
-        totalProductPrice: {
-          type: Number,
-          required: true
-        }
-      }
-    ],
+    items: [cartItemSchema],
     totalPrice: {
       type: Number,
       required: true
