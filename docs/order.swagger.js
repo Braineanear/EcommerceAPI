@@ -83,6 +83,32 @@ export const getAllOrders = {
                             type: 'string',
                             example: '611f6385628e64b6ff96393c'
                           },
+                          selectedColor: {
+                            type: 'object',
+                            properties: {
+                              _id: {
+                                type: 'string',
+                                example: '6146e63c1d67816c6f9d63c7'
+                              },
+                              color: {
+                                type: 'string',
+                                example: 'Red'
+                              }
+                            }
+                          },
+                          selectedSize: {
+                            type: 'object',
+                            properties: {
+                              _id: {
+                                type: 'string',
+                                example: '6145a458d495858ff0d6e8a5'
+                              },
+                              color: {
+                                type: 'string',
+                                example: 'L'
+                              }
+                            }
+                          },
                           totalProductQuantity: {
                             type: 'integer',
                             example: 2
@@ -220,6 +246,32 @@ export const getOrder = {
                         product: {
                           type: 'string',
                           example: '611f6385628e64b6ff96393c'
+                        },
+                        selectedColor: {
+                          type: 'object',
+                          properties: {
+                            _id: {
+                              type: 'string',
+                              example: '6146e63c1d67816c6f9d63c7'
+                            },
+                            color: {
+                              type: 'string',
+                              example: 'Red'
+                            }
+                          }
+                        },
+                        selectedSize: {
+                          type: 'object',
+                          properties: {
+                            _id: {
+                              type: 'string',
+                              example: '6145a458d495858ff0d6e8a5'
+                            },
+                            color: {
+                              type: 'string',
+                              example: 'L'
+                            }
+                          }
                         },
                         totalProductQuantity: {
                           type: 'integer',
@@ -428,6 +480,32 @@ export const createNewOrder = {
                         product: {
                           type: 'string',
                           example: '611f6385628e64b6ff96393c'
+                        },
+                        selectedColor: {
+                          type: 'object',
+                          properties: {
+                            _id: {
+                              type: 'string',
+                              example: '6146e63c1d67816c6f9d63c7'
+                            },
+                            color: {
+                              type: 'string',
+                              example: 'Red'
+                            }
+                          }
+                        },
+                        selectedSize: {
+                          type: 'object',
+                          properties: {
+                            _id: {
+                              type: 'string',
+                              example: '6145a458d495858ff0d6e8a5'
+                            },
+                            color: {
+                              type: 'string',
+                              example: 'L'
+                            }
+                          }
                         },
                         totalProductQuantity: {
                           type: 'integer',
