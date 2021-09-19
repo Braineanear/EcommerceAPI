@@ -769,9 +769,14 @@ export const changePassword = {
                 type: 'string',
                 example: 'Error'
               },
-              message: {
+              message1: {
                 type: 'string',
                 example: 'Password and passwordConfirmation must be the same.'
+              },
+              message2: {
+                type: 'string',
+                example:
+                  'This is not your password. Please enter the correct current password.'
               }
             }
           }
