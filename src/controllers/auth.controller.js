@@ -196,17 +196,20 @@ export const resetPassword = catchAsync(async (req, res) => {
  * @desc      Change Password Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
+ * @property  { String } req.body.currentPassword - The user current password
  * @property  { String } req.body.password - The new user password
  * @property  { String } req.body.passwordConfirmation - The new user password confirmation
  * @property  { String } req.user.id - User ID
  * @returns   { JSON } - A JSON object representing the type and message
  */
 export const changePassword = catchAsync(async (req, res) => {
+  const { currentPassword, password, passwordConfirmation } = req.body;
   // 1) Calling reset password service
   const { type, message, statusCode } = await authService.changePassword(
-    req.body.password,
-    req.body.passwordConfirmation,
-    req.user.id
+    currentPassword,
+    password,
+    passwordConfirmation,
+    req.user
   );
 
   // 2) Check if something went wrong
