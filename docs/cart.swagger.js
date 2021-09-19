@@ -46,6 +46,32 @@ export const getCart = {
                           type: 'string',
                           example: '611f6385628e64b6ff96393c'
                         },
+                        selectedColor: {
+                          type: 'object',
+                          properties: {
+                            _id: {
+                              type: 'string',
+                              example: '6146e63c1d67816c6f9d63c7'
+                            },
+                            color: {
+                              type: 'string',
+                              example: 'Red'
+                            }
+                          }
+                        },
+                        selectedSize: {
+                          type: 'object',
+                          properties: {
+                            _id: {
+                              type: 'string',
+                              example: '6145a458d495858ff0d6e8a5'
+                            },
+                            color: {
+                              type: 'string',
+                              example: 'L'
+                            }
+                          }
+                        },
                         totalProductQuantity: {
                           type: 'integer',
                           example: 2
@@ -85,7 +111,7 @@ export const getCart = {
               },
               message: {
                 type: 'string',
-                example: 'No Cart Found For The User With This Email: {email}.'
+                example: 'No cart found for the user with this email.'
               }
             }
           }
@@ -121,6 +147,14 @@ export const addItemsToCart = {
             },
             quantity: {
               type: 'integer',
+              required: true
+            },
+            selectedColor: {
+              type: 'string',
+              required: true
+            },
+            selectedSize: {
+              type: 'string',
               required: true
             }
           }
@@ -164,6 +198,32 @@ export const addItemsToCart = {
                           type: 'string',
                           example: '611f6385628e64b6ff96393c'
                         },
+                        selectedColor: {
+                          type: 'object',
+                          properties: {
+                            _id: {
+                              type: 'string',
+                              example: '6146e63c1d67816c6f9d63c7'
+                            },
+                            color: {
+                              type: 'string',
+                              example: 'Red'
+                            }
+                          }
+                        },
+                        selectedSize: {
+                          type: 'object',
+                          properties: {
+                            _id: {
+                              type: 'string',
+                              example: '6145a458d495858ff0d6e8a5'
+                            },
+                            color: {
+                              type: 'string',
+                              example: 'L'
+                            }
+                          }
+                        },
                         totalProductQuantity: {
                           type: 'integer',
                           example: 2
@@ -203,7 +263,7 @@ export const addItemsToCart = {
               },
               message: {
                 type: 'string',
-                example: 'Invalid Request'
+                example: 'Invalid request.'
               }
             }
           }
@@ -223,7 +283,7 @@ export const addItemsToCart = {
               },
               message: {
                 type: 'string',
-                example: 'No Product Found With This ID: {productId}'
+                example: 'No product found with this ID.'
               }
             }
           }
@@ -254,6 +314,14 @@ export const increaseProductQuantityByOne = {
           type: 'object',
           properties: {
             productId: {
+              type: 'string',
+              required: true
+            },
+            selectedColor: {
+              type: 'string',
+              required: true
+            },
+            selectedSize: {
               type: 'string',
               required: true
             }
@@ -298,6 +366,32 @@ export const increaseProductQuantityByOne = {
                           type: 'string',
                           example: '611f6385628e64b6ff96393c'
                         },
+                        selectedColor: {
+                          type: 'object',
+                          properties: {
+                            _id: {
+                              type: 'string',
+                              example: '6146e63c1d67816c6f9d63c7'
+                            },
+                            color: {
+                              type: 'string',
+                              example: 'Red'
+                            }
+                          }
+                        },
+                        selectedSize: {
+                          type: 'object',
+                          properties: {
+                            _id: {
+                              type: 'string',
+                              example: '6145a458d495858ff0d6e8a5'
+                            },
+                            color: {
+                              type: 'string',
+                              example: 'L'
+                            }
+                          }
+                        },
                         totalProductQuantity: {
                           type: 'integer',
                           example: 3
@@ -337,16 +431,15 @@ export const increaseProductQuantityByOne = {
               },
               message1: {
                 type: 'string',
-                example: 'No Product Found With This ID: {productId}'
+                example: 'No product found with this ID.'
               },
               message2: {
                 type: 'string',
-                example: 'No Cart Found For User With The Email: {email}'
+                example: 'No cart found for user with this email.'
               },
               message3: {
                 type: 'string',
-                example:
-                  'No Product Found With This ID: {productId} In The Cart'
+                example: 'No product found with this ID in the cart.'
               }
             }
           }
@@ -379,6 +472,14 @@ export const reduceProductQuantityByOne = {
             productId: {
               type: 'string',
               required: true
+            },
+            selectedColor: {
+              type: 'string',
+              required: true
+            },
+            selectedSize: {
+              type: 'string',
+              required: true
             }
           }
         }
@@ -399,7 +500,7 @@ export const reduceProductQuantityByOne = {
               },
               message: {
                 type: 'string',
-                example: 'Item Reduced By One In Cart Successfully.'
+                example: 'Item reduced by one in cart successfully.'
               },
               cart: {
                 type: 'object',
@@ -420,6 +521,32 @@ export const reduceProductQuantityByOne = {
                         product: {
                           type: 'string',
                           example: '611f6385628e64b6ff96393c'
+                        },
+                        selectedColor: {
+                          type: 'object',
+                          properties: {
+                            _id: {
+                              type: 'string',
+                              example: '6146e63c1d67816c6f9d63c7'
+                            },
+                            color: {
+                              type: 'string',
+                              example: 'Red'
+                            }
+                          }
+                        },
+                        selectedSize: {
+                          type: 'object',
+                          properties: {
+                            _id: {
+                              type: 'string',
+                              example: '6145a458d495858ff0d6e8a5'
+                            },
+                            color: {
+                              type: 'string',
+                              example: 'L'
+                            }
+                          }
                         },
                         totalProductQuantity: {
                           type: 'integer',
@@ -460,12 +587,11 @@ export const reduceProductQuantityByOne = {
               },
               message1: {
                 type: 'string',
-                example: 'No Cart Found For User With The Email: {email}'
+                example: 'No cart found for user with this email.'
               },
               message2: {
                 type: 'string',
-                example:
-                  'No Product Found With This ID: {productId} In The Cart'
+                example: 'No product found with this ID in the cart.'
               }
             }
           }
@@ -494,6 +620,26 @@ export const deleteProductFromCart = {
       description: 'Product ID'
     }
   ],
+  requestBody: {
+    required: true,
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            selectedColor: {
+              type: 'string',
+              required: true
+            },
+            selectedSize: {
+              type: 'string',
+              required: true
+            }
+          }
+        }
+      }
+    }
+  },
   responses: {
     200: {
       description: 'Delete Product From Cart',
@@ -508,7 +654,7 @@ export const deleteProductFromCart = {
               },
               message: {
                 type: 'string',
-                example: 'Item Deleted From Cart Successfully.'
+                example: 'Item deleted from cart successfully.'
               }
             }
           }
@@ -528,11 +674,11 @@ export const deleteProductFromCart = {
               },
               message1: {
                 type: 'string',
-                example: 'No Cart Found For The User With This Email: {email}'
+                example: 'No cart found for the user with this email.'
               },
               message2: {
                 type: 'string',
-                example: 'No Product Found With This ID: {productId}'
+                example: 'No product found with this ID.'
               }
             }
           }
@@ -568,7 +714,7 @@ export const deleteCart = {
               },
               message: {
                 type: 'string',
-                example: 'Cart Deleted Successfully.'
+                example: 'Cart deleted successfully.'
               }
             }
           }
@@ -588,7 +734,7 @@ export const deleteCart = {
               },
               message: {
                 type: 'string',
-                example: 'No Cart Found For The User With This Email: {email}'
+                example: 'No cart found for the user with this email.'
               }
             }
           }
