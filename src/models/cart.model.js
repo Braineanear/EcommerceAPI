@@ -1,35 +1,6 @@
 import mongoose from 'mongoose';
 import toJSON from './plugins/index';
 
-const cartItemSchema = mongoose.Schema(
-  {
-    product: {
-      type: mongoose.Types.ObjectId,
-      ref: 'Product',
-      required: true
-    },
-    selectedColor: {
-      type: mongoose.Types.ObjectId,
-      ref: 'Color',
-      required: true
-    },
-    selectedSize: {
-      type: mongoose.Types.ObjectId,
-      ref: 'Size',
-      required: true
-    },
-    totalProductQuantity: {
-      type: Number,
-      required: true
-    },
-    totalProductPrice: {
-      type: Number,
-      required: true
-    }
-  },
-  { timestamps: true }
-);
-
 const cartSchema = mongoose.Schema(
   {
     email: {
@@ -40,7 +11,33 @@ const cartSchema = mongoose.Schema(
         'The value of path {PATH} ({VALUE}) is not a valid email address.'
       ]
     },
-    items: [cartItemSchema],
+    items: [
+      {
+        product: {
+          type: mongoose.Types.ObjectId,
+          ref: 'Product',
+          required: true
+        },
+        selectedColor: {
+          type: mongoose.Types.ObjectId,
+          ref: 'Color',
+          required: true
+        },
+        selectedSize: {
+          type: mongoose.Types.ObjectId,
+          ref: 'Size',
+          required: true
+        },
+        totalProductQuantity: {
+          type: Number,
+          required: true
+        },
+        totalProductPrice: {
+          type: Number,
+          required: true
+        }
+      }
+    ],
     totalPrice: {
       type: Number,
       required: true
@@ -55,6 +52,36 @@ const cartSchema = mongoose.Schema(
 
 // add plugin that converts mongoose to json
 cartSchema.plugin(toJSON);
+
+cartSchema.pre('save', function (next) {
+  this.populate([
+    {
+      path: 'items.selectedColor',
+      select: 'color'
+    },
+    {
+      path: 'items.selectedSize',
+      select: 'size'
+    }
+  ]);
+
+  next();
+});
+
+cartSchema.pre(/^find/, function (next) {
+  this.populate([
+    {
+      path: 'items.selectedColor',
+      select: 'color'
+    },
+    {
+      path: 'items.selectedSize',
+      select: 'size'
+    }
+  ]);
+
+  next();
+});
 
 const Cart = mongoose.model('Cart', cartSchema);
 
