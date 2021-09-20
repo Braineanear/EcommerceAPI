@@ -27,7 +27,7 @@ export const addProductToCart = catchAsync(
       };
     }
 
-    const { price } = product;
+    const { priceAfterDiscount } = product;
 
     // 2) Check if cart exist
     if (cart) {
@@ -48,9 +48,10 @@ export const addProductToCart = catchAsync(
       ) {
         // In case product exist in the cart and have the same color and size.
         cart.items[indexFound].totalProductQuantity += quantity;
-        cart.items[indexFound].totalProductPrice += price * quantity;
+        cart.items[indexFound].totalProductPrice +=
+          priceAfterDiscount * quantity;
         cart.totalQuantity += quantity;
-        cart.totalPrice += price * quantity;
+        cart.totalPrice += priceAfterDiscount * quantity;
       } else if (quantity > 0) {
         // In case product doesn't exist & there is other products in the cart
         // then push the new product to the items array in the cart
@@ -60,11 +61,11 @@ export const addProductToCart = catchAsync(
           selectedColor: selectedColor,
           selectedSize: selectedSize,
           totalProductQuantity: quantity,
-          totalProductPrice: price * quantity
+          totalProductPrice: priceAfterDiscount * quantity
         });
 
         cart.totalQuantity += quantity;
-        cart.totalPrice += price * quantity;
+        cart.totalPrice += priceAfterDiscount * quantity;
       } else {
         return {
           type: 'Error',
@@ -94,11 +95,11 @@ export const addProductToCart = catchAsync(
           selectedColor: selectedColor,
           selectedSize: selectedSize,
           totalProductQuantity: quantity,
-          totalProductPrice: price * quantity
+          totalProductPrice: priceAfterDiscount * quantity
         }
       ],
       totalQuantity: quantity,
-      totalPrice: price * quantity
+      totalPrice: priceAfterDiscount * quantity
     };
 
     // 4) Create new cart
@@ -126,7 +127,7 @@ export const reduceByOne = catchAsync(
   async (email, productId, selectedColor, selectedSize) => {
     const cart = await Cart.findOne({ email });
     const product = await Product.findById(productId);
-    const { price } = product;
+    const { priceAfterDiscount } = product;
 
     // 1) Check if cart already exist
     if (!cart) {
@@ -163,7 +164,7 @@ export const reduceByOne = catchAsync(
       ) {
         cart.items.splice(indexFound, 1);
         cart.totalQuantity -= 1;
-        cart.totalPrice -= price;
+        cart.totalPrice -= priceAfterDiscount;
       } else if (
         cart.items[indexFound].selectedColor.toString() ===
           selectedColor.toString() &&
@@ -173,9 +174,9 @@ export const reduceByOne = catchAsync(
         const updatedProductTotalQuantity =
           cart.items[indexFound].totalProductQuantity - 1;
         const updatedProductTotalPrice =
-          cart.items[indexFound].totalProductPrice - price;
+          cart.items[indexFound].totalProductPrice - priceAfterDiscount;
         const updatedCartTotalQuantity = cart.totalQuantity - 1;
-        const updatedCartTotalPrice = cart.totalPrice - price;
+        const updatedCartTotalPrice = cart.totalPrice - priceAfterDiscount;
 
         cart.items[indexFound].totalProductQuantity =
           updatedProductTotalQuantity;
@@ -223,7 +224,7 @@ export const increaseByOne = catchAsync(
       };
     }
 
-    const { price } = product;
+    const { priceAfterDiscount } = product;
 
     // 2) Check if cart doesn't exist
     if (!cart) {
@@ -260,9 +261,9 @@ export const increaseByOne = catchAsync(
         const updatedProductTotalQuantity =
           cart.items[indexFound].totalProductQuantity + 1;
         const updatedProductTotalPrice =
-          cart.items[indexFound].totalProductPrice + price;
+          cart.items[indexFound].totalProductPrice + priceAfterDiscount;
         const updatedCartTotalQuantity = cart.totalQuantity + 1;
-        const updatedCartTotalPrice = cart.totalPrice + price;
+        const updatedCartTotalPrice = cart.totalPrice + priceAfterDiscount;
 
         if (updatedProductTotalQuantity <= 0 && updatedProductTotalPrice <= 0) {
           cart.items.splice(indexFound, 1);
