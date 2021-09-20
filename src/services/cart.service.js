@@ -157,18 +157,18 @@ export const reduceByOne = catchAsync(
     for (const indexFound of indexesFound) {
       if (
         cart.items[indexFound].totalProductQuantity === 1 &&
-        cart.items[indexFound].selectedColor.toString() ===
+        cart.items[indexFound].selectedColor._id.toString() ===
           selectedColor.toString() &&
-        cart.items[indexFound].selectedSize.toString() ===
+        cart.items[indexFound].selectedSize._id.toString() ===
           selectedSize.toString()
       ) {
         cart.items.splice(indexFound, 1);
         cart.totalQuantity -= 1;
         cart.totalPrice -= priceAfterDiscount;
       } else if (
-        cart.items[indexFound].selectedColor.toString() ===
+        cart.items[indexFound].selectedColor._id.toString() ===
           selectedColor.toString() &&
-        cart.items[indexFound].selectedSize.toString() ===
+        cart.items[indexFound].selectedSize._id.toString() ===
           selectedSize.toString()
       ) {
         const updatedProductTotalQuantity =
@@ -253,9 +253,9 @@ export const increaseByOne = catchAsync(
     // 5) Update cart & product data
     for (const indexFound of indexesFound) {
       if (
-        cart.items[indexFound].selectedColor.toString() ===
+        cart.items[indexFound].selectedColor._id.toString() ===
           selectedColor.toString() &&
-        cart.items[indexFound].selectedSize.toString() ===
+        cart.items[indexFound].selectedSize._id.toString() ===
           selectedSize.toString()
       ) {
         const updatedProductTotalQuantity =
@@ -386,9 +386,9 @@ export const deleteItem = catchAsync(
 
     for (const indexFound of indexesFound) {
       if (
-        cart.items[indexFound].selectedColor.toString() ===
+        cart.items[indexFound].selectedColor._id.toString() ===
           selectedColor.toString() &&
-        cart.items[indexFound].selectedSize.toString() ===
+        cart.items[indexFound].selectedSize._id.toString() ===
           selectedSize.toString()
       ) {
         const totalPrice =
