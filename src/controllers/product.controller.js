@@ -47,13 +47,13 @@ export const getAllProducts = catchAsync(async (req, res) => {
  * @desc      Get Product Using It's ID Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
- * @property  { String } req.params.id - Product ID
+ * @property  { String } req.params.productId - Product ID
  * @returns   { JSON } - A JSON object representing the type, message, and the product
  */
 export const getProduct = catchAsync(async (req, res) => {
   // 1) Get product using it's ID
   const { type, message, statusCode, product } =
-    await productService.queryProductById(req.params.id);
+    await productService.queryProductById(req.params.productId);
 
   // 2) Check if there is an error
   if (type === 'Error') {
