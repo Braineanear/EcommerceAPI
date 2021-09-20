@@ -50,7 +50,7 @@
 
 ## Deployed Version
 
-Live demo (Feel free to visit) 👉 :  <a href="https://e-commerce-a-p-i.herokuapp.com/api-docs">E-commerce API</a>
+Live demo (Feel free to visit) 👉 :  <a href="https://e-commerce-a-p-i.herokuapp.com">E-commerce API</a>
 
 ## Key Features
 
@@ -89,13 +89,17 @@ Live demo (Feel free to visit) 👉 :  <a href="https://e-commerce-a-p-i.herokua
 * Product Services
   * Query products [Public]
   * Query Product Using It's ID [Public]
-  * Create new product [User]
-  * Update Product Details [User]
-  * Update Product Main Image [User]
-  * Update Product Images [User]
+  * Create new product [Seller]
+  * Update Product Details [Seller]
+  * Update Product Main Image [Seller]
+  * Update Product Images [Seller]
   * Delete Product Using It's ID [User]
   * Get Products Statics [Admin]
   * Top 5 Cheapeast Products [Public]
+  * Add Product Color [Seller]
+  * Add Product Size [Seller]
+  * Delete Product Color [Seller]
+  * Delete Product Size [Seller]
 * Favorite Services
   * Get Favorite Products List [User]
   * Add Product to Favorite List [User]
@@ -103,8 +107,11 @@ Live demo (Feel free to visit) 👉 :  <a href="https://e-commerce-a-p-i.herokua
   * Check If Product In Favorite List [User]
 * Discount Services
   * Generate Discount Code [Admin]
+  * Get Dicount Amount [User]
   * Get All Discount Codes [Admin]
   * Verify Discount Code [User]
+  * Delete Discount Code [Admin]
+  * Cancel Discount Code [User]
 * Order Services
   * Create New Order [User]
   * Query Orders [User]
