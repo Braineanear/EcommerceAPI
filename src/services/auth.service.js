@@ -264,7 +264,7 @@ export const refreshAuth = catchAsync(async (refreshToken) => {
  * @return  { Object<type|statusCode|message> }
  */
 export const changePassword = catchAsync(
-  async (currentPassword, password, passwordConfirmation, user) => {
+  async (currentPassword, password, passwordConfirmation, userId) => {
     // 1) Check if password and passwordConfirmation are not the same
     if (password !== passwordConfirmation) {
       return {
@@ -274,8 +274,12 @@ export const changePassword = catchAsync(
       };
     }
 
+    const user = await User.findById(userId).select('+password');
+
+    const isMatch = await user.isPasswordMatch(currentPassword);
+
     // 2) Check if currentPassword isn't the same of user password
-    if (currentPassword !== user.password) {
+    if (!isMatch) {
       return {
         type: 'Error',
         message: 'notSamePassword',

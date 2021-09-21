@@ -209,7 +209,7 @@ export const changePassword = catchAsync(async (req, res) => {
     currentPassword,
     password,
     passwordConfirmation,
-    req.user
+    req.user.id
   );
 
   // 2) Check if something went wrong
