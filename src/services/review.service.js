@@ -79,7 +79,7 @@ export const queryReviews = catchAsync(async (req) => {
 
   // 2) Filter review to select only reviews of the product only
   reviews = reviews.filter(
-    (review) => review.product.toString() === req.params.id.toString()
+    (review) => review.product.toString() === req.params.productId.toString()
   );
 
   // 3) If everything is OK, send data
@@ -137,7 +137,7 @@ export const updateReview = catchAsync(async (user, id, body) => {
   }
 
   // 2) Check if the one who want to update review is the review creator
-  if (user._id.toString() !== review.user.toString()) {
+  if (user.id.toString() !== review.user.toString()) {
     return {
       type: 'Error',
       statusCode: 400,
