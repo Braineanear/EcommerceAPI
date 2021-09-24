@@ -3,7 +3,7 @@ import catchAsync from '../utils/catchAsync';
 import APIFeatures from '../utils/apiFeatures';
 
 // Models
-import { Review } from '../models/index';
+import { Review, Product } from '../models/index';
 
 /**
  * @desc    Create New Review
@@ -66,9 +66,20 @@ export const createReview = catchAsync(async (product, user, body) => {
  * @returns { Object<type|message|statusCode|reviews> }
  */
 export const queryReviews = catchAsync(async (req) => {
+  const product = await Product.findById(req.params.productId);
+
+  // 1) Check if product doesn't exist
+  if (!product) {
+    return {
+      type: 'Error',
+      message: 'noProductFound',
+      statusCode: 404
+    };
+  }
+
   let reviews = await APIFeatures(req, Review);
 
-  // 1) Check if reviews doesn't exist
+  // 2) Check if reviews doesn't exist
   if (reviews.length === 0) {
     return {
       type: 'Error',
@@ -77,12 +88,12 @@ export const queryReviews = catchAsync(async (req) => {
     };
   }
 
-  // 2) Filter review to select only reviews of the product only
+  // 3) Filter review to select only reviews of the product only
   reviews = reviews.filter(
     (review) => review.product.toString() === req.params.productId.toString()
   );
 
-  // 3) If everything is OK, send data
+  // 4) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulReviewsFound',
@@ -93,13 +104,25 @@ export const queryReviews = catchAsync(async (req) => {
 
 /**
  * @desc    Query Review Using It's ID
- * @param   { String } id - Review ID
+ * @param   { String } prodcutId - Product ID
+ * @param   { String } reviewId - Review ID
  * @returns { Object<type|message|statusCode|review> }
  */
-export const queryReviewById = catchAsync(async (id) => {
-  const review = await Review.findById(id);
+export const queryReviewById = catchAsync(async (productId, reviewId) => {
+  const product = await Product.findById(productId);
 
-  // 1) Check if review doesn't exist
+  // 1) Check if product doesn't exist'
+  if (!product) {
+    return {
+      type: 'Error',
+      message: 'noProductFound',
+      statusCode: 404
+    };
+  }
+
+  const review = await Review.findById(reviewId);
+
+  // 2) Check if review doesn't exist
   if (!review) {
     return {
       type: 'Error',
@@ -108,7 +131,7 @@ export const queryReviewById = catchAsync(async (id) => {
     };
   }
 
-  // 2) If everything is OK, send data
+  // 3) If everything is OK, send data
   return {
     type: 'Success',
     message: 'successfulReviewFound',
@@ -119,65 +142,92 @@ export const queryReviewById = catchAsync(async (id) => {
 
 /**
  * @desc    Update Review Using It's ID
- * @param   { String } id - Review ID
+ * @param   { String } userId - userId
+ * @param   { String } reviewId - Review ID
+ * @param   { String } prodcutId - Product ID
  * @param   { Object } body - Body object data
- * @param   { Object } user - An object contains logged in user data
  * @returns { Object<type|message|statusCode|review> }
  */
-export const updateReview = catchAsync(async (user, id, body) => {
-  const review = await Review.findById(id);
+export const updateReview = catchAsync(
+  async (userId, reviewId, productId, body) => {
+    const product = await Product.findById(productId);
 
-  // 1) Check if review doesn't exist
-  if (!review) {
+    // 1) Check if product doesn't exist
+    if (!product) {
+      return {
+        type: 'Error',
+        message: 'noProductFound',
+        statusCode: 404
+      };
+    }
+
+    const review = await Review.findById(reviewId);
+
+    // 2) Check if review doesn't exist
+    if (!review) {
+      return {
+        type: 'Error',
+        message: 'noReviewFound',
+        statusCode: 404
+      };
+    }
+
+    // 3) Check if the one who want to update review is the review creator
+    if (userId.toString() !== review.user.toString()) {
+      return {
+        type: 'Error',
+        statusCode: 400,
+        message: 'notReviewCreator'
+      };
+    }
+
+    // 3) Check if review rating less than 1
+    if (body.rating < 1) {
+      return {
+        type: 'Error',
+        statusCode: 400,
+        message: 'ratingLessThanOne'
+      };
+    }
+
+    // 4) Update review
+    const result = await Review.findByIdAndUpdate(reviewId, body, {
+      new: true,
+      runValidators: true
+    });
+
+    // 5) If everything is OK, send data
     return {
-      type: 'Error',
-      message: 'noReviewFound',
-      statusCode: 404
+      type: 'Success',
+      message: 'successfulReviewUpdate',
+      statusCode: 200,
+      result
     };
   }
-
-  // 2) Check if the one who want to update review is the review creator
-  if (user.id.toString() !== review.user.toString()) {
-    return {
-      type: 'Error',
-      statusCode: 400,
-      message: 'notReviewCreator'
-    };
-  }
-
-  // 3) Check if review rating less than 1
-  if (body.rating < 1) {
-    return {
-      type: 'Error',
-      statusCode: 400,
-      message: 'ratingLessThanOne'
-    };
-  }
-
-  // 4) Update review
-  const result = await Review.findByIdAndUpdate(id, body, {
-    new: true,
-    runValidators: true
-  });
-
-  // 5) If everything is OK, send data
-  return {
-    type: 'Success',
-    message: 'successfulReviewUpdate',
-    statusCode: 200,
-    result
-  };
-});
+);
 
 /**
  * @desc    Delete Review Using It's ID
- * @param   { String } id - Review ID
+ * @param   { String } productId - Product ID
+ * @param   { String } reviewId - Review ID
+ * @param   { String } userId - User ID
  * @returns { Object<type|message|statusCode> }
  */
-export const deleteReview = catchAsync(async (user, id) => {
-  const review = await Review.findById(id);
+export const deleteReview = catchAsync(async (productId, reviewId, userId) => {
+  const product = await Product.findById(productId);
 
-  // 1) Check if review doesn't exist
+  // 1) Check if product doesn't exist
+  if (!product) {
+    return {
+      type: 'Error',
+      message: 'noProductFound',
+      statusCode: 404
+    };
+  }
+
+  const review = await Review.findById(reviewId);
+
+  // 2) Check if review doesn't exist
   if (!review) {
     return {
       type: 'Error',
@@ -186,8 +236,8 @@ export const deleteReview = catchAsync(async (user, id) => {
     };
   }
 
-  // 2) Check if the user is the creator of the review to delete it
-  if (user._id.toString() !== review.user.toString()) {
+  // 3) Check if the user is the creator of the review to delete it
+  if (userId.toString() !== review.user.toString()) {
     return {
       type: 'Error',
       statusCode: 400,
@@ -196,7 +246,7 @@ export const deleteReview = catchAsync(async (user, id) => {
   }
 
   // 4) Delete review
-  await Review.findByIdAndDelete(id);
+  await Review.findByIdAndDelete(reviewId);
 
   // 5) If everything is OK, send data
   return {
