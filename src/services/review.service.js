@@ -143,13 +143,13 @@ export const queryReviewById = catchAsync(async (productId, reviewId) => {
 /**
  * @desc    Update Review Using It's ID
  * @param   { String } userId - userId
- * @param   { String } reviewId - Review ID
  * @param   { String } prodcutId - Product ID
+ * @param   { String } reviewId - Review ID
  * @param   { Object } body - Body object data
  * @returns { Object<type|message|statusCode|review> }
  */
 export const updateReview = catchAsync(
-  async (userId, reviewId, productId, body) => {
+  async (userId, productId, reviewId, body) => {
     const product = await Product.findById(productId);
 
     // 1) Check if product doesn't exist
