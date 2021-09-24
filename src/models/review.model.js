@@ -73,12 +73,12 @@ reviewSchema.post('save', function () {
 
 // findByIdAndUpdate
 // findByIdAndDelete
-reviewSchema.pre(/^findOneAnd/, async function (next) {
+reviewSchema.pre(/^findByIdAnd/, async function (next) {
   this.rev = await this.findOne();
   next();
 });
 
-reviewSchema.post(/^findOneAnd/, async function () {
+reviewSchema.post(/^findByIdAnd/, async function () {
   // await this.findOne(); does NOT work here, query has already executed
   await this.rev.constructor.calcAverageRatings(this.rev.product);
 });
