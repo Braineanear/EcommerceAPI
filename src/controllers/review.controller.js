@@ -81,13 +81,16 @@ export const getAllReviews = catchAsync(async (req, res) => {
  * @desc      Get Review Using It's ID Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
+ * @property  { String } req.params.productId - Product ID
  * @property  { String } req.params.reviewId - Review ID
  * @return    { JSON } - A JSON object representing the type, message and the review
  */
 export const getReview = catchAsync(async (req, res) => {
+  const { productId, reviewId } = req.params;
+
   // 1) Get review using it's ID
   const { type, message, statusCode, review } =
-    await reviewService.queryReviewById(req.param.reviewId);
+    await reviewService.queryReviewById(productId, reviewId);
 
   // 2) Check if there is an error
   if (type === 'Error') {
@@ -109,15 +112,23 @@ export const getReview = catchAsync(async (req, res) => {
  * @desc      Update Review Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
+ * @property  { String } req.user.id - User ID
+ * @property  { String } req.params.productId - Product ID
  * @property  { String } req.params.reviewId - Review ID
- * @property  { Object } req.user - An object contains logged in user data
  * @property  { Object } req.body - Body object data
  * @return    { JSON } - A JSON object representing the type, message and the review
  */
 export const updateReview = catchAsync(async (req, res) => {
+  const { productId, reviewId } = req.params;
+
   // 1) Update review using it's ID
   const { type, message, statusCode, review } =
-    await reviewService.updateReview(req.user, req.params.reviewId, req.body);
+    await reviewService.updateReview(
+      req.user.id,
+      productId,
+      reviewId,
+      req.body
+    );
 
   // 2) Check if there is an error
   if (type === 'Error') {
@@ -139,15 +150,19 @@ export const updateReview = catchAsync(async (req, res) => {
  * @desc    Delete Review Controller
  * @param     { Object } req - Request object
  * @param     { Object } res - Response object
+ * @property  { String } req.params.productId - Product ID
  * @property  { String } req.params.reviewId - Review ID
- * @property  { Object } req.user - An object contains logged in user data
+ * @property  { String } req.user.id - User ID
  * @return    { JSON } - A JSON object representing the type and message
  */
 export const deleteReview = catchAsync(async (req, res) => {
+  const { productId, reviewId } = req.params;
+
   // 1) Delete review using it's ID
   const { type, message, statusCode } = await reviewService.deleteReview(
-    req.user,
-    req.params.reviewId
+    productId,
+    reviewId,
+    req.user.id
   );
 
   // 2) Check if there is an error
