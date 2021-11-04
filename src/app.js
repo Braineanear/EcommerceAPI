@@ -24,7 +24,7 @@ import startPolyglot from './utils/startPolyglot';
 import docs from '../docs/swagger';
 
 // Routes
-import routes from './routes/index';
+import routes from './routes';
 
 const app = express();
 
