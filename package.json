@@ -8,16 +8,28 @@
   "engines": {
     "node": ">=12.0.0"
   },
-  "type": "module",
   "scripts": {
-    "start": "nodemon --experimental-specifier-resolution=node src/server.js",
+    "build": "babel src -d build",
+    "build-docs": "babel docs -d build-docs",
+    "start:dev": "nodemon --exec babel-node src/server.js",
+    "start:prod": "yarn run build && yarn run build-docs && node build/server.js",
     "lint": "eslint \"**/*.js\" --ignore-pattern node_modules/",
     "lint:fix": "eslint --fix --ext .js,.jsx .",
     "prettier": "prettier --check **/*.js",
     "prettier:fix": "prettier --write \"./**/*.{js,jsx,json}\"",
-    "test": "mocha"
+    "test": "jest --watch --verbose"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   },
   "dependencies": {
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.8",
+    "@babel/node": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
     "argon2": "^0.28.2",
     "cloudinary": "^1.25.1",
     "compression": "^1.7.4",
@@ -28,6 +40,7 @@
     "express-locale": "^2.0.0",
     "express-mongo-sanitize": "^2.1.0",
     "express-rate-limit": "^5.2.6",
+    "googleapis": "^89.0.0",
     "helmet": "^4.6.0",
     "joi": "^17.4.2",
     "jsdocs": "^1.0.0",
@@ -47,7 +60,6 @@
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.5",
     "@babel/eslint-parser": "^7.15.4",
     "chai": "^4.3.4",
     "eslint": "^7.32.0",
@@ -59,7 +71,8 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.25.1",
-    "mocha": "^9.1.1",
+    "jest": "^27.3.1",
+    "nodemon": "^2.0.14",
     "prettier": "^2.4.0",
     "supertest": "^6.1.6"
   },
