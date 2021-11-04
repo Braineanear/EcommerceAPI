@@ -1,4 +1,6 @@
 import AppError from './appError';
+
+import config from '../config/config';
 import logger from '../config/logger';
 
 // @desc    Function That Handles Invalid JWT Tokens (UNAUTHORIZED)
@@ -63,11 +65,11 @@ export default (err, req, res, next) => {
   err.status = err.status || 'error';
 
   // Send Errors in The Development Phase
-  if (process.env.NODE_ENV === 'development') {
+  if (config.env === 'development') {
     sendErrorDev(err, req, res);
 
     // Send Errors in The Production Phase
-  } else if (process.env.NODE_ENV === 'production') {
+  } else if (config.env === 'production') {
     let error = { ...err };
     error.message = err.message;
 
