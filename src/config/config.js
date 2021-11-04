@@ -24,13 +24,11 @@ const envVarsSchema = Joi.object()
     JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: Joi.number()
       .default(10)
       .description('Minutes After Which Verify Email Token Expires'),
-    SMTP_HOST: Joi.string().description('Server That Will Send The Emails'),
-    SMTP_PORT: Joi.number().description('Port to Connect to The Email Server'),
-    SMTP_USERNAME: Joi.string().description('Username For Email Server'),
-    SMTP_PASSWORD: Joi.string().description('Password For Email Server'),
-    EMAIL_FROM: Joi.string().description(
-      'The From Field in The Emails Sent By The App'
-    ),
+    CLIENT_EMAIL: Joi.string().description('Gmail Client Email'),
+    CLIENT_ID: Joi.string().description('Gmail Client ID'),
+    CLIENT_SECRET: Joi.string().description('Gmail Client Secret'),
+    REDIRECT_URI: Joi.string().description('Gmail Redirect URI'),
+    REFRESH_TOKEN: Joi.string().description('Gmail Refresh Token'),
     CLOUD_NAME: Joi.string().description('Cloudinary Storage Name'),
     CLOUD_API_KEY: Joi.string().description('Cloudinary Api Key'),
     CLOUD_API_SECRET: Joi.string().description('Cloudinary Api Secret'),
@@ -65,15 +63,13 @@ const config = {
     verifyEmailExpirationMinutes: envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES
   },
   email: {
-    smtp: {
-      host: envVars.SMTP_HOST,
-      port: envVars.SMTP_PORT,
-      auth: {
-        user: envVars.SMTP_USERNAME,
-        pass: envVars.SMTP_PASSWORD
-      }
+    from: envVars.CLIENT_EMAIL,
+    client: {
+      id: envVars.CLIENT_ID,
+      secret: envVars.CLIENT_SECRET
     },
-    from: envVars.EMAIL_FROM
+    RedirectUri: envVars.REDIRECT_URI,
+    RefreshToken: envVars.REFRESH_TOKEN
   },
   cloud: {
     name: envVars.CLOUD_NAME,
