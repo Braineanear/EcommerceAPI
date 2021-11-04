@@ -1,13 +1,13 @@
 // Packages
 import { createTransport } from 'nodemailer';
+import { google } from 'googleapis';
 
 // Configs
 import config from '../config/config';
 
 // Utils
 import catchAsync from './catchAsync';
-
-export const transport = createTransport(config.email.smtp);
+import AppError from './appError';
 
 /**
  * @desc    Send an email
@@ -16,9 +16,45 @@ export const transport = createTransport(config.email.smtp);
  * @param   { String } text - Mail body
  * @returns { Promise }
  */
-export const sendEmail = catchAsync(async (to, subject, text) => {
-  const msg = { from: config.email.from, to, subject, text };
-  await transport.sendMail(msg);
+const sendEmail = catchAsync(async (to, subject, text) => {
+  const OAuth2Client = new google.auth.OAuth2(
+    config.email.client.id,
+    config.email.client.secret,
+    config.email.RedirectUri
+  );
+
+  OAuth2Client.setCredentials({ refresh_token: config.email.RefreshToken });
+
+  try {
+    // Generate the accessToken on the fly
+    const accessToken = await OAuth2Client.getAccessToken();
+
+    // Create the email envelope (transport)
+    const transport = createTransport({
+      service: 'gmail',
+      auth: {
+        type: 'OAuth2',
+        user: config.email.from,
+        clientId: config.email.client.id,
+        clientSecret: config.email.client.secret,
+        refreshToken: config.email.RefreshToken,
+        accessToken: accessToken
+      }
+    });
+
+    // Create the email options and body
+    const mailOptions = {
+      from: `Mahmoud Yasser - Ecommerce API < ${config.email.from} >`,
+      to,
+      subject,
+      text
+    };
+
+    // Set up the email options and delivering it
+    return await transport.sendMail(mailOptions);
+  } catch (error) {
+    return new AppError(error, 500);
+  }
 });
 
 /**
