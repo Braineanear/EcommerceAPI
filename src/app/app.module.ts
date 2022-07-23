@@ -7,18 +7,25 @@ import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
-import { DebuggerModule } from '@shared/debugger/debugger.module';
-import { JwtAuthGuard } from '@shared/guards/auth.guard';
-import { RolesGuard } from '@shared/guards/roles.guard';
 import Configs from '@shared/config';
+import { DebuggerModule } from '@shared/debugger/debugger.module';
+import { JwtStrategy } from '@shared/strategies/jwt-startegy';
+import { RolesGuard } from '@shared/guards/roles.guard';
 import { LoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
 import { ImageModule } from '@modules/image/image.module';
-import { JwtStrategy } from '@shared/strategies/jwt-startegy';
 import { MongoDriverErrorFilter } from '@shared/filters/mongo-driver-error.filter';
 import { MongooseErrorFilter } from '@shared/filters/mongoose-error.filter';
 import { LoggerModule } from '@shared/logger/logger.module';
 import { UserModule } from '@modules/user/user.module';
 import { AuthModule } from '@modules/auth/auth.module';
+import { CategoryModule } from '@modules/category/category.module';
+import { ProductModule } from '@modules/product/product.module';
+import { OrderModule } from '@modules/order/order.module';
+import { BrandModule } from '@modules/brand/brand.module';
+import { ReviewModule } from '@modules/review/review.module';
+import { CartModule } from '@modules/cart/cart.module';
+import { SizeModule } from '@modules/size/size.module';
+import { ColorModule } from '@modules/color/color.module';
 
 @Module({
   imports: [
@@ -73,13 +80,10 @@ import { AuthModule } from '@modules/auth/auth.module';
     UserModule,
     ImageModule,
     LoggerModule,
+    CategoryModule,
   ],
   providers: [
     ConfigService,
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
     {
       provide: APP_FILTER,
       useClass: MongoDriverErrorFilter,

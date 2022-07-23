@@ -1,7 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
+import { AwsModule } from '@shared/aws/aws.module';
+import { ImageModule } from '@modules/image/image.module';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { User, UserSchema } from './models/user.entity';
@@ -62,6 +64,8 @@ import { UserRepository } from './repositories/user.repository';
         },
       },
     ]),
+    forwardRef(() => AwsModule),
+    forwardRef(() => ImageModule),
   ],
   providers: [UserService, UserRepository],
   controllers: [UserController],

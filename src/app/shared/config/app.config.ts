@@ -7,5 +7,6 @@ export default registerAs(
     versioning: process.env.VERSIONING,
     port: parseInt(process.env.PORT),
     debug: process.env.DEBUG,
+    strip_key: 123456,
   }),
 );

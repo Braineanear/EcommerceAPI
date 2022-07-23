@@ -2,9 +2,9 @@ import { Module, forwardRef } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from '@shared/strategies/jwt-startegy';
 import { UserModule } from '@modules/user/user.module';
 import { TokenModule } from '@modules/token/token.module';
-import { JwtStrategy } from './strategies/jwt.strategy';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 
@@ -12,7 +12,7 @@ import { AuthController } from './auth.controller';
   imports: [
     forwardRef(() => UserModule),
     forwardRef(() => TokenModule),
-    PassportModule.register({ defaultStrategy: 'jwt', session: false }),
+    PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => {

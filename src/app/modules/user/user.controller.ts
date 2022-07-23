@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -16,6 +17,8 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
   ApiNotFoundResponse,
+  ApiConsumes,
+  ApiBody,
 } from '@nestjs/swagger';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
@@ -27,6 +30,9 @@ import { PaginatedUserDto } from './dtos/paginated-user.dto';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { FindUsersDto } from './dtos/find-users.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { UploadFileSingle } from '@shared/decorators/file.decorator';
+import { ENUM_FILE_TYPE } from '@shared/enums/file.enum';
+import { SingleFileUploadDto } from '@shared/dtos/file-upload.dto';
 
 @ApiBearerAuth()
 @ApiForbiddenResponse({
@@ -100,5 +106,25 @@ export class UserController {
   })
   deleteById(@Param('id') id: string) {
     this.service.deleteById(id);
+  }
+
+  @UploadFileSingle('file', ENUM_FILE_TYPE.IMAGE)
+  @Post(':id/images/upload')
+  @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'User avatar',
+    type: SingleFileUploadDto,
+  })
+  @ApiCreatedResponse({
+    description: 'The record has been successfully created.',
+    type: UserDto,
+  })
+  @ApiNotFoundResponse({
+    description: 'Record not found',
+    type: NotFoundDto,
+  })
+  upload(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
+    return this.service.uploadImage(id, file);
   }
 }

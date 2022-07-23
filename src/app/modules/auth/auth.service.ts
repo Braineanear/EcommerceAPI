@@ -21,7 +21,10 @@ import { ForgotPasswordDto } from './dtos/forgot-password.dto';
 import { LoginDto } from './dtos/login.dto';
 import { LogoutDto } from './dtos/logout.dto';
 import { RegisterDto } from './dtos/register.dto';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { TokenDto } from './dtos/token.dto';
+import { ResetPasswordDto } from './dtos/reset-password.dto';
+import { EmailVerificationDto } from './dtos/verify-email.dto';
+import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -140,6 +143,43 @@ export class AuthService {
     };
   }
 
+  private async verifyToken(token: string, type: string) {
+    const refreshTokenSecret = this.configService.get<string>(
+      'auth.jwt.refreshToken.secretKey',
+    );
+    const accessTokenSecret = this.configService.get<string>(
+      'auth.jwt.accessToken.secretKey',
+    );
+    let payload: string = '';
+
+    if (type === TokenTypes.REFRESH) {
+      payload = jwt.verify(token, refreshTokenSecret) as string;
+    } else if (type === TokenTypes.ACCESS) {
+      payload = jwt.verify(token, accessTokenSecret) as string;
+    }
+
+    const tokenDoc = await this.tokenRepository.findOne({
+      token,
+      type,
+      user: payload.sub,
+    });
+
+    if (!tokenDoc) {
+      this.debuggerService.error(
+        `Token ${token} not found`,
+        'AuthService',
+        'verifyToken',
+      );
+
+      throw new HttpException(
+        `Token ${token} not found`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return tokenDoc;
+  }
+
   private async generateResetPasswordToken(email: string): Promise<string> {
     const user = await this.userRepository.findOne({ email });
 
@@ -181,32 +221,6 @@ export class AuthService {
     return resetPasswordToken;
   }
 
-  private async generateVerifyEmailToken(user: IUserDocument): Promise<string> {
-    const expires = moment().add(
-      this.configService.get('auth.jwt.verifyEmailToken.expirationTime'),
-      'hours',
-    );
-    const secret = this.configService.get<string>(
-      'auth.jwt.verifyEmailToken.secretKey',
-    );
-
-    const verifyEmailToken = this.generateToken(
-      user.id,
-      expires,
-      TokenTypes.VERIFY_EMAIL,
-      secret,
-    );
-
-    await this.saveToken(
-      verifyEmailToken,
-      user.id,
-      expires,
-      TokenTypes.VERIFY_EMAIL,
-    );
-
-    return verifyEmailToken;
-  }
-
   private async verifyPassword(
     plainTextPassword: string,
     hashedPassword: string,
@@ -236,13 +250,135 @@ export class AuthService {
   ): Promise<IUserDocument> {
     const user = await this.userRepository.findOne({
       email,
+      isDeleted: false,
     });
+
+    if (!user) {
+      this.debuggerService.error(
+        `User with email ${email} not found`,
+        'AuthService',
+        'login',
+      );
+
+      throw new HttpException(
+        `User with email ${email} not found`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     await this.verifyPassword(plainTextPassword, user.password);
 
     user.password = undefined;
 
     return user;
+  }
+
+  private async generateVerifyEmailToken(user: IUserDocument): Promise<string> {
+    const expires = moment().add(
+      this.configService.get('auth.jwt.verifyEmailToken.expirationTime'),
+      'hours',
+    );
+    const secret = this.configService.get<string>(
+      'auth.jwt.verifyEmailToken.secretKey',
+    );
+
+    const verifyEmailToken = this.generateToken(
+      user.id,
+      expires,
+      TokenTypes.VERIFY_EMAIL,
+      secret,
+    );
+
+    await this.saveToken(
+      verifyEmailToken,
+      user.id,
+      expires,
+      TokenTypes.VERIFY_EMAIL,
+    );
+
+    return verifyEmailToken;
+  }
+
+  public async sendVerificationEmail(payload: JwtPayload) {
+    const user = await this.userRepository.findOne({
+      id: payload.sub,
+    });
+
+    if (user.isEmailVerified) {
+      this.debuggerService.error(
+        `User with email ${user.email} already verified`,
+        'AuthService',
+        'sendVerificationEmail',
+      );
+
+      throw new HttpException(
+        `User with email ${user.email} already verified`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const verifyEmailToken = await this.generateVerifyEmailToken(user);
+
+    // await sendVerifyEmail(user.email, verifyEmailToken);
+
+    return {
+      token: verifyEmailToken,
+      message: 'Verification email sent',
+    };
+  }
+
+  public async verifyEmail(emailVerificationDto: EmailVerificationDto) {
+    const { token } = emailVerificationDto;
+
+    const tokenDoc = await this.verifyToken(token, TokenTypes.VERIFY_EMAIL);
+
+    const user = await this.userRepository.findOne({
+      id: tokenDoc.user,
+    });
+
+    user.isEmailVerified = true;
+
+    await user.save();
+
+    await tokenDoc.delete();
+
+    return {
+      message: 'Email verified',
+    };
+  }
+
+  public async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const { token, password, passwordConfirmation } = resetPasswordDto;
+
+    if (password !== passwordConfirmation) {
+      this.debuggerService.error(
+        `Passwords do not match`,
+        'AuthService',
+        'resetPassword',
+      );
+
+      throw new HttpException(`Passwords do not match`, HttpStatus.BAD_REQUEST);
+    }
+
+    const tokenDoc = await this.verifyToken(token, TokenTypes.RESET_PASSWORD);
+    const user = await this.userRepository.findOne({
+      id: tokenDoc.user,
+    });
+
+    user.password = password;
+
+    await user.save();
+
+    // await sendAfterResetPasswordMessage(user.email);
+
+    await this.tokenRepository.deleteOne({
+      token,
+      type: TokenTypes.RESET_PASSWORD,
+    });
+
+    return {
+      message: 'Password has been reset',
+    };
   }
 
   public async forgotPassword(
@@ -269,7 +405,9 @@ export class AuthService {
       forgotPasswordDto.email,
     );
 
-    return resetPasswordToken;
+    return {
+      token: resetPasswordToken,
+    };
     // this.sendMailForgotPassword(userUpdate.email, passwordRand);
   }
 
@@ -290,6 +428,36 @@ export class AuthService {
       user,
       tokens,
     };
+  }
+
+  public async generateTokens(tokenDto: TokenDto) {
+    const token = await this.verifyToken(
+      tokenDto.refreshToken,
+      TokenTypes.REFRESH,
+    );
+
+    const user = await this.userRepository.findOne({
+      id: token.user,
+    });
+
+    if (!user) {
+      this.debuggerService.error(
+        `User with id ${token.user} not found`,
+        'AuthService',
+        'generateTokens',
+      );
+
+      throw new HttpException(
+        `User with id ${token.user} not found`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    await this.refreshTokenExistance(user);
+
+    const tokens = await this.generateAuthTokens(user);
+
+    return tokens;
   }
 
   public async logout(logoutDto: LogoutDto) {
@@ -321,18 +489,6 @@ export class AuthService {
       statusCode: 200,
       message: 'logoutSuccess',
     };
-  }
-
-  public async validateUserByJwt(payload: JwtPayload) {
-    const user = await this.userRepository.findOne({
-      email: payload.email,
-    });
-
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-
-    return this.generateAuthTokens(user);
   }
 
   public async register(registrationData: RegisterDto) {

@@ -13,7 +13,6 @@ import {
 import sharp from 'sharp';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Readable } from 'stream';
 import { IAwsS3Response } from './interfaces/aws.interface';
 
 @Injectable()
