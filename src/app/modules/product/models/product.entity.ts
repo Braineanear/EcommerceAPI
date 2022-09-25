@@ -28,8 +28,8 @@ export class Product {
   @Prop({ type: Types.ObjectId, ref: 'User', autopopulate: true })
   seller: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Brand', autopopulate: true })
-  brand: Types.ObjectId;
+  @Prop({ type: [Types.ObjectId], ref: 'Brand', autopopulate: true })
+  brands: Types.ObjectId[];
 
   @Prop({ type: [Types.ObjectId], ref: 'Size', autopopulate: true })
   sizes: Types.ObjectId[];
