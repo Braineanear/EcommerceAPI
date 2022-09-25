@@ -24,12 +24,10 @@ export class CreateProductDto {
   })
   @IsString()
   @IsNotEmpty()
-  category: string | Types.ObjectId;
+  category: string;
 
-  @ApiProperty({ type: String, required: true, description: 'Product brand' })
-  @IsString()
-  @IsNotEmpty()
-  brand: string | Types.ObjectId;
+  @ApiProperty({ type: [String], required: true, description: 'Product brand' })
+  brands: string[];
 
   @ApiProperty({ type: Number, required: true, description: 'Product price' })
   @IsNumber()
@@ -55,21 +53,15 @@ export class CreateProductDto {
   priceDiscount: number;
 
   @ApiProperty({ type: [String], required: true, description: 'Product sizes' })
-  @IsString()
-  @IsNotEmpty()
-  sizes: string[] | Types.ObjectId[];
+  sizes: string[];
 
   @ApiProperty({
     type: [String],
     required: true,
     description: 'Product colors',
   })
-  @IsString()
-  @IsNotEmpty()
-  colors: string[] | Types.ObjectId[];
+  colors: string[];
 
   @ApiProperty({ type: [String], required: true, description: 'Product tags' })
-  @IsString()
-  @IsNotEmpty()
-  tags: string[] | Types.ObjectId[];
+  tags: string[];
 }
