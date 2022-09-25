@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { BaseService } from '@shared/services/base.service';
 import { DebuggerService } from '@shared/debugger/debugger.service';
 import { ProductService } from '@modules/product/product.service';
 import { SizeService } from '@modules/size/size.service';
@@ -7,89 +8,15 @@ import { CartRepository } from './repositories/cart.repository';
 import { CreateCartDto } from './dtos/create-cart.dto';
 
 @Injectable()
-export class CartService {
+export class CartService extends BaseService<CartRepository> {
   constructor(
     protected readonly repository: CartRepository,
     protected readonly debuggerService: DebuggerService,
     protected readonly productService: ProductService,
     protected readonly sizeService: SizeService,
     protected readonly colorService: ColorService,
-  ) {}
-
-  async findById(id: string) {
-    const result = await this.repository.findById(id);
-
-    if (!result) {
-      this.debuggerService.error(
-        `Cart with id: ${id} not found`,
-        'CartService',
-        'findById',
-      );
-
-      throw new NotFoundException(`Cart with id: ${id} not found`);
-    }
-
-    return result;
-  }
-
-  async findOne(filter: object) {
-    const result = await this.repository.findOne(filter);
-
-    if (!result) {
-      this.debuggerService.error('Cart not found', 'CartService', 'findOne');
-
-      throw new NotFoundException('Cart not found');
-    }
-
-    return result;
-  }
-
-  async find(filter: object) {
-    const results = await this.repository.find(filter);
-
-    if (results.length === 0) {
-      this.debuggerService.error('Categories not found', 'CartService', 'find');
-
-      throw new NotFoundException('Categories not found');
-    }
-
-    return results;
-  }
-
-  async findPaginated(filter: object, paginateOptions) {
-    return this.repository.findPaginated(filter, paginateOptions);
-  }
-
-  async updateById(id: string, update: object) {
-    const result = await this.repository.updateById(id, update);
-
-    if (!result) {
-      this.debuggerService.error(
-        `Cart with id: ${id} not found`,
-        'CartService',
-        'updateById',
-      );
-
-      throw new NotFoundException(`Cart with id: ${id} not found`);
-    }
-
-    return result;
-  }
-
-  async deleteById(id: string) {
-    const result = await this.repository.deleteById(id);
-
-    if (!result) {
-      this.debuggerService.error(
-        `Cart with id: ${id} not found`,
-        'CartService',
-        'deleteById',
-      );
-
-      throw new NotFoundException(`Cart with id: ${id} not found`);
-    }
-
-    return result;
+  ) {
+    super();
   }
 
   async addProductToCart(doc: CreateCartDto) {
