@@ -45,7 +45,7 @@ import { MultipleFilesUploadDto } from '@shared/dtos/file-upload.dto';
   description: 'You are not authorized to access this endpoint, please login!',
 })
 @ApiTags('Products')
-@Controller('product')
+@Controller('products')
 export class ProductController {
   constructor(private readonly service: ProductService) {}
 
