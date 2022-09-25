@@ -36,49 +36,41 @@ export class AuthController {
   }
 
   @Post('register')
-  public async register(
-    @Res() res,
-    @Body() registerUserDto: RegisterDto,
-  ): Promise<any> {
-    await this.authService.register(registerUserDto);
-
-    return res.status(HttpStatus.OK).json({
-      message: 'User registration successfully!',
-      status: 200,
-    });
+  async register(@Body() registerUserDto: RegisterDto) {
+    return this.authService.register(registerUserDto);
   }
 
   @ApiBearerAuth()
   @Post('logout')
-  public async logout(@Body() logoutDto: LogoutDto) {
+  async logout(@Body() logoutDto: LogoutDto) {
     return this.authService.logout(logoutDto);
   }
 
   @ApiBearerAuth()
   @Post('generate/tokens')
-  public async generateTokens(@Body() tokenDto: TokenDto) {
+  async generateTokens(@Body() tokenDto: TokenDto) {
     return this.authService.generateTokens(tokenDto);
   }
 
   @Post('forgot-password')
-  public async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
     return this.authService.forgotPassword(forgotPasswordDto);
   }
 
   @Post('reset-password')
-  public async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassword(resetPasswordDto);
   }
 
   @Post('verify-email')
-  public async verifyEmail(@Body() emailVerificationDto: EmailVerificationDto) {
+  async verifyEmail(@Body() emailVerificationDto: EmailVerificationDto) {
     return this.authService.verifyEmail(emailVerificationDto);
   }
 
   @Post('send-verification-email')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
-  public async sendVerificationEmail(@AuthUser() user: JwtPayload) {
+  async sendVerificationEmail(@AuthUser() user: JwtPayload) {
     return this.authService.sendVerificationEmail(user);
   }
 
