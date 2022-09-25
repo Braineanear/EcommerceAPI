@@ -1,6 +1,5 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { DebuggerService } from '@shared/debugger/debugger.service';
 import { BaseService } from '@shared/services/base.service';
 import { AwsS3Service } from '@shared/aws/aws.service';
 import { ImageService } from '@modules/image/image.service';
@@ -12,7 +11,6 @@ import { IAwsS3Response } from '@shared/aws/interfaces/aws.interface';
 export class CategoryService extends BaseService<CategoryRepository> {
   constructor(
     protected readonly repository: CategoryRepository,
-    protected readonly debuggerService: DebuggerService,
     protected readonly awsService: AwsS3Service,
     protected readonly imageService: ImageService,
   ) {
@@ -27,19 +25,7 @@ export class CategoryService extends BaseService<CategoryRepository> {
     if (category.image) {
       const image = await this.imageService.findById(category.image);
 
-      const isDeleted = await this.awsService.s3DeleteItemInBucket(
-        image.pathWithFilename,
-      );
-
-      if (!isDeleted) {
-        this.debuggerService.error(
-          'Image not deleted',
-          'CityService',
-          'uploadImage',
-        );
-
-        throw new InternalServerErrorException('Error deleting image');
-      }
+      await this.awsService.s3DeleteItemInBucket(image.pathWithFilename);
 
       await this.imageService.deleteById(image._id);
     }

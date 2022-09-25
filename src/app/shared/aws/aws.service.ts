@@ -11,8 +11,13 @@ import {
   ObjectIdentifier,
 } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  OnModuleInit,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { DebuggerService } from '@shared/debugger/debugger.service';
 import { IAwsS3Response } from './interfaces/aws.interface';
 
 @Injectable()
@@ -20,7 +25,10 @@ export class AwsS3Service implements OnModuleInit {
   private readonly s3Client: S3Client;
   private readonly bucket: string;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly debuggerService: DebuggerService,
+  ) {
     this.s3Client = new S3Client({
       credentials: {
         accessKeyId: this.configService.get<string>('aws.credential.key'),
@@ -48,7 +56,12 @@ export class AwsS3Service implements OnModuleInit {
 
   async s3ListBucket(): Promise<string[]> {
     const command: ListBucketsCommand = new ListBucketsCommand({});
-    const listBucket: Record<string, any> = await this.s3Client.send(command);
+    const listBucket: Record<string, any> = await this.s3Client
+      .send(command)
+      .catch((e) => {
+        this.debuggerService.error(e, 'awsService', 's3ListBucket');
+        throw new InternalServerErrorException(e);
+      });
     return listBucket.Buckets.map((val: Record<string, any>) => val.Name);
   }
 
@@ -57,7 +70,12 @@ export class AwsS3Service implements OnModuleInit {
       Bucket: this.bucket,
       Prefix: prefix,
     });
-    const listItems: Record<string, any> = await this.s3Client.send(command);
+    const listItems: Record<string, any> = await this.s3Client
+      .send(command)
+      .catch((e) => {
+        this.debuggerService.error(e, 'awsService', 's3ListItemInBucket');
+        throw new InternalServerErrorException(e);
+      });
 
     return listItems.Contents.map((val: Record<string, any>) => {
       const lastIndex: number = val.Key.lastIndexOf('/');
@@ -88,7 +106,12 @@ export class AwsS3Service implements OnModuleInit {
       Key: key,
     });
 
-    const item: Record<string, any> = await this.s3Client.send(command);
+    const item: Record<string, any> = await this.s3Client
+      .send(command)
+      .catch((e) => {
+        this.debuggerService.error(e, 'awsService', 's3GetItemInBucket');
+        throw new InternalServerErrorException(e);
+      });
 
     return item.Body;
   }
@@ -123,7 +146,6 @@ export class AwsS3Service implements OnModuleInit {
       })
       .toFormat('png')
       .toBuffer();
-
     const command: PutObjectCommand = new PutObjectCommand({
       Bucket: this.bucket,
       Key: key,
@@ -131,7 +153,10 @@ export class AwsS3Service implements OnModuleInit {
       ACL: acl,
     });
 
-    await this.s3Client.send(command);
+    await this.s3Client.send(command).catch((e) => {
+      this.debuggerService.error(e, 'awsService', 's3PutItemInBucket');
+      throw new InternalServerErrorException(e);
+    });
 
     return {
       path,
@@ -141,21 +166,19 @@ export class AwsS3Service implements OnModuleInit {
     };
   }
 
-  async s3DeleteItemInBucket(filename: string): Promise<boolean> {
+  async s3DeleteItemInBucket(filename: string): Promise<void> {
     const command: DeleteObjectCommand = new DeleteObjectCommand({
       Bucket: this.bucket,
       Key: filename,
     });
 
-    try {
-      await this.s3Client.send(command);
-      return true;
-    } catch (e) {
-      return false;
-    }
+    await this.s3Client.send(command).catch((e) => {
+      this.debuggerService.error(e, 'awsService', 's3DeleteItemInBucket');
+      throw new InternalServerErrorException(e);
+    });
   }
 
-  async s3DeleteItemsInBucket(filenames: string[]): Promise<boolean> {
+  async s3DeleteItemsInBucket(filenames: string[]): Promise<void> {
     const keys: ObjectIdentifier[] = filenames.map((val) => ({
       Key: val,
     }));
@@ -166,37 +189,31 @@ export class AwsS3Service implements OnModuleInit {
       },
     });
 
-    try {
-      await this.s3Client.send(command);
-      return true;
-    } catch (e) {
-      return false;
-    }
+    await this.s3Client.send(command).catch((e) => {
+      this.debuggerService.error(e, 'awsService', 's3DeleteItemsInBucket');
+      throw new InternalServerErrorException(e);
+    });
   }
 
-  async s3DeleteBucket(): Promise<boolean> {
+  async s3DeleteBucket(): Promise<void> {
     const command: DeleteBucketCommand = new DeleteBucketCommand({
       Bucket: this.bucket,
     });
 
-    try {
-      await this.s3Client.send(command);
-      return true;
-    } catch (e) {
-      return false;
-    }
+    await this.s3Client.send(command).catch((e) => {
+      this.debuggerService.error(e, 'awsService', 's3DeleteBucket');
+      throw new InternalServerErrorException(e);
+    });
   }
 
-  async s3CreateBucket(): Promise<boolean> {
+  async s3CreateBucket(): Promise<void> {
     const command: CreateBucketCommand = new CreateBucketCommand({
       Bucket: this.bucket,
     });
 
-    try {
-      await this.s3Client.send(command);
-      return true;
-    } catch (e) {
-      return false;
-    }
+    await this.s3Client.send(command).catch((e) => {
+      this.debuggerService.error(e, 'awsService', 's3DeleteBucket');
+      throw new InternalServerErrorException(e);
+    });
   }
 }
