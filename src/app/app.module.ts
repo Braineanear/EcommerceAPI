@@ -26,6 +26,7 @@ import { ReviewModule } from '@modules/review/review.module';
 import { CartModule } from '@modules/cart/cart.module';
 import { SizeModule } from '@modules/size/size.module';
 import { ColorModule } from '@modules/color/color.module';
+import { TagModule } from '@modules/tag/tag.module';
 
 @Module({
   imports: [
@@ -81,6 +82,11 @@ import { ColorModule } from '@modules/color/color.module';
     ImageModule,
     LoggerModule,
     CategoryModule,
+    ProductModule,
+    ColorModule,
+    SizeModule,
+    BrandModule,
+    TagModule,
   ],
   providers: [
     ConfigService,
