@@ -9,7 +9,7 @@ export interface IProductDocument extends Document {
   description: string;
   category: Types.ObjectId | string;
   seller: Types.ObjectId;
-  brand: Types.ObjectId | string;
+  brands: Types.ObjectId[] | string[];
   sizes: Types.ObjectId[] | string[];
   colors: Types.ObjectId[] | string[];
   tags: Types.ObjectId[] | string[];
