@@ -1,10 +1,6 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { DebuggerService } from '@shared/debugger/debugger.service';
+import slugify from 'slugify';
 import { BaseService } from '@shared/services/base.service';
 import { AwsS3Service } from '@shared/aws/aws.service';
 import { IAwsS3Response } from '@shared/aws/interfaces/aws.interface';
@@ -22,7 +18,6 @@ import { CreateProductDto } from './dtos/create-product.dto';
 export class ProductService extends BaseService<ProductRepository> {
   constructor(
     protected readonly repository: ProductRepository,
-    protected readonly debuggerService: DebuggerService,
     protected readonly awsService: AwsS3Service,
     protected readonly imageService: ImageService,
     protected readonly categoryService: CategoryService,
@@ -70,6 +65,11 @@ export class ProductService extends BaseService<ProductRepository> {
       sizes: sizes.map((size) => size._id),
       colors: colors.map((color) => color._id),
       tags: tags.map((tag) => tag._id),
+      slug: slugify(createProductDto.name, {
+        replacement: '-',
+        remove: /[*+~.()'"!:@]/g,
+        lower: true,
+      }),
     });
   }
 
@@ -79,32 +79,10 @@ export class ProductService extends BaseService<ProductRepository> {
   ): Promise<IProductDocument> {
     const product = await this.findById(id);
 
-    if (!product) {
-      this.debuggerService.error(
-        'No data found',
-        'ProductService',
-        'uploadMainImage',
-      );
-
-      throw new NotFoundException('No data found');
-    }
-
     if (product.mainImage) {
       const image = await this.imageService.findById(product.mainImage);
 
-      const isDeleted = await this.awsService.s3DeleteItemInBucket(
-        image.pathWithFilename,
-      );
-
-      if (!isDeleted) {
-        this.debuggerService.error(
-          'Image not deleted',
-          'ProductService',
-          'uploadImage',
-        );
-
-        throw new InternalServerErrorException('Error deleting image');
-      }
+      await this.awsService.s3DeleteItemInBucket(image.pathWithFilename);
 
       await this.imageService.deleteById(image._id);
     }
@@ -131,16 +109,6 @@ export class ProductService extends BaseService<ProductRepository> {
     files: Express.Multer.File[],
   ): Promise<IProductDocument> {
     const product = await this.findById(id);
-
-    if (!product) {
-      this.debuggerService.error(
-        'No data found',
-        'ProductService',
-        'uploadImages',
-      );
-
-      throw new NotFoundException('No data found');
-    }
 
     for (const file of files) {
       const content: Buffer = file.buffer;

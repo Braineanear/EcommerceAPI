@@ -10,7 +10,7 @@ export class Product {
   @Prop({ type: String, required: true, trim: true })
   name: string;
 
-  @Prop({ type: String })
+  @Prop({ type: String, required: true, unique: true, trim: true })
   slug: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Image', autopopulate: true })
