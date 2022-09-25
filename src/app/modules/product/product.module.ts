@@ -6,6 +6,7 @@ import { CategoryModule } from '@modules/category/category.module';
 import { ColorModule } from '@modules/color/color.module';
 import { SizeModule } from '@modules/size/size.module';
 import { BrandModule } from '@modules/brand/brand.module';
+import { TagModule } from '@modules/tag/tag.module';
 import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { Product, ProductSchema } from './models/product.entity';
@@ -20,6 +21,7 @@ import { ProductRepository } from './repositories/product.repository';
     forwardRef(() => ColorModule),
     forwardRef(() => SizeModule),
     forwardRef(() => BrandModule),
+    forwardRef(() => TagModule),
   ],
   providers: [ProductService, ProductRepository],
   controllers: [ProductController],
