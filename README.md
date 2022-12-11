@@ -195,7 +195,7 @@ You can fork the app or you can git-clone the app into your local machine.
 *Note:Set the environment variables up to date and setup the database environment and also you need install docker on your local machine*
 
 ```
-$docker-compose up -d
+$ docker-compose up -d
 ```
 
 ## Known Bugs
