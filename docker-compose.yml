@@ -1,0 +1,27 @@
+version: '3.6'
+services:
+  backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - $PORT:$PORT
+    image: ecommerceapi:latest
+    stdin_open: true
+
+  mongodb:
+    image: mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DATABASE_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DATABASE_PASSWORD}
+    ports:
+      - $DATABASE_PORT:27017
+    volumes:
+      - db:/data/new/mongodb
+    stdin_open: true
+    tty: true
+
+volumes:
+  db:

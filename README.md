@@ -189,6 +189,15 @@ set your env variables
 $ yarn run start
 ```
 
+### Docker Installation 
+You can fork the app or you can git-clone the app into your local machine. 
+
+*Note:Set the environment variables up to date and setup the database environment and also you need install docker on your local machine*
+
+```
+$ docker-compose up -d
+```
+
 ## Known Bugs
 Feel free to email me at mle.mahmoud.yasser@gmail.com if you run into any issues or have questions, ideas or concerns.
 Please enjoy and feel free to share your opinion, constructive criticism, or comments about my work. Thank you! 🙂
