@@ -21,7 +21,7 @@ import AppError from './utils/appError';
 import startPolyglot from './utils/startPolyglot';
 
 // Documentation
-import docs from '../build-docs/swagger';
+import docs from '../docs/swagger';
 
 // Routes
 import routes from './routes';
