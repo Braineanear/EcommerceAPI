@@ -299,9 +299,7 @@ export class AuthService {
   }
 
   public async sendVerificationEmail(payload: JwtPayload) {
-    const user = await this.userRepository.findOne({
-      id: payload.sub,
-    });
+    const user = await this.userRepository.findById(payload.sub);
 
     if (user.isEmailVerified) {
       this.debuggerService.error(
@@ -326,14 +324,9 @@ export class AuthService {
     };
   }
 
-  public async verifyEmail(emailVerificationDto: EmailVerificationDto) {
-    const { token } = emailVerificationDto;
-
+  public async verifyEmail(token: string) {
     const tokenDoc = await this.verifyToken(token, TokenTypes.VERIFY_EMAIL);
-
-    const user = await this.userRepository.findOne({
-      id: tokenDoc.user,
-    });
+    const user = await this.userRepository.findById(tokenDoc.user._id);
 
     user.isEmailVerified = true;
 
@@ -346,8 +339,8 @@ export class AuthService {
     };
   }
 
-  public async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    const { token, password, passwordConfirmation } = resetPasswordDto;
+  public async resetPassword(resetPasswordDto: ResetPasswordDto, token: string) {
+    const { password, passwordConfirmation } = resetPasswordDto;
 
     if (password !== passwordConfirmation) {
       this.debuggerService.error(
@@ -360,9 +353,7 @@ export class AuthService {
     }
 
     const tokenDoc = await this.verifyToken(token, TokenTypes.RESET_PASSWORD);
-    const user = await this.userRepository.findOne({
-      id: tokenDoc.user,
-    });
+    const user = await this.userRepository.findById(tokenDoc.user._id);
 
     user.password = password;
 
@@ -403,6 +394,8 @@ export class AuthService {
     const resetPasswordToken = await this.generateResetPasswordToken(
       forgotPasswordDto.email,
     );
+
+    await this.mailService.sendResetPasswordEmail(user.email, resetPasswordToken);
 
     return {
       token: resetPasswordToken,

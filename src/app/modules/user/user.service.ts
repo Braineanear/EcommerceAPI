@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { BaseService } from '@shared/services/base.service';
+
+import { ImageService } from '@modules/image/image.service';
+import { Injectable } from '@nestjs/common';
 import { AwsS3Service } from '@shared/aws/aws.service';
 import { IAwsS3Response } from '@shared/aws/interfaces/aws.interface';
-import { ImageService } from '@modules/image/image.service';
-import { UserRepository } from './repositories/user.repository';
+import { BaseService } from '@shared/services/base.service';
+
 import { IUserDocument } from './interfaces/user.interface';
+import { UserRepository } from './repositories/user.repository';
 
 @Injectable()
 export class UserService extends BaseService<UserRepository> {
@@ -21,9 +23,7 @@ export class UserService extends BaseService<UserRepository> {
     id: string | Types.ObjectId,
     file: Express.Multer.File,
   ): Promise<IUserDocument> {
-    const user = await this.findOne({
-      _id: id,
-    });
+    const user = await this.findById(id);
 
     if (user.avatar) {
       const image = await this.imageService.findById(user.avatar);

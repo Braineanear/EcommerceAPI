@@ -1,11 +1,7 @@
+import { Document, FilterQuery, PaginateModel, Types, UpdateQuery } from 'mongoose';
+
 import { Injectable } from '@nestjs/common';
-import {
-  PaginateModel,
-  Document,
-  FilterQuery,
-  UpdateQuery,
-  Types,
-} from 'mongoose';
+
 import { IBaseRepository } from '../interfaces/i-base-repository.interface';
 import { IPaginateOptions } from '../interfaces/i-paginate-options';
 import { IPaginatedInterface } from '../interfaces/i-paginate-result.interface';
@@ -24,7 +20,7 @@ export class BaseRepository<T extends Document> implements IBaseRepository<T> {
   }
 
   async findById(_id: string | Types.ObjectId): Promise<T> {
-    return this.model.findOne({ _id });
+    return this.model.findById(_id);
   }
 
   async findOne(filter: FilterQuery<T>): Promise<T> {

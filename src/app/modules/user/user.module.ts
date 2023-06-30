@@ -1,14 +1,16 @@
-import { Module, forwardRef } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
-import { AwsModule } from '@shared/aws/aws.module';
+import { NextFunction } from 'express';
+
 import { ImageModule } from '@modules/image/image.module';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
-import { User, UserSchema } from './models/user.entity';
+import { forwardRef, Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { AwsModule } from '@shared/aws/aws.module';
+
 import { IUserDocument } from './interfaces/user.interface';
+import { User, UserSchema } from './models/user.entity';
 import { UserRepository } from './repositories/user.repository';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 
 @Module({
   imports: [
@@ -38,26 +40,6 @@ import { UserRepository } from './repositories/user.repository';
                 return next();
               });
             });
-          });
-
-          schema.pre('findOne', function () {
-            const query = this.getQuery();
-            if (query.isDeleted == null) {
-              query.isDeleted = false;
-            }
-            if (query.isVerified == null) {
-              query.isVerified = true;
-            }
-          });
-
-          schema.pre('find', function () {
-            const query = this.getQuery();
-            if (query.isDeleted == null) {
-              query.isDeleted = false;
-            }
-            if (query.isVerified == null) {
-              query.isVerified = true;
-            }
           });
 
           return schema;

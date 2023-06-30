@@ -1,22 +1,10 @@
-import { IUserDocument } from '@modules/user/interfaces/user.interface';
-import {
-  Controller,
-  UseGuards,
-  Post,
-  Req,
-  Get,
-  Body,
-  Res,
-  HttpStatus,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthUser } from '@shared/decorators/auth-user.decorator';
-import { Roles } from '@shared/decorators/roles.decorator';
-import { RoleTypeEnum } from '@shared/enums/role-type.enum';
 import { JwtAuthGuard } from '@shared/guards/auth.guard';
-import { RolesGuard } from '@shared/guards/roles.guard';
 import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
+
 import { AuthService } from './auth.service';
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
 import { LoginDto } from './dtos/login.dto';
@@ -58,18 +46,17 @@ export class AuthController {
   }
 
   @Post('reset-password')
-  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-    return this.authService.resetPassword(resetPasswordDto);
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto, @Query('token') token: string) {
+    return this.authService.resetPassword(resetPasswordDto, token);
   }
 
-  @Post('verify-email')
-  async verifyEmail(@Body() emailVerificationDto: EmailVerificationDto) {
-    return this.authService.verifyEmail(emailVerificationDto);
+  @Get('verify-email')
+  async verifyEmail(@Query('token') token: string) {
+    return this.authService.verifyEmail(token);
   }
 
   @Post('send-verification-email')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
+  @UseGuards(JwtAuthGuard)
   async sendVerificationEmail(@AuthUser() user: JwtPayload) {
     return this.authService.sendVerificationEmail(user);
   }

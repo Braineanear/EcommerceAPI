@@ -1,9 +1,11 @@
-import { NotFoundException } from '@nestjs/common';
 import { Document, Types } from 'mongoose';
+
+import { NotFoundException } from '@nestjs/common';
+
+import { DebuggerService } from '../debugger/debugger.service';
 import { IBaseRepository } from '../interfaces/i-base-repository.interface';
 import { IBaseService } from '../interfaces/i-base-service.interface';
 import { IPaginateOptions } from '../interfaces/i-paginate-options';
-import { DebuggerService } from '../debugger/debugger.service';
 
 export abstract class BaseService<R extends IBaseRepository<Document>>
   implements IBaseService<Document>
@@ -17,9 +19,8 @@ export abstract class BaseService<R extends IBaseRepository<Document>>
 
   async findById(
     id: string | Types.ObjectId,
-    projection: any = {},
   ): Promise<any> {
-    const result = await this.repository.findById(id, projection);
+    const result = await this.repository.findById(id);
 
     if (!result) {
       this.debuggerService.error(
