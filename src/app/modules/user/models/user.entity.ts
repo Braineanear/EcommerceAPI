@@ -1,6 +1,7 @@
-import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
-import { RoleTypeEnum } from '@shared/enums/role-type.enum';
 import { Types } from 'mongoose';
+
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { RoleTypeEnum } from '@shared/enums/role-type.enum';
 
 @Schema({
   timestamps: true,

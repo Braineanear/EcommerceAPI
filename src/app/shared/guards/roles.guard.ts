@@ -23,7 +23,7 @@ export class RolesGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
     const user = await this.userService.findById(request.user.sub);
-    const exist = requiredRoles.includes(user.role);
+    const exist = requiredRoles.includes(RoleTypeEnum.All) ? true : requiredRoles.includes(user.role);
 
     if (!exist) {
       throw new HttpException(

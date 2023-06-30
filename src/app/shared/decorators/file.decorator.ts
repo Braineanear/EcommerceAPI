@@ -1,6 +1,7 @@
 import { applyDecorators, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ENUM_FILE_TYPE } from '@shared/enums/file.enum';
+
 import { FileImageInterceptor } from '../interceptors/file.image.interceptor';
 
 export function UploadFileSingle(field: string, type: ENUM_FILE_TYPE): any {

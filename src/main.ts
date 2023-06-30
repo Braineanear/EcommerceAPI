@@ -1,10 +1,12 @@
-import { NestFactory } from '@nestjs/core';
-import { ConfigService } from '@nestjs/config';
-import { Logger, VersioningType, VERSION_NEUTRAL } from '@nestjs/common';
-import mongoose from 'mongoose';
 import helmet from 'helmet';
-import { ValidationPipe } from '@shared/pipes/validation.pipe';
+import mongoose from 'mongoose';
+
+import { Logger, VERSION_NEUTRAL, VersioningType } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
 import { HttpExceptionFilter } from '@shared/filters/http-exception.filter';
+import { ValidationPipe } from '@shared/pipes/validation.pipe';
+
 import { AppModule } from './app/app.module';
 import { setupSwagger } from './viveo-swagger';
 

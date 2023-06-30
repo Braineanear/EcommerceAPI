@@ -1,19 +1,13 @@
-import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
-  CallHandler,
-  UnprocessableEntityException,
-  PayloadTooLargeException,
-  UnsupportedMediaTypeException,
-} from '@nestjs/common';
 import { Observable } from 'rxjs';
+
+import {
+    CallHandler, ExecutionContext, Injectable, NestInterceptor, PayloadTooLargeException,
+    UnprocessableEntityException, UnsupportedMediaTypeException
+} from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { ConfigService } from '@nestjs/config';
-import {
-  ENUM_FILE_IMAGE_MIME,
-  ENUM_FILE_STATUS_CODE_ERROR,
-} from '../enums/file.enum';
+
+import { ENUM_FILE_IMAGE_MIME, ENUM_FILE_STATUS_CODE_ERROR } from '../enums/file.enum';
 
 @Injectable()
 export class FileImageInterceptor implements NestInterceptor {

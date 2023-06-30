@@ -1,5 +1,7 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+
 import { ENUM_LOGGER_LEVEL } from '../enums/logger.enum';
 
 @Schema({ timestamps: true, versionKey: false })

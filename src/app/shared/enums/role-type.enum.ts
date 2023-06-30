@@ -6,4 +6,5 @@ export enum RoleTypeEnum {
   Editor = 'Editor',
   Admin = 'Admin',
   SuperAdmin = 'SuperAdmin',
+  All = 'All',
 }

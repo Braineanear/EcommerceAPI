@@ -1,5 +1,7 @@
+import { IsNotEmpty, IsString } from 'class-validator';
+
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty } from 'class-validator';
+
 import { LanguageEnum } from '../enums/language.enum';
 
 export class TranslationDto {

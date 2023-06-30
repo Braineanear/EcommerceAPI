@@ -1,5 +1,6 @@
 import { Transform } from 'class-transformer';
 import { IsInt, IsOptional } from 'class-validator';
+
 import { IPaginateOptions } from '../interfaces/i-paginate-options';
 
 export class PaginationOptionsDto implements IPaginateOptions {

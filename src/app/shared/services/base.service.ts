@@ -23,12 +23,6 @@ export abstract class BaseService<R extends IBaseRepository<Document>>
     const result = await this.repository.findById(id);
 
     if (!result) {
-      this.debuggerService.error(
-        `Doc with id: ${id} not found`,
-        'BaseService',
-        'findById',
-      );
-
       throw new NotFoundException('No data found');
     }
 

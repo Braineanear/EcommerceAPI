@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthUser } from '@shared/decorators/auth-user.decorator';
 import { JwtAuthGuard } from '@shared/guards/auth.guard';
 import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
@@ -12,7 +11,6 @@ import { LogoutDto } from './dtos/logout.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
 import { TokenDto } from './dtos/token.dto';
-import { EmailVerificationDto } from './dtos/verify-email.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -28,14 +26,14 @@ export class AuthController {
     return this.authService.register(registerUserDto);
   }
 
-  @ApiBearerAuth()
   @Post('logout')
+  @UseGuards(JwtAuthGuard)
   async logout(@Body() logoutDto: LogoutDto) {
     return this.authService.logout(logoutDto);
   }
 
-  @ApiBearerAuth()
   @Post('generate/tokens')
+  @UseGuards(JwtAuthGuard)
   async generateTokens(@Body() tokenDto: TokenDto) {
     return this.authService.generateTokens(tokenDto);
   }

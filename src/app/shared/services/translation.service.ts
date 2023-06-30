@@ -1,9 +1,7 @@
 import { merge } from 'lodash';
+
 import { DEFAULT_LANGUAGE } from '../constants/app.config';
-import {
-  ITranslationDocumnet,
-  ITranslationModel,
-} from '../interfaces/translation.interface';
+import { ITranslationDocumnet, ITranslationModel } from '../interfaces/translation.interface';
 
 export class TranslationService {
   static translate(doc: ITranslationDocumnet | any, language: string) {

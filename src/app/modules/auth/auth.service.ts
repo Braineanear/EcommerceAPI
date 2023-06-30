@@ -22,7 +22,6 @@ import { LogoutDto } from './dtos/logout.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
 import { TokenDto } from './dtos/token.dto';
-import { EmailVerificationDto } from './dtos/verify-email.dto';
 
 @Injectable()
 export class AuthService {

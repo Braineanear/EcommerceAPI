@@ -1,23 +1,14 @@
-import {
-  S3Client,
-  GetObjectCommand,
-  ListBucketsCommand,
-  ListObjectsV2Command,
-  PutObjectCommand,
-  DeleteObjectCommand,
-  DeleteBucketCommand,
-  CreateBucketCommand,
-  DeleteObjectsCommand,
-  ObjectIdentifier,
-} from '@aws-sdk/client-s3';
 import sharp from 'sharp';
+
 import {
-  Injectable,
-  OnModuleInit,
-  InternalServerErrorException,
-} from '@nestjs/common';
+    CreateBucketCommand, DeleteBucketCommand, DeleteObjectCommand, DeleteObjectsCommand,
+    GetObjectCommand, ListBucketsCommand, ListObjectsV2Command, ObjectIdentifier, PutObjectCommand,
+    S3Client
+} from '@aws-sdk/client-s3';
+import { Injectable, InternalServerErrorException, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DebuggerService } from '@shared/debugger/debugger.service';
+
 import { IAwsS3Response } from './interfaces/aws.interface';
 
 @Injectable()

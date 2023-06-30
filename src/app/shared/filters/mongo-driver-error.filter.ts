@@ -1,16 +1,13 @@
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpStatus,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
 import { Response } from 'express';
 import { MongoError } from 'mongodb';
-import { PathErrorDto } from '../dtos/path-error.dto';
 import * as mongoose from 'mongoose';
+
+import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+
 import { MongoErrorCodes } from '../constants/mongo-error-codes.constant';
-mongoose.Error;
+import { PathErrorDto } from '../dtos/path-error.dto';
+
 @Catch(MongoError)
 export class MongoDriverErrorFilter implements ExceptionFilter {
   constructor(public reflector: Reflector) {}

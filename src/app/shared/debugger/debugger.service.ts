@@ -1,7 +1,8 @@
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
+
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { Logger } from 'winston';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { RequestWithUser } from '@shared/interfaces/requestWithUser.interface';
 import { LoggerService } from '@shared/logger/logger.service';
 

@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+
 import { IPaginateOptions } from './i-paginate-options';
 import { IPaginatedInterface } from './i-paginate-result.interface';
 

@@ -1,32 +1,28 @@
-import { Logger, Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 import winston from 'winston';
-import {
-  utilities as nestWinstonModuleUtilities,
-  WinstonModule,
-} from 'nest-winston';
+
+import { AuthModule } from '@modules/auth/auth.module';
+import { BrandModule } from '@modules/brand/brand.module';
+import { CartModule } from '@modules/cart/cart.module';
+import { CategoryModule } from '@modules/category/category.module';
+import { ColorModule } from '@modules/color/color.module';
+import { ImageModule } from '@modules/image/image.module';
+import { OrderModule } from '@modules/order/order.module';
+import { ProductModule } from '@modules/product/product.module';
+import { ReviewModule } from '@modules/review/review.module';
+import { SizeModule } from '@modules/size/size.module';
+import { TagModule } from '@modules/tag/tag.module';
+import { UserModule } from '@modules/user/user.module';
+import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { MongooseModule } from '@nestjs/mongoose';
 import Configs from '@shared/config';
 import { DebuggerModule } from '@shared/debugger/debugger.module';
-import { JwtStrategy } from '@shared/strategies/jwt-startegy';
-import { RolesGuard } from '@shared/guards/roles.guard';
-import { LoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
-import { ImageModule } from '@modules/image/image.module';
 import { MongoDriverErrorFilter } from '@shared/filters/mongo-driver-error.filter';
 import { MongooseErrorFilter } from '@shared/filters/mongoose-error.filter';
 import { LoggerModule } from '@shared/logger/logger.module';
-import { UserModule } from '@modules/user/user.module';
-import { AuthModule } from '@modules/auth/auth.module';
-import { CategoryModule } from '@modules/category/category.module';
-import { ProductModule } from '@modules/product/product.module';
-import { OrderModule } from '@modules/order/order.module';
-import { BrandModule } from '@modules/brand/brand.module';
-import { ReviewModule } from '@modules/review/review.module';
-import { CartModule } from '@modules/cart/cart.module';
-import { SizeModule } from '@modules/size/size.module';
-import { ColorModule } from '@modules/color/color.module';
-import { TagModule } from '@modules/tag/tag.module';
+import { LoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
 
 @Module({
   imports: [

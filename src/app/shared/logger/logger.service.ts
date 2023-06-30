@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
+
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { LoggerRepository } from './repositories/logger.repository';
-import { ILoggerDocument } from './interfaces/logger.interface';
-import { ENUM_LOGGER_LEVEL } from './enums/logger.enum';
+
 import { CreateLoggerDto } from './dtos/create-logger.dto';
+import { ENUM_LOGGER_LEVEL } from './enums/logger.enum';
+import { ILoggerDocument } from './interfaces/logger.interface';
+import { LoggerRepository } from './repositories/logger.repository';
 
 @Injectable()
 export class LoggerService {

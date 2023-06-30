@@ -1,8 +1,9 @@
 import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+
+import { LoggerService } from './logger.service';
 import { Logger, LoggerSchema } from './models/logger.entity';
 import { LoggerRepository } from './repositories/logger.repository';
-import { LoggerService } from './logger.service';
 
 @Global()
 @Module({
