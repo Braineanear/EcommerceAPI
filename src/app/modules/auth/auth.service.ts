@@ -1,30 +1,28 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import moment from 'moment';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import moment from 'moment';
 import { Types } from 'mongoose';
-import { ConfigService } from '@nestjs/config';
-import { TokenTypes } from '@shared/enums/token-type.enum';
-import { DebuggerService } from '@shared/debugger/debugger.service';
-import { UserRepository } from '@modules/user/repositories/user.repository';
-import { IUserDocument } from '@modules/user/interfaces/user.interface';
-import { TokenRepository } from '@modules/token/repositories/token.repository';
+
 import { ITokenDocument } from '@modules/token/interfaces/token.interface';
+import { TokenRepository } from '@modules/token/repositories/token.repository';
+import { IUserDocument } from '@modules/user/interfaces/user.interface';
+import { UserRepository } from '@modules/user/repositories/user.repository';
+import {
+    BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { DebuggerService } from '@shared/debugger/debugger.service';
+import { TokenTypes } from '@shared/enums/token-type.enum';
+import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
+import { MailService } from '@shared/services/mail.service';
+
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
 import { LoginDto } from './dtos/login.dto';
 import { LogoutDto } from './dtos/logout.dto';
 import { RegisterDto } from './dtos/register.dto';
-import { TokenDto } from './dtos/token.dto';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
+import { TokenDto } from './dtos/token.dto';
 import { EmailVerificationDto } from './dtos/verify-email.dto';
-import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -33,6 +31,7 @@ export class AuthService {
     private readonly tokenRepository: TokenRepository,
     private readonly debuggerService: DebuggerService,
     private readonly configService: ConfigService,
+    private readonly mailService: MailService,
   ) {}
 
   private async refreshTokenExistance(user: IUserDocument): Promise<void> {
@@ -319,7 +318,7 @@ export class AuthService {
 
     const verifyEmailToken = await this.generateVerifyEmailToken(user);
 
-    // await sendVerifyEmail(user.email, verifyEmailToken);
+    await this.mailService.sendVerifyEmail(user.email, verifyEmailToken);
 
     return {
       token: verifyEmailToken,
@@ -340,7 +339,7 @@ export class AuthService {
 
     await user.save();
 
-    await tokenDoc.delete();
+    await tokenDoc.deleteOne();
 
     return {
       message: 'Email verified',
@@ -369,7 +368,7 @@ export class AuthService {
 
     await user.save();
 
-    // await sendAfterResetPasswordMessage(user.email);
+    await this.mailService.sendAfterResetPasswordEmail(user.email);
 
     await this.tokenRepository.deleteOne({
       token,
@@ -408,7 +407,6 @@ export class AuthService {
     return {
       token: resetPasswordToken,
     };
-    // this.sendMailForgotPassword(userUpdate.email, passwordRand);
   }
 
   public async login(loginDto: LoginDto) {

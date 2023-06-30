@@ -1,14 +1,16 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import Stripe from 'stripe';
 import moment from 'moment';
-import { BaseService } from '@shared/services/base.service';
-import { DebuggerService } from '@shared/debugger/debugger.service';
+
+// import Stripe from 'stripe';
 import { CartService } from '@modules/cart/cart.service';
 import { ProductService } from '@modules/product/product.service';
 import { IUserDocument } from '@modules/user/interfaces/user.interface';
-import { OrderRepository } from './repositories/order.repository';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { DebuggerService } from '@shared/debugger/debugger.service';
+import { BaseService } from '@shared/services/base.service';
+
 import { IOrderDocument } from './interfaces/order.interface';
+import { OrderRepository } from './repositories/order.repository';
 
 @Injectable()
 export class OrderService extends BaseService<OrderRepository> {
@@ -74,25 +76,25 @@ export class OrderService extends BaseService<OrderRepository> {
       throw new InternalServerErrorException('Card details are missing');
     }
 
-    const stripe = new Stripe(this.configService.get('app.strip_key'), {
-      apiVersion: '2020-08-27',
-    });
+    // const stripe = new Stripe(this.configService.get('app.strip_key'), {
+    //   apiVersion: '2023-08-27',
+    // });
 
-    const token = await stripe.tokens.create({
-      card: {
-        number: cardNumber,
-        exp_month: expMonth,
-        exp_year: expYear,
-        cvc,
-      },
-    });
+    // const token = await stripe.tokens.create({
+    //   card: {
+    //     number: cardNumber,
+    //     exp_month: expMonth,
+    //     exp_year: expYear,
+    //     cvc,
+    //   },
+    // });
 
-    const charge = await stripe.charges.create({
-      amount: Math.round(cart.totalPrice),
-      currency: 'usd',
-      source: token.id,
-      description: 'Charge For Products',
-    });
+    // const charge = await stripe.charges.create({
+    //   amount: Math.round(cart.totalPrice),
+    //   currency: 'usd',
+    //   source: token.id,
+    //   description: 'Charge For Products',
+    // });
 
     const order = await this.repository.create({
       products: cart.items,
@@ -102,7 +104,7 @@ export class OrderService extends BaseService<OrderRepository> {
       paidAt: moment().toDate(),
       shippingAddress,
       paymentMethod,
-      paymentStripeId: charge.id,
+      paymentStripeId: 'charge.id',
       phone,
     });
 
