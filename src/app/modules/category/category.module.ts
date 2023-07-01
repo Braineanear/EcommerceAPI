@@ -1,12 +1,14 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { ImageModule } from '@modules/image/image.module';
+import { UserModule } from '@modules/user/user.module';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CategoryService } from './category.service';
+import { AwsModule } from '@shared/aws/aws.module';
+
 import { CategoryController } from './category.controller';
+import { CategoryService } from './category.service';
 import { Category, CategorySchema } from './models/category.entity';
 import { CategoryRepository } from './repositories/category.repository';
-import { ImageModule } from '@modules/image/image.module';
-import { AwsModule } from '@shared/aws/aws.module';
-import { UserModule } from '@modules/user/user.module';
+
 @Module({
   imports: [
     MongooseModule.forFeature([

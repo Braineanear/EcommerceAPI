@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { BaseService } from '@shared/services/base.service';
-import { AwsS3Service } from '@shared/aws/aws.service';
+
 import { ImageService } from '@modules/image/image.service';
-import { CategoryRepository } from './repositories/category.repository';
-import { ICategoryDocument } from './interfaces/category.interface';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { AwsS3Service } from '@shared/aws/aws.service';
 import { IAwsS3Response } from '@shared/aws/interfaces/aws.interface';
+import { BaseService } from '@shared/services/base.service';
+
+import { ICategoryDocument } from './interfaces/category.interface';
+import { CategoryRepository } from './repositories/category.repository';
 
 @Injectable()
 export class CategoryService extends BaseService<CategoryRepository> {
@@ -45,5 +47,31 @@ export class CategoryService extends BaseService<CategoryRepository> {
     await category.save();
 
     return category;
+  }
+
+  async deleteById(id: string | Types.ObjectId): Promise<ICategoryDocument> {
+    const result = await this.repository.deleteById(id);
+
+    if (!result) {
+      this.debuggerService.error(
+        `Doc with id: ${id} not found`,
+        'BaseService',
+        'deleteById',
+      );
+
+      throw new NotFoundException('No data found');
+    }
+
+    if (result.image) {
+      const image = await this.imageService.findById(result.image);
+
+      await this.awsService.s3DeleteItemInBucket(image.pathWithFilename);
+
+      await this.imageService.deleteById(image._id);
+
+      result.image = undefined;
+    }
+
+    return result;
   }
 }
