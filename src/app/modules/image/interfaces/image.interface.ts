@@ -1,4 +1,4 @@
-import { Types, Document } from 'mongoose';
+import { Document } from 'mongoose';
 
 export interface IImageDocument extends Document {
   path: string;
