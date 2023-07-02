@@ -1,16 +1,25 @@
 import {
-    Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile, UseGuards
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UploadedFile,
 } from '@nestjs/common';
 import {
-    ApiConsumes, ApiForbiddenResponse, ApiTags, ApiUnauthorizedResponse
+  ApiConsumes,
+  ApiForbiddenResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthUser } from '@shared/decorators/auth-user.decorator';
 import { UploadFileSingle } from '@shared/decorators/file.decorator';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { ENUM_FILE_TYPE } from '@shared/enums/file.enum';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
-import { JwtAuthGuard } from '@shared/guards/auth.guard';
-import { RolesGuard } from '@shared/guards/roles.guard';
 import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
 import { PaginationPipe } from '@shared/pipes/pagination.pipe';
 
@@ -19,7 +28,6 @@ import { FindUsersDto } from './dtos/find-users.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserService } from './user.service';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
 @ApiForbiddenResponse({
   description:
@@ -45,6 +53,7 @@ export class UserController {
   }
 
   @Delete('me')
+  @Roles(RoleTypeEnum.All)
   async deleteLoggedinUserDetails(@AuthUser() user: JwtPayload) {
     return this.service.deleteLoggedinUserDetails(user);
   }
@@ -53,12 +62,14 @@ export class UserController {
   @Post('me/images/upload')
   @Roles(RoleTypeEnum.All)
   @ApiConsumes('multipart/form-data')
-  async uploadLoggedinUserImage(@AuthUser() user: JwtPayload, @UploadedFile() file: Express.Multer.File) {
+  async uploadLoggedinUserImage(
+    @AuthUser() user: JwtPayload,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
     return this.service.uploadLoggedinUserImage(user, file);
   }
 
   @Put(':id')
-  @Roles(RoleTypeEnum.SuperAdmin)
   async updateById(@Param('id') id: string, @Body() data: UpdateUserDto) {
     return this.service.updateById(id, data);
   }
@@ -82,9 +93,11 @@ export class UserController {
 
   @UploadFileSingle('file', ENUM_FILE_TYPE.IMAGE)
   @Post(':id/images/upload')
-  @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
   @ApiConsumes('multipart/form-data')
-  async upload(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
+  async upload(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
     return this.service.uploadImage(id, file);
   }
 }

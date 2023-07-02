@@ -1,8 +1,13 @@
 import { Response } from 'express';
 import { MongoError } from 'mongodb';
-import * as mongoose from 'mongoose';
 
-import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpStatus,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 
 import { MongoErrorCodes } from '../constants/mongo-error-codes.constant';
@@ -10,7 +15,14 @@ import { PathErrorDto } from '../dtos/path-error.dto';
 
 @Catch(MongoError)
 export class MongoDriverErrorFilter implements ExceptionFilter {
-  constructor(public reflector: Reflector) {}
+  env: string;
+
+  constructor(
+    public reflector: Reflector,
+    private configService: ConfigService,
+  ) {
+    this.env = this.configService.get<string>('app.env');
+  }
 
   catch(exception: MongoError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -23,7 +35,8 @@ export class MongoDriverErrorFilter implements ExceptionFilter {
     response.status(HttpStatus.SERVICE_UNAVAILABLE).json({
       statusCode: status,
       message: HttpStatus[status],
-      errors: this.parseError(exception),
+      errors:
+        this.env === 'development' ? this.parseError(exception) : undefined,
     });
   }
   parseError(error): PathErrorDto[] {
@@ -33,21 +46,13 @@ export class MongoDriverErrorFilter implements ExceptionFilter {
     return [
       {
         status: status,
-        message: error.message,
-        path: Object.keys(error.keyPattern).join(','),
+        message: this.env === 'development' ? error.message : undefined,
+        path:
+          this.env === 'development'
+            ? Object.keys(error.keyPattern).join(',')
+            : undefined,
         code: error.code,
       },
     ];
-    if (error instanceof mongoose.Error.ValidationError) {
-      return Object.keys(error.errors).map((errPath) => {
-        const err = error.errors[errPath];
-        return {
-          status: HttpStatus.BAD_REQUEST,
-          message: err.name,
-          path: err.path,
-          code: err.kind,
-        };
-      });
-    }
   }
 }

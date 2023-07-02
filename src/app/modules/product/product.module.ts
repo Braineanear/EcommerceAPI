@@ -1,15 +1,17 @@
-import { Module, forwardRef } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { AwsModule } from '@shared/aws/aws.module';
-import { ImageModule } from '@modules/image/image.module';
+import { BrandModule } from '@modules/brand/brand.module';
 import { CategoryModule } from '@modules/category/category.module';
 import { ColorModule } from '@modules/color/color.module';
+import { ImageModule } from '@modules/image/image.module';
 import { SizeModule } from '@modules/size/size.module';
-import { BrandModule } from '@modules/brand/brand.module';
 import { TagModule } from '@modules/tag/tag.module';
-import { ProductService } from './product.service';
-import { ProductController } from './product.controller';
+import { UserModule } from '@modules/user/user.module';
+import { forwardRef, Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { AwsModule } from '@shared/aws/aws.module';
+
 import { Product, ProductSchema } from './models/product.entity';
+import { ProductController } from './product.controller';
+import { ProductService } from './product.service';
 import { ProductRepository } from './repositories/product.repository';
 
 @Module({
@@ -22,6 +24,7 @@ import { ProductRepository } from './repositories/product.repository';
     forwardRef(() => SizeModule),
     forwardRef(() => BrandModule),
     forwardRef(() => TagModule),
+    forwardRef(() => UserModule)
   ],
   providers: [ProductService, ProductRepository],
   controllers: [ProductController],

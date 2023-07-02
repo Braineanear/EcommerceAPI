@@ -6,6 +6,16 @@ export class CreateCategoryDto {
   @ApiProperty({
     type: String,
     required: true,
+    description: 'Code of the category',
+    uniqueItems: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  code: string;
+
+  @ApiProperty({
+    type: String,
+    required: true,
     description: 'Name of the category',
   })
   @IsString()

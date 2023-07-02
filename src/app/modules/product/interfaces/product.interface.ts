@@ -1,4 +1,3 @@
-import { RoleTypeEnum } from '@shared/enums/role-type.enum';
 import { Document, Types } from 'mongoose';
 
 export interface IProductDocument extends Document {
@@ -9,9 +8,9 @@ export interface IProductDocument extends Document {
   description: string;
   category: Types.ObjectId | string;
   seller: Types.ObjectId;
-  brands: Types.ObjectId[] | string[];
-  sizes: Types.ObjectId[] | string[];
-  colors: Types.ObjectId[] | string[];
+  brand: Types.ObjectId | string;
+  size: Types.ObjectId | string;
+  color: Types.ObjectId | string;
   tags: Types.ObjectId[] | string[];
   price: number;
   priceDiscount: number;
@@ -20,4 +19,5 @@ export interface IProductDocument extends Document {
   isOutOfStock: boolean;
   ratingsAverage: number;
   ratingsQuantity: number;
+  details: object;
 }

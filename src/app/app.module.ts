@@ -1,4 +1,7 @@
-import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
+import {
+  utilities as nestWinstonModuleUtilities,
+  WinstonModule,
+} from 'nest-winston';
 import winston from 'winston';
 
 import { AuthModule } from '@modules/auth/auth.module';
@@ -19,8 +22,11 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import Configs from '@shared/config';
 import { DebuggerModule } from '@shared/debugger/debugger.module';
+import { HttpExceptionFilter } from '@shared/filters/http-exception.filter';
 import { MongoDriverErrorFilter } from '@shared/filters/mongo-driver-error.filter';
 import { MongooseErrorFilter } from '@shared/filters/mongoose-error.filter';
+import { JwtAuthGuard } from '@shared/guards/auth.guard';
+import { RolesGuard } from '@shared/guards/roles.guard';
 import { LoggerModule } from '@shared/logger/logger.module';
 import { LoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
 
@@ -88,11 +94,23 @@ import { LoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
     ConfigService,
     {
       provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
       useClass: MongoDriverErrorFilter,
     },
     {
       provide: APP_FILTER,
       useClass: MongooseErrorFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

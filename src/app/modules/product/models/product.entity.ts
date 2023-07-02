@@ -1,6 +1,7 @@
-import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
-import { RoleTypeEnum } from '@shared/enums/role-type.enum';
 import { Types } from 'mongoose';
+
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { RoleTypeEnum } from '@shared/enums/role-type.enum';
 
 @Schema({
   timestamps: true,
@@ -28,14 +29,14 @@ export class Product {
   @Prop({ type: Types.ObjectId, ref: 'User', autopopulate: true })
   seller: Types.ObjectId;
 
-  @Prop({ type: [Types.ObjectId], ref: 'Brand', autopopulate: true })
-  brands: Types.ObjectId[];
+  @Prop({ type: Types.ObjectId, ref: 'Brand', autopopulate: true })
+  brand: Types.ObjectId;
 
-  @Prop({ type: [Types.ObjectId], ref: 'Size', autopopulate: true })
-  sizes: Types.ObjectId[];
+  @Prop({ type: Types.ObjectId, ref: 'Size', autopopulate: true })
+  size: Types.ObjectId;
 
-  @Prop({ type: [Types.ObjectId], ref: 'Color', autopopulate: true })
-  colors: Types.ObjectId[];
+  @Prop({ type: Types.ObjectId, ref: 'Color', autopopulate: true })
+  color: Types.ObjectId;
 
   @Prop({ type: [Types.ObjectId], ref: 'Tag', autopopulate: true })
   tags: Types.ObjectId[];
@@ -66,6 +67,9 @@ export class Product {
 
   @Prop({ type: Number, default: 0 })
   ratingsQuantity: number;
+
+  @Prop({ type: Object, required: true })
+  details: Record<string, any>;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

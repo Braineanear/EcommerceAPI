@@ -2,8 +2,7 @@
 
 export enum RoleTypeEnum {
   User = 'User',
-  Viewer = 'Viewer',
-  Editor = 'Editor',
+  Vendor = 'Vendor',
   Admin = 'Admin',
   SuperAdmin = 'SuperAdmin',
   All = 'All',

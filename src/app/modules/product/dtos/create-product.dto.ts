@@ -1,6 +1,17 @@
+import { Type } from 'class-transformer';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber, IsNotEmpty, IsOptional } from 'class-validator';
-import { Types } from 'mongoose';
+
+class DetailsDto {
+  [key: string]: any;
+}
 
 export class CreateProductDto {
   @ApiProperty({ type: String, required: true, description: 'Product name' })
@@ -26,8 +37,10 @@ export class CreateProductDto {
   @IsNotEmpty()
   category: string;
 
-  @ApiProperty({ type: [String], required: true, description: 'Product brand' })
-  brands: string[];
+  @ApiProperty({ type: String, required: false, description: 'Product brand' })
+  @IsString()
+  @IsOptional()
+  brand?: string;
 
   @ApiProperty({ type: Number, required: true, description: 'Product price' })
   @IsNumber()
@@ -43,25 +56,26 @@ export class CreateProductDto {
   @IsNotEmpty()
   quantity: number;
 
-  @ApiProperty({
-    type: Number,
-    default: 0,
-    description: 'Product discount',
-  })
-  @IsNumber()
+  @ApiProperty({ type: String, required: false, description: 'Product size' })
+  @IsString()
   @IsOptional()
-  priceDiscount: number;
-
-  @ApiProperty({ type: [String], required: true, description: 'Product sizes' })
-  sizes: string[];
+  size?: string;
 
   @ApiProperty({
-    type: [String],
-    required: true,
-    description: 'Product colors',
+    type: String,
+    required: false,
+    description: 'Product color',
   })
-  colors: string[];
+  @IsString()
+  @IsOptional()
+  color?: string;
 
   @ApiProperty({ type: [String], required: true, description: 'Product tags' })
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
   tags: string[];
+
+  @ValidateNested()
+  @Type(() => DetailsDto)
+  details?: DetailsDto;
 }

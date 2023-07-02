@@ -1,18 +1,21 @@
-import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
 import slugify from 'slugify';
-import { BaseService } from '@shared/services/base.service';
-import { AwsS3Service } from '@shared/aws/aws.service';
-import { IAwsS3Response } from '@shared/aws/interfaces/aws.interface';
-import { ImageService } from '@modules/image/image.service';
+
+import { BrandService } from '@modules/brand/brand.service';
 import { CategoryService } from '@modules/category/category.service';
 import { ColorService } from '@modules/color/color.service';
-import { BrandService } from '@modules/brand/brand.service';
-import { TagService } from '@modules/tag/tag.service';
+import { ImageService } from '@modules/image/image.service';
 import { SizeService } from '@modules/size/size.service';
-import { ProductRepository } from './repositories/product.repository';
-import { IProductDocument } from './interfaces/product.interface';
+import { TagService } from '@modules/tag/tag.service';
+import { Injectable } from '@nestjs/common';
+import { AwsS3Service } from '@shared/aws/aws.service';
+import { IAwsS3Response } from '@shared/aws/interfaces/aws.interface';
+import { BaseService } from '@shared/services/base.service';
+
 import { CreateProductDto } from './dtos/create-product.dto';
+import { UpdateProductDto } from './dtos/update-product.dto';
+import { IProductDocument } from './interfaces/product.interface';
+import { ProductRepository } from './repositories/product.repository';
 
 @Injectable()
 export class ProductService extends BaseService<ProductRepository> {
@@ -30,47 +33,40 @@ export class ProductService extends BaseService<ProductRepository> {
   }
 
   async create(createProductDto: CreateProductDto): Promise<IProductDocument> {
-    const category = await this.categoryService.findOne({
-      code: createProductDto.category,
-    });
-
-    createProductDto.category = category._id;
-
-    const [brands, sizes, colors, tags] = await Promise.all([
-      this.brandService.find({
-        $in: {
-          code: createProductDto.brands,
-        },
-      }),
-      this.sizeService.find({
-        code: {
-          $in: createProductDto.sizes,
-        },
-      }),
-      this.colorService.find({
-        code: {
-          $in: createProductDto.colors,
-        },
-      }),
-      this.tagService.find({
-        code: {
-          $in: createProductDto.tags,
-        },
-      }),
-    ]);
-
-    return this.repository.create({
+    const data = {
       ...createProductDto,
-      brands: brands.map((brand) => brand._id),
-      sizes: sizes.map((size) => size._id),
-      colors: colors.map((color) => color._id),
-      tags: tags.map((tag) => tag._id),
       slug: slugify(createProductDto.name, {
         replacement: '-',
         remove: /[*+~.()'"!:@]/g,
         lower: true,
       }),
-    });
+    };
+    return this.repository.create(data);
+  }
+
+  async updateById(
+    id: string | Types.ObjectId,
+    data: UpdateProductDto,
+  ): Promise<IProductDocument> {
+    const item = await this.repository.findById(id);
+
+    if (!item) {
+      throw new Error('Product not found');
+    }
+
+    if (data.details) {
+      Object.keys(data.details).forEach((key) => {
+        if (data.details[key] === '') {
+          delete data.details[key];
+        } else {
+          item.details[key] = data.details[key];
+        }
+      });
+
+      data.details = item.details;
+    }
+
+    return this.repository.updateById(id, data);
   }
 
   async uploadMainImage(
@@ -78,19 +74,11 @@ export class ProductService extends BaseService<ProductRepository> {
     file: Express.Multer.File,
   ): Promise<IProductDocument> {
     const product = await this.findById(id);
-
-    if (product.mainImage) {
-      const image = await this.imageService.findById(product.mainImage);
-
-      await this.awsService.s3DeleteItemInBucket(image.pathWithFilename);
-
-      await this.imageService.deleteById(image._id);
-    }
-
     const content: Buffer = file.buffer;
+    const name = product._id;
 
     const aws: IAwsS3Response = await this.awsService.s3PutItemInBucket(
-      product._id,
+      name,
       content,
       {
         path: `images/products`,
@@ -109,12 +97,13 @@ export class ProductService extends BaseService<ProductRepository> {
     files: Express.Multer.File[],
   ): Promise<IProductDocument> {
     const product = await this.findById(id);
+    let counter = 1;
 
     for (const file of files) {
       const content: Buffer = file.buffer;
-
+      const name = `sub-${product._id.toString()}-${counter++}`;
       const aws: IAwsS3Response = await this.awsService.s3PutItemInBucket(
-        product._id.toString(),
+        name,
         content,
         {
           path: `images/products`,
@@ -125,6 +114,55 @@ export class ProductService extends BaseService<ProductRepository> {
 
       product.images.push(imageDoc._id.toString());
     }
+
+    await product.save();
+
+    return product;
+  }
+
+  async deleteMainImage(
+    id: string | Types.ObjectId,
+  ): Promise<IProductDocument> {
+    const product = await this.findById(id);
+    const image = await this.imageService.findById(product.mainImage);
+
+    if (!product.mainImage) {
+      throw new Error('Product does not have main image');
+    }
+
+    await this.imageService.deleteById(product.mainImage);
+
+    await this.awsService.s3DeleteItemInBucket(image.pathWithFilename);
+
+    product.mainImage = undefined;
+
+    await product.save();
+
+    return product;
+  }
+
+  async deleteSubImage(
+    id: string | Types.ObjectId,
+    imageId: string | Types.ObjectId,
+  ): Promise<IProductDocument> {
+    const product = await this.findById(id);
+    const exist = product.images.find(
+      (image) => image._id.toString() === imageId.toString(),
+    );
+
+    if (!exist) {
+      throw new Error('Product does not have this image');
+    }
+
+    const image = await this.imageService.findById(imageId);
+
+    await this.imageService.deleteById(imageId);
+
+    await this.awsService.s3DeleteItemInBucket(image.pathWithFilename);
+
+    product.images = product.images.filter(
+      (image) => image._id.toString() !== imageId.toString(),
+    );
 
     await product.save();
 

@@ -6,6 +6,7 @@ import { AwsS3Service } from '@shared/aws/aws.service';
 import { IAwsS3Response } from '@shared/aws/interfaces/aws.interface';
 import { BaseService } from '@shared/services/base.service';
 
+import { CreateCategoryDto } from './dtos/create-category.dto';
 import { ICategoryDocument } from './interfaces/category.interface';
 import { CategoryRepository } from './repositories/category.repository';
 
@@ -18,6 +19,15 @@ export class CategoryService extends BaseService<CategoryRepository> {
   ) {
     super();
   }
+
+  async create(
+    createCategoryDto: CreateCategoryDto,
+  ): Promise<ICategoryDocument> {
+    const result = await this.repository.create(createCategoryDto);
+
+    return result;
+  }
+
   async uploadImage(
     id: string | Types.ObjectId,
     file: Express.Multer.File,

@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 import { Logger, VERSION_NEUTRAL, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { HttpExceptionFilter } from '@shared/filters/http-exception.filter';
 import { ValidationPipe } from '@shared/pipes/validation.pipe';
 
 import { AppModule } from './app/app.module';
@@ -32,8 +31,6 @@ async function bootstrap() {
   app.enableCors();
   app.use(helmet());
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalFilters(new HttpExceptionFilter());
-  // app.useGlobalInterceptors(new TranslateInterceptor());
 
   await app.listen(port);
 

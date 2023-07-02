@@ -15,14 +15,16 @@ import { AuthService } from './auth.service';
     forwardRef(() => UserModule),
     forwardRef(() => TokenModule),
     PassportModule,
+
     JwtModule.registerAsync({
+      global: true,
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => {
         return {
-          secret: config.get<string>('auth.jwt.refreshToken.secretKey'),
+          secret: config.get<string>('auth.jwt.accessToken.secretKey'),
           signOptions: {
             expiresIn: config.get<string>(
-              'auth.jwt.refreshToken.expirationTime',
+              'auth.jwt.accessToken.expirationTime',
             ),
           },
         };

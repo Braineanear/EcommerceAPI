@@ -8,7 +8,11 @@ import { TokenRepository } from '@modules/token/repositories/token.repository';
 import { IUserDocument } from '@modules/user/interfaces/user.interface';
 import { UserRepository } from '@modules/user/repositories/user.repository';
 import {
-    BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable
+  BadRequestException,
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DebuggerService } from '@shared/debugger/debugger.service';
@@ -60,13 +64,17 @@ export class AuthService {
   }
 
   private generateToken(
-    userId: string,
+    user: IUserDocument,
     expires: moment.Moment,
     type: TokenTypes,
     secret: string,
   ): string {
+    const userData = JSON.parse(JSON.stringify(user));
     const payload = {
-      sub: userId,
+      sub: {
+        ...userData,
+        password: undefined,
+      },
       iat: moment().unix(),
       exp: expires.unix(),
       type,
@@ -101,7 +109,7 @@ export class AuthService {
     );
 
     const accessToken = this.generateToken(
-      user.id,
+      user,
       accessTokenExpires,
       TokenTypes.ACCESS,
       accessTokenSecret,
@@ -116,7 +124,7 @@ export class AuthService {
     );
 
     const refreshToken = this.generateToken(
-      user.id,
+      user,
       refreshTokenExpires,
       TokenTypes.REFRESH,
       refreshTokenSecret,
@@ -203,7 +211,7 @@ export class AuthService {
     );
 
     const resetPasswordToken = this.generateToken(
-      user.id,
+      user,
       expires,
       TokenTypes.RESET_PASSWORD,
       secret,
@@ -281,7 +289,7 @@ export class AuthService {
     );
 
     const verifyEmailToken = this.generateToken(
-      user.id,
+      user,
       expires,
       TokenTypes.VERIFY_EMAIL,
       secret,
@@ -338,7 +346,10 @@ export class AuthService {
     };
   }
 
-  public async resetPassword(resetPasswordDto: ResetPasswordDto, token: string) {
+  public async resetPassword(
+    resetPasswordDto: ResetPasswordDto,
+    token: string,
+  ) {
     const { password, passwordConfirmation } = resetPasswordDto;
 
     if (password !== passwordConfirmation) {
@@ -394,7 +405,10 @@ export class AuthService {
       forgotPasswordDto.email,
     );
 
-    await this.mailService.sendResetPasswordEmail(user.email, resetPasswordToken);
+    await this.mailService.sendResetPasswordEmail(
+      user.email,
+      resetPasswordToken,
+    );
 
     return {
       token: resetPasswordToken,
