@@ -9,7 +9,8 @@
 </h1>
 
 <h4 align="center">E-commerce API built using NodeJS & MongoDB</h4>
-
+<h2>STILL WORKING ON THIS VERSION ALMOST 80%, WITH NEW DOCUMENTATION WILL BE PUBLISHED SOON WITH IT'S POSTMAN COLLECTIONS</h2>
+<h2>THE EXPRESSJS VERSION IS MORE STABLE YOU CAN CHECK THE BRANCHES FOR IT </h2>
 <!-- TABLE OF CONTENTS -->
 <details open="open">
   <summary>Table of Contents</summary>
