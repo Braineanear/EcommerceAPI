@@ -1,10 +1,11 @@
-import { Module, forwardRef } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ColorModule } from '@modules/color/color.module';
-import { SizeModule } from '@modules/size/size.module';
 import { ProductModule } from '@modules/product/product.module';
-import { CartService } from './cart.service';
+import { SizeModule } from '@modules/size/size.module';
+import { forwardRef, Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+
 import { CartController } from './cart.controller';
+import { CartService } from './cart.service';
 import { Cart, CartSchema } from './models/cart.entity';
 import { CartRepository } from './repositories/cart.repository';
 

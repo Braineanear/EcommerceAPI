@@ -1,11 +1,9 @@
 import { Document, Types } from 'mongoose';
 
 export interface ICartDocument extends Document {
-  email: string;
+  user: Types.ObjectId | string;
   items: {
     product: Types.ObjectId;
-    selectedColor: Types.ObjectId;
-    selectedSize: Types.ObjectId;
     quantity: number;
     price: number;
     total: number;

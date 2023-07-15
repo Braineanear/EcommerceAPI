@@ -1,5 +1,7 @@
-import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+
 import { Item, ItemSchema } from './item.entity';
 
 @Schema({
@@ -7,8 +9,8 @@ import { Item, ItemSchema } from './item.entity';
   versionKey: false,
 })
 export class Cart {
-  @Prop({ type: String, required: true, match: /[\w]+?@[\w]+?\.[a-z]{2,4}/ })
-  email: string;
+  @Prop({ type: Types.ObjectId, ref: 'User', autopopulate: true })
+  user: Types.ObjectId;
 
   @Prop({ type: [ItemSchema], required: true })
   items: Item[];

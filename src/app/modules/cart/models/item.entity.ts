@@ -1,5 +1,6 @@
-import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({
   timestamps: false,
@@ -8,12 +9,6 @@ import { Types } from 'mongoose';
 export class Item {
   @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
   product: Types.ObjectId;
-
-  @Prop({ type: Types.ObjectId, ref: 'Color', required: true })
-  selectedColor: Types.ObjectId;
-
-  @Prop({ type: Types.ObjectId, ref: 'Size', required: true })
-  selectedSize: Types.ObjectId;
 
   @Prop({ type: Number, required: true })
   quantity: number;

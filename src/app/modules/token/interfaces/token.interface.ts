@@ -1,4 +1,5 @@
-import { Types, Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+
 import { TokenTypes } from '@shared/enums/token-type.enum';
 
 export interface ITokenDocument extends Document {

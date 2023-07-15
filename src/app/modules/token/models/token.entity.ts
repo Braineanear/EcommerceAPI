@@ -1,6 +1,7 @@
-import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
-import { TokenTypes } from '@shared/enums/token-type.enum';
 import { Types } from 'mongoose';
+
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { TokenTypes } from '@shared/enums/token-type.enum';
 
 @Schema({
   timestamps: true,

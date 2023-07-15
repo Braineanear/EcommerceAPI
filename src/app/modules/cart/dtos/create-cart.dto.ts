@@ -1,17 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
-export class CreateCartDto {
-  @ApiProperty({
-    type: String,
-    required: true,
-    description: 'Email',
-  })
-  @IsString()
-  @IsNotEmpty()
-  email: string;
+import { ApiProperty } from '@nestjs/swagger';
 
+export class CreateCartDto {
   @ApiProperty({
     type: String,
     required: true,
@@ -29,22 +21,4 @@ export class CreateCartDto {
   @IsNumber()
   @IsNotEmpty()
   quantity: number;
-
-  @ApiProperty({
-    type: String,
-    required: true,
-    description: 'Size',
-  })
-  @IsString()
-  @IsNotEmpty()
-  size: Types.ObjectId;
-
-  @ApiProperty({
-    type: String,
-    required: true,
-    description: 'Color',
-  })
-  @IsString()
-  @IsNotEmpty()
-  color: Types.ObjectId;
 }
