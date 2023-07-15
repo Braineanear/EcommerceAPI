@@ -6,6 +6,7 @@ import { BrandModule } from '@modules/brand/brand.module';
 import { CartModule } from '@modules/cart/cart.module';
 import { CategoryModule } from '@modules/category/category.module';
 import { ColorModule } from '@modules/color/color.module';
+import { FavoriteModule } from '@modules/favorite/favorite.module';
 import { ImageModule } from '@modules/image/image.module';
 import { OrderModule } from '@modules/order/order.module';
 import { ProductModule } from '@modules/product/product.module';
@@ -87,6 +88,7 @@ import { LoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
     BrandModule,
     TagModule,
     CartModule,
+    FavoriteModule,
   ],
   providers: [
     ConfigService,

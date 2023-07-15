@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { BaseService } from '@shared/services/base.service';
-import { DebuggerService } from '@shared/debugger/debugger.service';
 import { ProductService } from '@modules/product/product.service';
 import { IUserDocument } from '@modules/user/interfaces/user.interface';
-import { FavoriteRepository } from './repositories/favorite.repository';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { DebuggerService } from '@shared/debugger/debugger.service';
+import { IPaginateOptions } from '@shared/interfaces/i-paginate-options';
+import { BaseService } from '@shared/services/base.service';
+
 import { CreateFavoriteDto } from './dtos/create-favorite.dto';
+import { FavoriteRepository } from './repositories/favorite.repository';
 
 @Injectable()
 export class FavoriteService extends BaseService<FavoriteRepository> {
@@ -16,76 +18,36 @@ export class FavoriteService extends BaseService<FavoriteRepository> {
     super();
   }
 
+  async findFavorites(
+    filter: object,
+    paginateOptions: IPaginateOptions,
+    user: IUserDocument,
+  ) {
+    filter = {
+      ...filter,
+      user: user._id,
+    };
+
+    return this.repository.paginate(filter, paginateOptions);
+  }
+
   async create(doc: CreateFavoriteDto, user: IUserDocument) {
     await this.productService.findById(doc.product);
 
     let favoriteDoc = await this.repository.findOne({
       user: user._id,
+      product: doc.product,
     });
 
     if (favoriteDoc) {
-      const indexFound = favoriteDoc.products.findIndex(
-        (item) => item.toString() === doc.product.toString(),
+      throw new ConflictException(
+        `Product with id ${doc.product.toString()} already exists in favorite`,
       );
-
-      if (indexFound === -1) {
-        favoriteDoc.products.push(doc.product);
-
-        await favoriteDoc.save();
-      } else {
-        this.debuggerService.error(
-          `Product with id ${doc.product.toString()} already exists in favorite`,
-          'FavoriteService',
-          'create',
-        );
-
-        throw new NotFoundException(
-          `Product with id ${doc.product.toString()} already exists in favorite`,
-        );
-      }
     } else {
       favoriteDoc = await this.repository.create({
         user: user._id,
-        products: [doc.product],
+        product: doc.product,
       });
-    }
-
-    return favoriteDoc;
-  }
-
-  async deleteFavoriteProduct(productId: string, user: IUserDocument) {
-    const favoriteDoc = await this.repository.findOne({
-      user: user._id,
-    });
-
-    if (favoriteDoc) {
-      const indexFound = favoriteDoc.products.findIndex(
-        (item) => item.toString() === productId.toString(),
-      );
-
-      if (indexFound !== -1) {
-        favoriteDoc.products.splice(indexFound, 1);
-
-        await favoriteDoc.save();
-      } else {
-        this.debuggerService.error(
-          `Product with id ${productId.toString()} not found in favorite`,
-          'FavoriteService',
-          'deleteFavoriteItem',
-        );
-
-        throw new NotFoundException(
-          `Product with id ${productId.toString()} not found in favorite`,
-        );
-      }
-    } else {
-      this.debuggerService.error(
-        `Favorite list not found`,
-        'FavoriteService',
-        'deleteFavoriteItem',
-      );
-
-      throw new NotFoundException(`Favorite not found`);
     }
 
     return favoriteDoc;
