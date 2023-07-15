@@ -58,7 +58,7 @@ export class Product {
 
   @Prop({
     type: Number,
-    default: 4.5,
+    default: 0,
     min: 1,
     max: 5,
     set: (val: number) => Math.round(val * 10) / 10,

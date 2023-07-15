@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { BaseService } from '@shared/services/base.service';
-import { DebuggerService } from '@shared/debugger/debugger.service';
-import { ProductService } from '@modules/product/product.service';
-import { ReviewRepository } from './repositories/review.repository';
-import { CreateReviewDto } from './dtos/create-review.dto';
 import { Types } from 'mongoose';
+
+import { ProductService } from '@modules/product/product.service';
+import { IUserDocument } from '@modules/user/interfaces/user.interface';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { DebuggerService } from '@shared/debugger/debugger.service';
+import { BaseService } from '@shared/services/base.service';
+
+import { CreateReviewDto } from './dtos/create-review.dto';
+import { ReviewRepository } from './repositories/review.repository';
 
 @Injectable()
 export class ReviewService extends BaseService<ReviewRepository> {
@@ -15,100 +18,80 @@ export class ReviewService extends BaseService<ReviewRepository> {
   ) {
     super();
   }
-  async updateById(id: string, update: object) {
+  async updateReview(id: string, update: object, user: IUserDocument) {
     const review = await this.findById(id);
 
-    const stats = await this.repository.aggregate([
-      {
-        $match: { product: review.product },
-      },
-      {
-        $group: {
-          _id: '$product',
-          nRating: { $sum: 1 },
-          avgRating: { $avg: '$rating' },
-        },
-      },
-    ]);
+    if (review.user.toString() !== user._id.toString()) {
+      throw new UnauthorizedException(
+        'You are not authorized to perform this action',
+      );
+    }
 
-    if (stats.length > 0) {
-      await this.productService.updateById(review.product, {
-        ratingsQuantity: stats[0].nRating,
-        ratingsAverage: stats[0].avgRating,
-      });
-    } else {
-      await this.productService.updateById(review.product, {
-        ratingsQuantity: 0,
-        ratingsAverage: 4.5,
-      });
+    if (update['rating']) {
+      const product = await this.productService.findById(review.product);
+
+      const previousRating = review.rating;
+      product.ratingsAverage =
+        (product.ratingsAverage * product.ratingsQuantity -
+          previousRating +
+          update['rating']) /
+        product.ratingsQuantity;
+
+      await product.save();
     }
 
     return await this.repository.updateById(id, update);
   }
 
-  async deleteById(id: string) {
+  async deleteReview(id: string, user: IUserDocument) {
     const review = await this.findById(id);
 
-    const stats = await this.repository.aggregate([
-      {
-        $match: { product: review.product },
-      },
-      {
-        $group: {
-          _id: '$product',
-          nRating: { $sum: 1 },
-          avgRating: { $avg: '$rating' },
-        },
-      },
-    ]);
-
-    if (stats.length > 0) {
-      await this.productService.updateById(review.product, {
-        ratingsQuantity: stats[0].nRating,
-        ratingsAverage: stats[0].avgRating,
-      });
-    } else {
-      await this.productService.updateById(review.product, {
-        ratingsQuantity: 0,
-        ratingsAverage: 4.5,
-      });
+    if (review.user.toString() !== user._id.toString()) {
+      throw new UnauthorizedException(
+        'You are not authorized to perform this action',
+      );
     }
+
+    const product = await this.productService.findById(review.product);
+
+    product.ratingsQuantity--;
+
+    if (product.ratingsQuantity === 0) {
+      product.ratingsAverage = 0;
+    } else {
+      product.ratingsAverage =
+        (product.ratingsAverage * product.ratingsQuantity - review.rating) /
+        (product.ratingsQuantity - 1);
+    }
+
+    await product.save();
 
     return await this.repository.deleteById(id);
   }
 
-  async create(doc: CreateReviewDto, userID: Types.ObjectId) {
+  async create(doc: CreateReviewDto, user: IUserDocument) {
     const product = await this.productService.findById(doc.product);
 
-    const stats = await this.repository.aggregate([
-      {
-        $match: { product: product._id },
-      },
-      {
-        $group: {
-          _id: '$product',
-          nRating: { $sum: 1 },
-          avgRating: { $avg: '$rating' },
-        },
-      },
-    ]);
+    const review = await this.repository.findOne({
+      user: user._id,
+      product: doc.product,
+    });
 
-    if (stats.length > 0) {
-      await this.productService.updateById(product._id, {
-        ratingsQuantity: stats[0].nRating,
-        ratingsAverage: stats[0].avgRating,
-      });
-    } else {
-      await this.productService.updateById(product._id, {
-        ratingsQuantity: 0,
-        ratingsAverage: 4.5,
-      });
+    if (review) {
+      throw new UnauthorizedException('You have already reviewed this product');
     }
+
+    product.ratingsQuantity++;
+    product.ratingsAverage =
+      (product.ratingsAverage * (product.ratingsQuantity - 1) + doc.rating) /
+      product.ratingsQuantity;
+
+    await product.save();
 
     return this.repository.create({
       ...doc,
       product: product._id,
-      user: userID,
+      user: new Types.ObjectId(user._id),
     });
   }
 }

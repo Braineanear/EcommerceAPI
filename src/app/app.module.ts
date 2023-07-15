@@ -89,6 +89,7 @@ import { LoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
     TagModule,
     CartModule,
     FavoriteModule,
+    ReviewModule,
   ],
   providers: [
     ConfigService,
