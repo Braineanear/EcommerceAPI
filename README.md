@@ -59,7 +59,8 @@
 2. Run `yarn intall`.
 3. Add your own `.env` file.
 4. Run `yarn run start:dev`.
-5. Open [http://localhost:8080](http://localhost:8080) to view docs in the browser.
+5. Open [http://localhost:8080/docs](http://localhost:8080/docs) to view docs in the browser.
+6. You can also check the postman collection [Ecommerce API](https://documenter.getpostman.com/view/11050349/2s946feCf5) to test the API by yourself.
 
 ## Known Bugs
 
