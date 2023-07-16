@@ -1,22 +1,11 @@
 import sharp from 'sharp';
 
 import {
-  CreateBucketCommand,
-  DeleteBucketCommand,
-  DeleteObjectCommand,
-  DeleteObjectsCommand,
-  GetObjectCommand,
-  ListBucketsCommand,
-  ListObjectsV2Command,
-  ObjectIdentifier,
-  PutObjectCommand,
-  S3Client,
+    CreateBucketCommand, DeleteBucketCommand, DeleteObjectCommand, DeleteObjectsCommand,
+    GetObjectCommand, ListBucketsCommand, ListObjectsV2Command, ObjectIdentifier, PutObjectCommand,
+    S3Client
 } from '@aws-sdk/client-s3';
-import {
-  Injectable,
-  InternalServerErrorException,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DebuggerService } from '@shared/debugger/debugger.service';
 
@@ -48,11 +37,15 @@ export class AwsS3Service implements OnModuleInit {
     const bucketCreate: boolean =
       this.configService.get<boolean>('aws.bucketCreate');
     if (bucketCreate) {
-      this.s3ListBucket().then((list: string[]) => {
-        if (!list.includes(this.bucket)) {
-          this.s3CreateBucket();
-        }
-      });
+      this.s3ListBucket()
+        .then((list: string[]) => {
+          if (!list.includes(this.bucket)) {
+            this.s3CreateBucket();
+          }
+        })
+        .catch((e) => {
+          throw new InternalServerErrorException(e);
+        });
     }
   }
 
@@ -100,6 +93,7 @@ export class AwsS3Service implements OnModuleInit {
     filename: string,
     path?: string,
   ): Promise<Record<string, any>> {
+    // deepcode ignore GlobalReplacementRegex: <I want to replace only the first forward slash>
     if (path) path = path.startsWith('/') ? path.replace('/', '') : `${path}`;
 
     const key: string = path ? `${path}/${filename}` : filename;
@@ -137,6 +131,7 @@ export class AwsS3Service implements OnModuleInit {
     let path: string = options && options.path ? options.path : undefined;
     const acl: string = options && options.acl ? options.acl : 'public-read';
 
+    // deepcode ignore GlobalReplacementRegex: <I want to replace only the first forward slash>
     options.path = path.startsWith('/') ? path.replace('/', '') : `${path}`;
 
     const key: string = `${path}/${filename}.png`;

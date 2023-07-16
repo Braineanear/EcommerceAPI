@@ -5,6 +5,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AwsS3Service } from '@shared/aws/aws.service';
 import { IAwsS3Response } from '@shared/aws/interfaces/aws.interface';
 import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
+import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -24,10 +25,7 @@ export class UserService extends BaseService<UserRepository> {
     const user = await this.repository.findById(payload.sub);
 
     if (!user) {
-      throw new HttpException(
-        `User not found`,
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(MessagesMapping['#9'], HttpStatus.NOT_FOUND);
     }
 
     user.password = undefined;
@@ -39,10 +37,7 @@ export class UserService extends BaseService<UserRepository> {
     const user = await this.repository.deleteById(payload.sub);
 
     if (!user) {
-      throw new HttpException(
-        `User not found`,
-        HttpStatus.NOT_FOUND,
-      );
+      throw new HttpException(MessagesMapping['#9'], HttpStatus.NOT_FOUND);
     }
 
     return user;
@@ -52,7 +47,7 @@ export class UserService extends BaseService<UserRepository> {
     id: string | Types.ObjectId,
     file: Express.Multer.File,
   ): Promise<IUserDocument> {
-    console.log(id)
+    console.log(id);
     const user = await this.repository.findById(id);
 
     if (user.avatar) {
@@ -64,7 +59,7 @@ export class UserService extends BaseService<UserRepository> {
     }
 
     const content: Buffer = file.buffer;
-    console.log(content)
+    console.log(content);
     const aws: IAwsS3Response = await this.awsService.s3PutItemInBucket(
       user._id,
       content,

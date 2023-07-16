@@ -13,6 +13,7 @@ export interface IProductDocument extends Document {
   color: Types.ObjectId | string;
   tags: Types.ObjectId[] | string[];
   price: number;
+  currency: string;
   priceDiscount: number;
   quantity: number;
   sold: number;

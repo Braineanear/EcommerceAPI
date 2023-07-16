@@ -1,53 +1,42 @@
 import helmet from 'helmet';
-import mongoose from 'mongoose';
 
-import { Logger, VERSION_NEUTRAL, VersioningType } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@shared/pipes/validation.pipe';
 
 import { AppModule } from './app/app.module';
-import { setupSwagger } from './viveo-swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
-  const port = configService.get<number>('app.port');
-  const env = configService.get<string>('app.env');
-  const versioning = configService.get<string>('app.versioning');
-  const appDebug = configService.get<boolean>('app.debug');
-  const databaseDebug = configService.get<boolean>('database.debug');
   const logger = new Logger();
+  const configService = app.get(ConfigService);
+  const env = configService.get<string>('app.env');
+  const schema = {
+    production: configService.get<string>('app.productionURL'),
+    staging: configService.get<string>('app.stagingURL'),
+    development: configService.get<string>('app.developmentURL'),
+    local: configService.get<string>('app.localURL'),
+  };
+  const options = new DocumentBuilder()
+    .setTitle('API')
+    .setVersion('0.0.1')
+    .addBearerAuth()
+    .addServer(schema[env])
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
 
-  if (versioning) {
-    app.enableVersioning({
-      type: VersioningType.URI,
-      defaultVersion: VERSION_NEUTRAL,
-    });
-  }
+  SwaggerModule.setup('docs', app, document);
 
-  mongoose.set('debug', true);
-  setupSwagger(app, env);
   app.enableCors();
   app.use(helmet());
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(port);
+  await app.listen(configService.get<number>('app.port'));
 
   logger.log(`==========================================================`);
   logger.log(`App Environment is ${env}`, 'NestApplication');
-  logger.log(
-    `App Debug is ${appDebug ? 'enabled' : 'disabled'}`,
-    'NestApplication',
-  );
-  logger.log(
-    `App Versioning is ${versioning ? 'on' : 'off'}`,
-    'NestApplication',
-  );
-  logger.log(
-    `Database Debug is ${databaseDebug ? 'enabled' : 'disabled'}`,
-    'NestApplication',
-  );
 
   logger.log(`==========================================================`);
 

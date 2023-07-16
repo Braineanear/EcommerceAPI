@@ -7,6 +7,7 @@ export class CreateColorDto {
     type: String,
     required: true,
     description: 'Name of the color',
+    example: 'Red',
   })
   @IsString()
   @IsNotEmpty()
@@ -16,6 +17,7 @@ export class CreateColorDto {
     type: String,
     required: true,
     description: 'Code of the color',
+    example: '#ff0000',
   })
   @IsString()
   @IsNotEmpty()

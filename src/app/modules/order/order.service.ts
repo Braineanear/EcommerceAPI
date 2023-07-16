@@ -4,9 +4,10 @@ import moment from 'moment';
 import { CartService } from '@modules/cart/cart.service';
 import { ProductService } from '@modules/product/product.service';
 import { IUserDocument } from '@modules/user/interfaces/user.interface';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DebuggerService } from '@shared/debugger/debugger.service';
+import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
 import { IOrderDocument } from './interfaces/order.interface';
@@ -67,13 +68,7 @@ export class OrderService extends BaseService<OrderRepository> {
     }
 
     if (!cardNumber || !expMonth || !expYear || !cvc) {
-      this.debuggerService.error(
-        'Card details are missing',
-        'OrderService',
-        'create',
-      );
-
-      throw new InternalServerErrorException('Card details are missing');
+      throw new HttpException(MessagesMapping['#20'], HttpStatus.BAD_REQUEST);
     }
 
     // const stripe = new Stripe(this.configService.get('app.strip_key'), {

@@ -7,8 +7,9 @@ export class TokenDto {
     type: String,
     required: true,
     description: 'Refresh Token',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
   })
   @IsString()
   @IsNotEmpty()
-  readonly refreshToken: string;
+  refreshToken: string;
 }

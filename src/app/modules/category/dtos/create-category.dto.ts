@@ -7,6 +7,7 @@ export class CreateCategoryDto {
     type: String,
     required: true,
     description: 'Code of the category',
+    example: 'CAT-001',
     uniqueItems: true,
   })
   @IsString()
@@ -17,6 +18,7 @@ export class CreateCategoryDto {
     type: String,
     required: true,
     description: 'Name of the category',
+    example: 'Category 1',
   })
   @IsString()
   @IsNotEmpty()
@@ -26,6 +28,7 @@ export class CreateCategoryDto {
     type: String,
     required: true,
     description: 'Description of the category',
+    example: 'Category 1 description',
   })
   @IsString()
   @IsNotEmpty()

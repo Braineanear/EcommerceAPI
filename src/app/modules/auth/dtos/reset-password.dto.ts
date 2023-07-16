@@ -7,17 +7,19 @@ export class ResetPasswordDto {
     type: String,
     required: true,
     description: 'New Passowrd',
+    example: '123456',
   })
   @IsString()
   @IsNotEmpty()
-  readonly password: string;
+  password: string;
 
   @ApiProperty({
     type: String,
     required: true,
     description: 'Confirm Password',
+    example: '123456',
   })
   @IsString()
   @IsNotEmpty()
-  readonly passwordConfirmation: string;
+  passwordConfirmation: string;
 }

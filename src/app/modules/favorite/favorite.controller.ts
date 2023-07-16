@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from '@shared/decorators/auth-user.decorator';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
@@ -8,11 +8,11 @@ import { PaginationPipe } from '@shared/pipes/pagination.pipe';
 
 import { CreateFavoriteDto } from './dtos/create-favorite.dto';
 import { FindFavoritesDto } from './dtos/find-favorites.dto';
-import { UpdateFavoriteDto } from './dtos/update-favorite.dto';
 import { FavoriteService } from './favorite.service';
 
 @ApiTags('Favorites')
 @Controller('favorites')
+@ApiBearerAuth()
 @Roles(RoleTypeEnum.All)
 export class FavoriteController {
   constructor(private readonly service: FavoriteService) {}

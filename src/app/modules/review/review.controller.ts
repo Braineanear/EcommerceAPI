@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from '@shared/decorators/auth-user.decorator';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
@@ -18,6 +18,7 @@ export class ReviewController {
   constructor(private readonly service: ReviewService) {}
 
   @Put(':id')
+  @ApiBearerAuth()
   updateReview(
     @Param('id') id: string,
     @Body() data: UpdateReviewDto,
@@ -39,11 +40,13 @@ export class ReviewController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
   deleteReview(@Param('id') id: string, @AuthUser() user: JwtPayload) {
     return this.service.deleteReview(id, user.sub);
   }
 
   @Post()
+  @ApiBearerAuth()
   create(@Body() data: CreateReviewDto, @AuthUser() user: JwtPayload) {
     return this.service.create(data, user.sub);
   }

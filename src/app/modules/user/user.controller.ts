@@ -1,19 +1,8 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-  UploadedFile,
+    Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile
 } from '@nestjs/common';
 import {
-  ApiConsumes,
-  ApiForbiddenResponse,
-  ApiTags,
-  ApiUnauthorizedResponse,
+    ApiBearerAuth, ApiConsumes, ApiForbiddenResponse, ApiTags, ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import { AuthUser } from '@shared/decorators/auth-user.decorator';
 import { UploadFileSingle } from '@shared/decorators/file.decorator';
@@ -42,17 +31,20 @@ export class UserController {
   constructor(private readonly service: UserService) {}
 
   @Post()
+  @ApiBearerAuth()
   async create(@Body() data: CreateUserDto) {
     return this.service.create(data);
   }
 
   @Get('me')
   @Roles(RoleTypeEnum.All)
+  @ApiBearerAuth()
   async getLoggedinUserDetails(@AuthUser() user: JwtPayload) {
     return this.service.getLoggedinUserDetails(user);
   }
 
   @Delete('me')
+  @ApiBearerAuth()
   @Roles(RoleTypeEnum.All)
   async deleteLoggedinUserDetails(@AuthUser() user: JwtPayload) {
     return this.service.deleteLoggedinUserDetails(user);
@@ -61,6 +53,7 @@ export class UserController {
   @UploadFileSingle('file', ENUM_FILE_TYPE.IMAGE)
   @Post('me/images/upload')
   @Roles(RoleTypeEnum.All)
+  @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   async uploadLoggedinUserImage(
     @AuthUser() user: JwtPayload,
@@ -70,6 +63,7 @@ export class UserController {
   }
 
   @Put(':id')
+  @ApiBearerAuth()
   async updateById(@Param('id') id: string, @Body() data: UpdateUserDto) {
     return this.service.updateById(id, data);
   }
@@ -87,6 +81,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
   async deleteById(@Param('id') id: string) {
     this.service.deleteById(id);
   }
@@ -94,6 +89,7 @@ export class UserController {
   @UploadFileSingle('file', ENUM_FILE_TYPE.IMAGE)
   @Post(':id/images/upload')
   @ApiConsumes('multipart/form-data')
+  @ApiBearerAuth()
   async upload(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,

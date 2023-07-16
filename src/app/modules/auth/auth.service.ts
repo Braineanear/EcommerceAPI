@@ -8,16 +8,13 @@ import { TokenRepository } from '@modules/token/repositories/token.repository';
 import { IUserDocument } from '@modules/user/interfaces/user.interface';
 import { UserRepository } from '@modules/user/repositories/user.repository';
 import {
-  BadRequestException,
-  ForbiddenException,
-  HttpException,
-  HttpStatus,
-  Injectable,
+    BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DebuggerService } from '@shared/debugger/debugger.service';
 import { TokenTypes } from '@shared/enums/token-type.enum';
 import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
+import { MessagesMapping } from '@shared/messages-mapping';
 import { MailService } from '@shared/services/mail.service';
 
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
@@ -50,16 +47,7 @@ export class AuthService {
     });
 
     if (user) {
-      this.debuggerService.error(
-        `User with email ${email} already exists`,
-        'AuthService',
-        'register',
-      );
-
-      throw new HttpException(
-        `User with email ${email} already exists`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(MessagesMapping['#1'], HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -171,16 +159,7 @@ export class AuthService {
     });
 
     if (!tokenDoc) {
-      this.debuggerService.error(
-        `Token ${token} not found`,
-        'AuthService',
-        'verifyToken',
-      );
-
-      throw new HttpException(
-        `Token ${token} not found`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(MessagesMapping['#2'], HttpStatus.NOT_FOUND);
     }
 
     return tokenDoc;
@@ -190,16 +169,7 @@ export class AuthService {
     const user = await this.userRepository.findOne({ email });
 
     if (!user) {
-      this.debuggerService.error(
-        `User with email ${email} not found`,
-        'AuthService',
-        'generateResetPasswordToken',
-      );
-
-      throw new HttpException(
-        `User with email ${email} not found`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(MessagesMapping['#1'], HttpStatus.BAD_REQUEST);
     }
 
     const expires = moment().add(
@@ -237,16 +207,7 @@ export class AuthService {
     );
 
     if (!isPasswordMatching) {
-      this.debuggerService.error(
-        `Wrong credentials provided`,
-        'AuthService',
-        'verifyPassword',
-      );
-
-      throw new HttpException(
-        'Wrong credentials provided',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(MessagesMapping['#3'], HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -260,16 +221,7 @@ export class AuthService {
     });
 
     if (!user) {
-      this.debuggerService.error(
-        `User with email ${email} not found`,
-        'AuthService',
-        'login',
-      );
-
-      throw new HttpException(
-        `User with email ${email} not found`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(MessagesMapping['#9'], HttpStatus.NOT_FOUND);
     }
 
     await this.verifyPassword(plainTextPassword, user.password);
@@ -309,16 +261,7 @@ export class AuthService {
     const user = await this.userRepository.findById(payload.sub);
 
     if (user.isEmailVerified) {
-      this.debuggerService.error(
-        `User with email ${user.email} already verified`,
-        'AuthService',
-        'sendVerificationEmail',
-      );
-
-      throw new HttpException(
-        `User with email ${user.email} already verified`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(MessagesMapping['#4'], HttpStatus.BAD_REQUEST);
     }
 
     const verifyEmailToken = await this.generateVerifyEmailToken(user);
@@ -327,7 +270,7 @@ export class AuthService {
 
     return {
       token: verifyEmailToken,
-      message: 'Verification email sent',
+      message: MessagesMapping['#5'],
     };
   }
 
@@ -342,7 +285,7 @@ export class AuthService {
     await tokenDoc.deleteOne();
 
     return {
-      message: 'Email verified',
+      message: MessagesMapping['#6'],
     };
   }
 
@@ -353,13 +296,7 @@ export class AuthService {
     const { password, passwordConfirmation } = resetPasswordDto;
 
     if (password !== passwordConfirmation) {
-      this.debuggerService.error(
-        `Passwords do not match`,
-        'AuthService',
-        'resetPassword',
-      );
-
-      throw new HttpException(`Passwords do not match`, HttpStatus.BAD_REQUEST);
+      throw new HttpException(MessagesMapping['#7'], HttpStatus.UNAUTHORIZED);
     }
 
     const tokenDoc = await this.verifyToken(token, TokenTypes.RESET_PASSWORD);
@@ -377,7 +314,7 @@ export class AuthService {
     });
 
     return {
-      message: 'Password has been reset',
+      message: MessagesMapping['#8'],
     };
   }
 
@@ -389,16 +326,7 @@ export class AuthService {
     });
 
     if (!user) {
-      this.debuggerService.error(
-        `User with email ${forgotPasswordDto.email} not found`,
-        'AuthService',
-        'forgotPassword',
-      );
-
-      throw new HttpException(
-        `User with email ${forgotPasswordDto.email} not found`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(MessagesMapping['#9'], HttpStatus.NOT_FOUND);
     }
 
     const resetPasswordToken = await this.generateResetPasswordToken(
@@ -426,9 +354,9 @@ export class AuthService {
     const tokens = await this.generateAuthTokens(user);
 
     return {
-      type: 'Success',
+      type: 'success',
       statusCode: 200,
-      message: 'loginSuccess',
+      message: MessagesMapping['#10'],
       user,
       tokens,
     };
@@ -445,16 +373,7 @@ export class AuthService {
     });
 
     if (!user) {
-      this.debuggerService.error(
-        `User with id ${token.user} not found`,
-        'AuthService',
-        'generateTokens',
-      );
-
-      throw new HttpException(
-        `User with id ${token.user} not found`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(MessagesMapping['#9'], HttpStatus.NOT_FOUND);
     }
 
     await this.refreshTokenExistance(user);
@@ -471,16 +390,7 @@ export class AuthService {
     });
 
     if (!refreshToken) {
-      this.debuggerService.error(
-        `Refresh token not found`,
-        'AuthService',
-        'logout',
-      );
-
-      throw new HttpException(
-        `Refresh token not found`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(MessagesMapping['#11'], HttpStatus.NOT_FOUND);
     }
 
     await this.tokenRepository.deleteOne({
@@ -491,7 +401,7 @@ export class AuthService {
     return {
       type: 'Success',
       statusCode: 200,
-      message: 'logoutSuccess',
+      message: MessagesMapping['#12'],
     };
   }
 
@@ -509,35 +419,9 @@ export class AuthService {
     return {
       type: 'success',
       statusCode: 200,
-      message: 'registerSuccess',
+      message: MessagesMapping['#13'],
       user: createdUser,
       tokens,
     };
-  }
-
-  public async signInWithGoogle(data) {
-    if (!data.user) throw new BadRequestException();
-
-    let user = (
-      await this.userRepository.findOne({ googleId: data.user.id })
-    )[0];
-
-    if (user) return this.login(user);
-
-    user = (await this.userRepository.findOne({ email: data.user.email }))[0];
-
-    if (user)
-      throw new ForbiddenException(
-        "User already exists, but Google account was not connected to user's account",
-      );
-
-    const newUser = await this.userRepository.create({
-      firstName: data.user.firstName,
-      lastName: data.user.lastName,
-      email: data.user.email,
-      googleId: data.user.id,
-    });
-
-    return this.login(newUser);
   }
 }

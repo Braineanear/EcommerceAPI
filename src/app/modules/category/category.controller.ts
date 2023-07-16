@@ -1,15 +1,7 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-  UploadedFile,
+    Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile
 } from '@nestjs/common';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { UploadFileSingle } from '@shared/decorators/file.decorator';
 import { AllowAnonymous } from '@shared/decorators/public.decorator';
 import { Roles } from '@shared/decorators/roles.decorator';
@@ -29,6 +21,7 @@ export class CategoryController {
   constructor(private readonly service: CategoryService) {}
 
   @Post()
+  @ApiBearerAuth()
   create(@Body() data: CreateCategoryDto) {
     return this.service.create(data);
   }
@@ -50,11 +43,13 @@ export class CategoryController {
   }
 
   @Put(':id')
+  @ApiBearerAuth()
   updateById(@Param('id') id: string, @Body() data: UpdateCategoryDto) {
     return this.service.updateById(id, data);
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
   deleteById(@Param('id') id: string) {
     return this.service.deleteById(id);
   }
@@ -62,6 +57,7 @@ export class CategoryController {
   @UploadFileSingle('file', ENUM_FILE_TYPE.IMAGE)
   @Post(':id/images/upload')
   @ApiConsumes('multipart/form-data')
+  @ApiBearerAuth()
   upload(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
     return this.service.uploadImage(id, file);
   }

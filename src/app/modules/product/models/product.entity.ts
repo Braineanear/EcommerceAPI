@@ -44,6 +44,9 @@ export class Product {
   @Prop({ type: Number, required: true })
   price: number;
 
+  @Prop({ type: String, required: true })
+  currency: string;
+
   @Prop({ type: Number, default: 0 })
   priceDiscount: number;
 

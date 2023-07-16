@@ -1,14 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AllowAnonymous } from '@shared/decorators/public.decorator';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
@@ -26,7 +17,7 @@ export class TagController {
   constructor(private readonly service: TagService) {}
 
   @Post()
-  @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
+  @ApiBearerAuth()
   create(@Body() data: CreateTagDto) {
     return this.service.create(data);
   }
@@ -46,13 +37,13 @@ export class TagController {
   }
 
   @Put(':id')
-  @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
+  @ApiBearerAuth()
   updateById(@Param('id') id: string, @Body() data: UpdateTagDto) {
     return this.service.updateById(id, data);
   }
 
   @Delete(':id')
-  @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
+  @ApiBearerAuth()
   deleteById(@Param('id') id: string) {
     return this.service.deleteById(id);
   }

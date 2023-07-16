@@ -1,33 +1,16 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-  UploadedFile,
-} from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiForbiddenResponse,
-  ApiOkResponse,
-  ApiTags,
-  ApiUnauthorizedResponse,
-  ApiNotFoundResponse,
-  ApiConsumes,
-  ApiBody,
-} from '@nestjs/swagger';
-import { Roles } from '@shared/decorators/roles.decorator';
-import { RoleTypeEnum } from '@shared/enums/role-type.enum';
-import { PaginationPipe } from '@shared/pipes/pagination.pipe';
-import { NotFoundDto } from '@shared/dtos/not-found.dto';
-import { OrderService } from './order.service';
-import { OrderDto } from './dtos/order.dto';
-import { AuthUser } from '@shared/decorators/auth-user.decorator';
 import { IUserDocument } from '@modules/user/interfaces/user.interface';
+import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
+import {
+    ApiBearerAuth, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse,
+    ApiTags, ApiUnauthorizedResponse
+} from '@nestjs/swagger';
+import { AuthUser } from '@shared/decorators/auth-user.decorator';
+import { Roles } from '@shared/decorators/roles.decorator';
+import { NotFoundDto } from '@shared/dtos/not-found.dto';
+import { RoleTypeEnum } from '@shared/enums/role-type.enum';
+
+import { OrderDto } from './dtos/order.dto';
+import { OrderService } from './order.service';
 
 @ApiBearerAuth()
 @ApiForbiddenResponse({
@@ -37,6 +20,7 @@ import { IUserDocument } from '@modules/user/interfaces/user.interface';
 @ApiUnauthorizedResponse({
   description: 'You are not authorized to access this endpoint, please login!',
 })
+@ApiBearerAuth()
 @ApiTags('Orders')
 @Controller('order')
 export class OrderController {

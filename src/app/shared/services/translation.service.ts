@@ -152,7 +152,7 @@ export class TranslationService {
     docs: ITranslationDocumnet[] | ITranslationModel[],
     language: string,
   ) {
-    return docs.map((doc: any) => this.translate(doc, language));
+    return docs.map((doc: any) => TranslationService.translate(doc, language));
   }
 
   static reduceTranslation(doc: ITranslationModel) {

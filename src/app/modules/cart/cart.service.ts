@@ -1,8 +1,9 @@
 import { ColorService } from '@modules/color/color.service';
 import { ProductService } from '@modules/product/product.service';
 import { SizeService } from '@modules/size/size.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DebuggerService } from '@shared/debugger/debugger.service';
+import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
 import { CreateCartDto } from './dtos/create-cart.dto';
@@ -49,13 +50,7 @@ export class CartService extends BaseService<CartRepository> {
         cart.totalQuantity += doc.quantity;
         cart.totalPrice += (price - priceDiscount) * doc.quantity;
       } else {
-        this.debuggerService.error(
-          `Invalid request`,
-          'CartService',
-          'addProductToCart',
-        );
-
-        throw new NotFoundException(`Invalid request`);
+        throw new HttpException(MessagesMapping['#15'], HttpStatus.BAD_REQUEST);
       }
 
       await cart.save();
@@ -88,7 +83,7 @@ export class CartService extends BaseService<CartRepository> {
     const { price, priceDiscount } = product;
 
     if (!cart) {
-      throw new NotFoundException(`Cart not found`);
+      throw new HttpException(MessagesMapping['#16'], HttpStatus.NOT_FOUND);
     }
 
     const indexesFound = cart.items.reduce((a, e, i) => {
@@ -97,9 +92,7 @@ export class CartService extends BaseService<CartRepository> {
     }, []);
 
     if (indexesFound.length === 0) {
-      throw new NotFoundException(
-        `No product in cart with id ${doc.product.toString()}`,
-      );
+      throw new HttpException(MessagesMapping['#17'], HttpStatus.NOT_FOUND);
     }
 
     for (const indexFound of indexesFound) {
@@ -132,7 +125,7 @@ export class CartService extends BaseService<CartRepository> {
     const { price, priceDiscount } = product;
 
     if (!cart) {
-      throw new NotFoundException(`Cart not found`);
+      throw new HttpException(MessagesMapping['#16'], HttpStatus.NOT_FOUND);
     }
 
     const indexesFound = cart.items.reduce((a, e, i) => {
@@ -141,9 +134,7 @@ export class CartService extends BaseService<CartRepository> {
     }, []);
 
     if (indexesFound.length === 0) {
-      throw new NotFoundException(
-        `No product in cart with id ${doc.product.toString()}`,
-      );
+      throw new HttpException(MessagesMapping['#17'], HttpStatus.NOT_FOUND);
     }
 
     for (const indexFound of indexesFound) {
@@ -202,7 +193,7 @@ export class CartService extends BaseService<CartRepository> {
     const cart = await this.repository.findOne({ user });
 
     if (!cart) {
-      throw new NotFoundException(`Cart not found`);
+      throw new HttpException(MessagesMapping['#16'], HttpStatus.NOT_FOUND);
     }
 
     return cart;
@@ -212,11 +203,33 @@ export class CartService extends BaseService<CartRepository> {
     const cart = await this.repository.findOne({ user });
 
     if (!cart) {
-      throw new NotFoundException(`Cart not found`);
+      throw new HttpException(MessagesMapping['#16'], HttpStatus.NOT_FOUND);
     }
 
     await this.repository.deleteOne({ user });
 
     return cart;
+  }
+
+  async cartProductCount(productId: string, user: string) {
+    const cart = await this.repository.findOne({ user });
+
+    if (!cart) {
+      throw new HttpException(MessagesMapping['#16'], HttpStatus.NOT_FOUND);
+    }
+
+    const indexFound = cart.items.findIndex(
+      (item) => item.product.toString() === productId.toString(),
+    );
+
+    if (indexFound === -1) {
+      return {
+        count: 0,
+      };
+    }
+
+    return {
+      count: cart.items[indexFound].quantity,
+    };
   }
 }

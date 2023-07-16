@@ -1,9 +1,10 @@
 import { Types } from 'mongoose';
 
 import { ImageService } from '@modules/image/image.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AwsS3Service } from '@shared/aws/aws.service';
 import { IAwsS3Response } from '@shared/aws/interfaces/aws.interface';
+import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
 import { CreateCategoryDto } from './dtos/create-category.dto';
@@ -63,13 +64,7 @@ export class CategoryService extends BaseService<CategoryRepository> {
     const result = await this.repository.deleteById(id);
 
     if (!result) {
-      this.debuggerService.error(
-        `Doc with id: ${id} not found`,
-        'BaseService',
-        'deleteById',
-      );
-
-      throw new NotFoundException('No data found');
+      throw new HttpException(MessagesMapping['#14'], HttpStatus.NOT_FOUND);
     }
 
     if (result.image) {

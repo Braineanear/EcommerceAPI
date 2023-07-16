@@ -49,19 +49,6 @@ export class User {
 
   @Prop({ type: Types.ObjectId, ref: 'Image', autopopulate: true })
   avatar: Types.ObjectId;
-
-  @Prop({ type: String })
-  discountCode?: string;
-
-  @Prop({ type: String })
-  facebookId?: string;
-
-  @Prop({ type: String })
-  googleId?: string;
-
-  get isSocial(): boolean {
-    return !!(this.facebookId || this.googleId);
-  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

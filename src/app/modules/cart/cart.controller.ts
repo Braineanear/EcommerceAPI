@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from '@shared/decorators/auth-user.decorator';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
@@ -12,6 +12,7 @@ import { ProductCartDto } from './dtos/product-cart.dto';
 @ApiTags('Carts')
 @Controller('carts')
 @Roles(RoleTypeEnum.All)
+@ApiBearerAuth()
 export class CartController {
   constructor(private readonly service: CartService) {}
 
@@ -46,5 +47,13 @@ export class CartController {
   @Delete()
   deleteCart(@AuthUser() user: JwtPayload) {
     return this.service.deleteCart(user.sub._id);
+  }
+
+  @Get('/:productId/count')
+  countProductInCart(
+    @AuthUser() user: JwtPayload,
+    @Param('productId') productId: string,
+  ) {
+    return this.service.cartProductCount(productId, user.sub._id);
   }
 }

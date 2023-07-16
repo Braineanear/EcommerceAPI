@@ -7,8 +7,9 @@ export class EmailVerificationDto {
     type: String,
     required: true,
     description: 'Email Token',
+    example: '123456',
   })
   @IsString()
   @IsNotEmpty()
-  readonly token: string;
+  token: string;
 }

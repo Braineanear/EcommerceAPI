@@ -7,6 +7,7 @@ export class CreateBrandDto {
     type: String,
     required: true,
     description: 'Name of the brand',
+    example: 'Nike',
   })
   @IsString()
   @IsNotEmpty()
@@ -16,6 +17,7 @@ export class CreateBrandDto {
     type: String,
     required: true,
     description: 'Code of the brand',
+    example: 'nike',
   })
   @IsString()
   @IsNotEmpty()
@@ -25,6 +27,8 @@ export class CreateBrandDto {
     type: String,
     required: true,
     description: 'Description of the brand',
+    example:
+      'Nike is the world’s leading innovator in athletic footwear, apparel, equipment and accessories.',
   })
   @IsString()
   @IsNotEmpty()
@@ -34,6 +38,7 @@ export class CreateBrandDto {
     type: String,
     description: 'Website of the brand',
     required: false,
+    example: 'https://www.nike.com/',
   })
   @IsString()
   @IsOptional()

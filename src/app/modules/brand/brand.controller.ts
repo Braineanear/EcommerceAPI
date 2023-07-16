@@ -1,14 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AllowAnonymous } from '@shared/decorators/public.decorator';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
@@ -26,6 +17,7 @@ export class BrandController {
   constructor(private readonly service: BrandService) {}
 
   @Post()
+  @ApiBearerAuth()
   @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
   create(@Body() data: CreateBrandDto) {
     return this.service.create(data);
@@ -46,12 +38,14 @@ export class BrandController {
   }
 
   @Put(':id')
+  @ApiBearerAuth()
   @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
   updateById(@Param('id') id: string, @Body() data: UpdateBrandDto) {
     return this.service.updateById(id, data);
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
   @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
   deleteById(@Param('id') id: string) {
     return this.service.deleteById(id);

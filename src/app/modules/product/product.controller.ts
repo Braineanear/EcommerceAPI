@@ -1,20 +1,8 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-  UploadedFile,
-  UploadedFiles,
+    Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFile, UploadedFiles
 } from '@nestjs/common';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
-import {
-  UploadFileMultiple,
-  UploadFileSingle,
-} from '@shared/decorators/file.decorator';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { UploadFileMultiple, UploadFileSingle } from '@shared/decorators/file.decorator';
 import { AllowAnonymous } from '@shared/decorators/public.decorator';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { ENUM_FILE_TYPE } from '@shared/enums/file.enum';
@@ -33,13 +21,14 @@ export class ProductController {
   constructor(private readonly service: ProductService) {}
 
   @Post()
+  @ApiBearerAuth()
   @Roles(RoleTypeEnum.Vendor, RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
   create(@Body() data: CreateProductDto) {
     return this.service.create(data);
   }
 
   @Put(':id')
-  @AllowAnonymous()
+  @ApiBearerAuth()
   updateById(@Param('id') id: string, @Body() data: UpdateProductDto) {
     return this.service.updateById(id, data);
   }
@@ -59,6 +48,7 @@ export class ProductController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
   @Roles(RoleTypeEnum.Vendor, RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
   deleteById(@Param('id') id: string) {
     this.service.deleteById(id);
@@ -68,6 +58,7 @@ export class ProductController {
   @Post(':id/images/main')
   @Roles(RoleTypeEnum.Vendor, RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
   @ApiConsumes('multipart/form-data')
+  @ApiBearerAuth()
   uploadMainImage(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
@@ -77,6 +68,7 @@ export class ProductController {
 
   @Delete(':id/images/main')
   @Roles(RoleTypeEnum.Vendor, RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
+  @ApiBearerAuth()
   deleteMainImage(@Param('id') id: string) {
     return this.service.deleteMainImage(id);
   }
@@ -85,6 +77,7 @@ export class ProductController {
   @Post(':id/images/multiple')
   @Roles(RoleTypeEnum.Vendor, RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
   @ApiConsumes('multipart/form-data')
+  @ApiBearerAuth()
   upload(
     @Param('id') id: string,
     @UploadedFiles() files: Array<Express.Multer.File>,
@@ -94,6 +87,7 @@ export class ProductController {
 
   @Delete(':id/images/multiple/:imageId')
   @Roles(RoleTypeEnum.Vendor, RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
+  @ApiBearerAuth()
   deleteSubImage(@Param('id') id: string, @Param('imageId') imageId: string) {
     return this.service.deleteSubImage(id, imageId);
   }

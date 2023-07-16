@@ -7,9 +7,10 @@ import { ColorService } from '@modules/color/color.service';
 import { ImageService } from '@modules/image/image.service';
 import { SizeService } from '@modules/size/size.service';
 import { TagService } from '@modules/tag/tag.service';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AwsS3Service } from '@shared/aws/aws.service';
 import { IAwsS3Response } from '@shared/aws/interfaces/aws.interface';
+import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
 import { CreateProductDto } from './dtos/create-product.dto';
@@ -51,7 +52,7 @@ export class ProductService extends BaseService<ProductRepository> {
     const item = await this.repository.findById(id);
 
     if (!item) {
-      throw new Error('Product not found');
+      throw new HttpException(MessagesMapping['#14'], HttpStatus.NOT_FOUND);
     }
 
     if (data.details) {
@@ -127,7 +128,7 @@ export class ProductService extends BaseService<ProductRepository> {
     const image = await this.imageService.findById(product.mainImage);
 
     if (!product.mainImage) {
-      throw new Error('Product does not have main image');
+      throw new HttpException(MessagesMapping['#22'], HttpStatus.NOT_FOUND);
     }
 
     await this.imageService.deleteById(product.mainImage);
@@ -151,7 +152,7 @@ export class ProductService extends BaseService<ProductRepository> {
     );
 
     if (!exist) {
-      throw new Error('Product does not have this image');
+      throw new HttpException(MessagesMapping['#23'], HttpStatus.NOT_FOUND);
     }
 
     const image = await this.imageService.findById(imageId);

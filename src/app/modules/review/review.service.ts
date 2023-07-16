@@ -2,8 +2,9 @@ import { Types } from 'mongoose';
 
 import { ProductService } from '@modules/product/product.service';
 import { IUserDocument } from '@modules/user/interfaces/user.interface';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DebuggerService } from '@shared/debugger/debugger.service';
+import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
 import { CreateReviewDto } from './dtos/create-review.dto';
@@ -22,9 +23,7 @@ export class ReviewService extends BaseService<ReviewRepository> {
     const review = await this.findById(id);
 
     if (review.user.toString() !== user._id.toString()) {
-      throw new UnauthorizedException(
-        'You are not authorized to perform this action',
-      );
+      throw new HttpException(MessagesMapping['#24'], HttpStatus.UNAUTHORIZED);
     }
 
     if (update['rating']) {
@@ -47,9 +46,7 @@ export class ReviewService extends BaseService<ReviewRepository> {
     const review = await this.findById(id);
 
     if (review.user.toString() !== user._id.toString()) {
-      throw new UnauthorizedException(
-        'You are not authorized to perform this action',
-      );
+      throw new HttpException(MessagesMapping['#24'], HttpStatus.UNAUTHORIZED);
     }
 
     const product = await this.productService.findById(review.product);
@@ -78,7 +75,7 @@ export class ReviewService extends BaseService<ReviewRepository> {
     });
 
     if (review) {
-      throw new UnauthorizedException('You have already reviewed this product');
+      throw new HttpException(MessagesMapping['#25'], HttpStatus.UNAUTHORIZED);
     }
 
     product.ratingsQuantity++;

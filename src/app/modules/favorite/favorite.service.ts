@@ -1,8 +1,9 @@
 import { ProductService } from '@modules/product/product.service';
 import { IUserDocument } from '@modules/user/interfaces/user.interface';
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DebuggerService } from '@shared/debugger/debugger.service';
 import { IPaginateOptions } from '@shared/interfaces/i-paginate-options';
+import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
 import { CreateFavoriteDto } from './dtos/create-favorite.dto';
@@ -40,9 +41,7 @@ export class FavoriteService extends BaseService<FavoriteRepository> {
     });
 
     if (favoriteDoc) {
-      throw new ConflictException(
-        `Product with id ${doc.product.toString()} already exists in favorite`,
-      );
+      throw new HttpException(MessagesMapping['#18'], HttpStatus.CONFLICT);
     } else {
       favoriteDoc = await this.repository.create({
         user: user._id,
