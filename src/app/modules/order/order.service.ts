@@ -1,3 +1,4 @@
+import e from 'express';
 import { Types } from 'mongoose';
 import Stripe from 'stripe';
 
@@ -17,7 +18,8 @@ import { OrderRepository } from './repositories/order.repository';
 
 @Injectable()
 export class OrderService extends BaseService<OrderRepository> {
-  stripe: any;
+  private stripe: Stripe;
+  private stripeSecretKey = this.configService.get<string>('STRIPE_SECRET_KEY');
 
   constructor(
     protected readonly repository: OrderRepository,
@@ -27,7 +29,8 @@ export class OrderService extends BaseService<OrderRepository> {
     protected readonly configService: ConfigService,
   ) {
     super();
-    this.stripe = new Stripe(configService.get<string>('app.strip_key'), {
+
+    this.stripe = new Stripe(this.stripeSecretKey, {
       apiVersion: '2022-11-15',
     });
   }
@@ -37,8 +40,17 @@ export class OrderService extends BaseService<OrderRepository> {
     cart: ICartDocument,
     userID: Types.ObjectId | string,
   ) {
-    const { paymentMethod, phone, address, city, country, postalCode } =
-      createOrderDTO;
+    const {
+      paymentMethod,
+      phone,
+      address,
+      city,
+      country,
+      postalCode,
+      status,
+      taxPrice,
+      shippingPrice,
+    } = createOrderDTO;
 
     const order = await this.repository.create({
       products: cart.items,
@@ -50,6 +62,9 @@ export class OrderService extends BaseService<OrderRepository> {
       postalCode,
       paymentMethod,
       phone,
+      status,
+      taxPrice,
+      shippingPrice,
     });
 
     for (const item of cart.items) {
@@ -83,6 +98,9 @@ export class OrderService extends BaseService<OrderRepository> {
       postalCode,
       paymentMethod,
       phone,
+      status,
+      taxPrice,
+      shippingPrice,
     } = createOrderDTO;
 
     const token = await this.stripe.tokens.create({
@@ -94,7 +112,7 @@ export class OrderService extends BaseService<OrderRepository> {
       },
     });
 
-    const charge = this.stripe.charges.create({
+    const charge = await this.stripe.charges.create({
       amount: Math.round(cart.totalPrice),
       currency: 'usd',
       source: token.id,
@@ -113,18 +131,22 @@ export class OrderService extends BaseService<OrderRepository> {
       paymentMethod,
       paymentStripeId: charge.id,
       phone,
+      status,
+      taxPrice,
+      shippingPrice,
     });
 
     for (const item of cart.items) {
       const id = item.product;
-      const { total } = item;
       const product = await this.productService.findById(id);
-      const sold = product.sold + total;
-      const quantity = product.quantity - total;
+      const sold = product.sold + item.quantity;
+      const quantity = product.quantity - item.quantity;
       await this.productService.updateById(id, { sold, quantity });
     }
 
-    await this.cartService.deleteCart(userID);
+    await this.cartService.deleteOne({
+      user: userID,
+    });
 
     return order;
   }
@@ -134,8 +156,7 @@ export class OrderService extends BaseService<OrderRepository> {
     user: IUserDocument,
   ): Promise<IOrderDocument> {
     const { paymentMethod } = createOrderDTO;
-
-    const cart = await this.cartService.findOne({ email: user.email });
+    const cart = await this.cartService.findOne({ user: user._id });
 
     if (cart.items.length === 0) {
       throw new HttpException(MessagesMapping['#16'], HttpStatus.NOT_FOUND);
@@ -252,8 +273,8 @@ export class OrderService extends BaseService<OrderRepository> {
       const product = await this.productService.findById(item.product);
 
       await this.productService.updateById(item.product, {
-        quantity: product.quantity + item.totalProductQuantity,
-        sold: product.sold - item.totalProductQuantity,
+        quantity: product.quantity + item.quantity,
+        sold: product.sold - item.quantity,
       });
     }
 

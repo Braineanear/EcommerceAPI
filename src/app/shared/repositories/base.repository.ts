@@ -16,7 +16,7 @@ export class BaseRepository<T extends Document> implements IBaseRepository<T> {
 
   async save(doc: T): Promise<T> {
     const createdModel = new this.model(doc);
-    return createdModel.save();
+    return createdModel.save() as any;
   }
 
   async findById(_id: string | Types.ObjectId): Promise<T> {

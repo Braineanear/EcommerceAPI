@@ -14,8 +14,10 @@ export class CreateOrderDTO {
   city: string;
   country: string;
   postalCode: string;
-  cvc: number;
-  expYear: number;
-  expMonth: number;
+  cvc: string;
+  taxPrice: number;
+  shippingPrice: number;
+  expYear: string;
+  expMonth: string;
   cardNumber: string;
 }

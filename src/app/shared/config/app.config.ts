@@ -7,7 +7,7 @@ export default registerAs(
     versioning: process.env.VERSIONING,
     port: parseInt(process.env.PORT),
     debug: process.env.DEBUG,
-    strip_key: 123456,
+    stripSecretKey: process.env.STRIP_SECRET_KEY,
     productionURL: process.env.PRODUCTION_URL,
     stagingURL: process.env.STAGING_URL,
     developmentURL: process.env.DEVELOPMENT_URL,

@@ -3,14 +3,14 @@ import { Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ORDER_STATUS } from '@shared/enums/order-status.enum';
 
-import { Item } from './item.entity';
+import { Item, ItemSchema } from './item.entity';
 
 @Schema({
   timestamps: true,
   versionKey: false,
 })
 export class Order {
-  @Prop({ type: [Item], ref: 'Product', autopopulate: true })
+  @Prop({ type: [ItemSchema], ref: 'Product', autopopulate: true })
   products: Item[];
 
   @Prop({ type: Types.ObjectId, ref: 'User', autopopulate: true })

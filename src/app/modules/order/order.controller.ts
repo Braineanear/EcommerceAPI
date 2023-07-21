@@ -1,9 +1,12 @@
 import { IUserDocument } from '@modules/user/interfaces/user.interface';
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import {
     ApiBearerAuth, ApiForbiddenResponse, ApiTags, ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import { AuthUser } from '@shared/decorators/auth-user.decorator';
+import { Roles } from '@shared/decorators/roles.decorator';
+import { RoleTypeEnum } from '@shared/enums/role-type.enum';
+import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
 
 import { OrderDto } from './dtos/order.dto';
 import { OrderService } from './order.service';
@@ -19,12 +22,13 @@ import { OrderService } from './order.service';
 @ApiBearerAuth()
 @ApiTags('Orders')
 @Controller('orders')
+@Roles(RoleTypeEnum.All)
 export class OrderController {
   constructor(private readonly service: OrderService) {}
 
   @Post()
-  create(@Body() data: any, @AuthUser() user: IUserDocument) {
-    return this.service.create(data, user._id);
+  create(@Body() data: any, @AuthUser() user: JwtPayload) {
+    return this.service.create(data, user.sub);
   }
 
   @Put('/:id/status')
@@ -33,17 +37,17 @@ export class OrderController {
   }
 
   @Get()
-  getOrders(@AuthUser() user: IUserDocument) {
-    return this.service.getOrders(user);
+  getOrders(@AuthUser() user: JwtPayload) {
+    return this.service.getOrders(user.sub);
   }
 
   @Get(':id')
-  getOrder(@Param('id') id: string, @AuthUser() user: IUserDocument) {
-    return this.service.getOrder(user, id);
+  getOrder(@Param('id') id: string, @AuthUser() user: JwtPayload) {
+    return this.service.getOrder(user.sub, id);
   }
 
-  @Get(':id/cancel')
-  cancelOrder(@Param('id') id: string, @AuthUser() user: IUserDocument) {
-    return this.service.cancelOrder(user, id);
+  @Delete(':id/cancel')
+  cancelOrder(@Param('id') id: string, @AuthUser() user: JwtPayload) {
+    return this.service.cancelOrder(user.sub, id);
   }
 }
