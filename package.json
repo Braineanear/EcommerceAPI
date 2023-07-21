@@ -56,6 +56,7 @@
     "rxjs": "^7.8.1",
     "sharp": "^0.32.1",
     "slugify": "^1.6.6",
+    "stripe": "^12.14.0",
     "swagger-ui-express": "^4.6.3",
     "winston": "^3.9.0"
   },

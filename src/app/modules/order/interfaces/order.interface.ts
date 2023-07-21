@@ -1,25 +1,24 @@
 import { Document, Types } from 'mongoose';
+
 import { IItem } from './item.interface';
 
 export interface IOrderDocument extends Document {
   products: IItem[];
-  user: Types.ObjectId;
+  user: Types.ObjectId | string;
   totalPrice: number;
   isPaid: boolean;
-  paidAt: Date;
   isDelivered: boolean;
   deliveredAt: Date;
-  shippingAddress: {
-    address: string;
-    city: string;
-    state: string;
-    country: string;
-    zip: string;
-  };
+  address: string;
+  city: string;
+  country: string;
+  postalCode?: string;
   paymentMethod: string;
   paymentStripeId: string;
   taxPrice: number;
   shippingPrice: number;
   phone: string;
   status: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

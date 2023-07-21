@@ -1,10 +1,11 @@
-import { Module, forwardRef } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { CartModule } from '@modules/cart/cart.module';
 import { ProductModule } from '@modules/product/product.module';
-import { OrderService } from './order.service';
-import { OrderController } from './order.controller';
+import { forwardRef, Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+
 import { Order, OrderSchema } from './models/order.entity';
+import { OrderController } from './order.controller';
+import { OrderService } from './order.service';
 import { OrderRepository } from './repositories/order.repository';
 
 @Module({

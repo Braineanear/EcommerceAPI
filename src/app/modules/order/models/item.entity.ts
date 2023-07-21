@@ -1,5 +1,6 @@
-import { Prop, Schema } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+
+import { Prop, Schema } from '@nestjs/mongoose';
 
 @Schema({
   timestamps: true,

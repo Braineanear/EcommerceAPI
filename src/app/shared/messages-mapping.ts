@@ -23,4 +23,5 @@ export const MessagesMapping = {
   '#23': 'Product does not have this image',
   '#24': 'You are not authorized to perform this action',
   '#25': 'You have already reviewed this product',
+  '#26': 'Order status is not valid',
 };

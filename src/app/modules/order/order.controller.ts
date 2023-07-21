@@ -1,13 +1,9 @@
 import { IUserDocument } from '@modules/user/interfaces/user.interface';
-import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import {
-    ApiBearerAuth, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse,
-    ApiTags, ApiUnauthorizedResponse
+    ApiBearerAuth, ApiForbiddenResponse, ApiTags, ApiUnauthorizedResponse
 } from '@nestjs/swagger';
 import { AuthUser } from '@shared/decorators/auth-user.decorator';
-import { Roles } from '@shared/decorators/roles.decorator';
-import { NotFoundDto } from '@shared/dtos/not-found.dto';
-import { RoleTypeEnum } from '@shared/enums/role-type.enum';
 
 import { OrderDto } from './dtos/order.dto';
 import { OrderService } from './order.service';
@@ -22,43 +18,32 @@ import { OrderService } from './order.service';
 })
 @ApiBearerAuth()
 @ApiTags('Orders')
-@Controller('order')
+@Controller('orders')
 export class OrderController {
   constructor(private readonly service: OrderService) {}
 
   @Post()
-  @ApiCreatedResponse({
-    description: 'Record created successfully',
-    type: OrderDto,
-  })
   create(@Body() data: any, @AuthUser() user: IUserDocument) {
     return this.service.create(data, user._id);
   }
 
-  @Put(':id')
-  @Roles(RoleTypeEnum.SuperAdmin)
-  @ApiOkResponse({
-    description: 'Record updated successfully',
-    type: OrderDto,
-  })
-  @ApiNotFoundResponse({
-    description: 'Record not found',
-    type: NotFoundDto,
-  })
-  updateById(@Param('id') id: string, @Body() data: any) {
-    return this.service.updateById(id, data);
+  @Put('/:id/status')
+  changeOrderStatus(@Param('id') id: string, @Body() data: { status: string }) {
+    return this.service.changeOrderStatus(id, data.status);
   }
 
-  @Delete(':id')
-  @Roles(RoleTypeEnum.SuperAdmin)
-  @ApiOkResponse({
-    description: 'Record deleted successfully',
-  })
-  @ApiNotFoundResponse({
-    description: 'Record not found',
-    type: NotFoundDto,
-  })
-  deleteById(@Param('id') id: string) {
-    this.service.deleteById(id);
+  @Get()
+  getOrders(@AuthUser() user: IUserDocument) {
+    return this.service.getOrders(user);
+  }
+
+  @Get(':id')
+  getOrder(@Param('id') id: string, @AuthUser() user: IUserDocument) {
+    return this.service.getOrder(user, id);
+  }
+
+  @Get(':id/cancel')
+  cancelOrder(@Param('id') id: string, @AuthUser() user: IUserDocument) {
+    return this.service.cancelOrder(user, id);
   }
 }

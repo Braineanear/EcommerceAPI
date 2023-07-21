@@ -1,3 +1,5 @@
+import { Types } from 'mongoose';
+
 import { ColorService } from '@modules/color/color.service';
 import { ProductService } from '@modules/product/product.service';
 import { SizeService } from '@modules/size/size.service';
@@ -199,7 +201,7 @@ export class CartService extends BaseService<CartRepository> {
     return cart;
   }
 
-  async deleteCart(user: string) {
+  async deleteCart(user: string | Types.ObjectId) {
     const cart = await this.repository.findOne({ user });
 
     if (!cart) {

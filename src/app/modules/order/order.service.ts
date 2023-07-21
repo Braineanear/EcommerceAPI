@@ -1,7 +1,8 @@
-import moment from 'moment';
+import { Types } from 'mongoose';
+import Stripe from 'stripe';
 
-// import Stripe from 'stripe';
 import { CartService } from '@modules/cart/cart.service';
+import { ICartDocument } from '@modules/cart/interfaces/cart.interface';
 import { ProductService } from '@modules/product/product.service';
 import { IUserDocument } from '@modules/user/interfaces/user.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -10,11 +11,14 @@ import { DebuggerService } from '@shared/debugger/debugger.service';
 import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
+import { CreateOrderDTO } from './dtos/create-order.dto';
 import { IOrderDocument } from './interfaces/order.interface';
 import { OrderRepository } from './repositories/order.repository';
 
 @Injectable()
 export class OrderService extends BaseService<OrderRepository> {
+  stripe: any;
+
   constructor(
     protected readonly repository: OrderRepository,
     protected readonly debuggerService: DebuggerService,
@@ -23,98 +27,242 @@ export class OrderService extends BaseService<OrderRepository> {
     protected readonly configService: ConfigService,
   ) {
     super();
+    this.stripe = new Stripe(configService.get<string>('app.strip_key'), {
+      apiVersion: '2022-11-15',
+    });
   }
 
-  async create(
-    createProductDto: any,
-    user: IUserDocument,
-  ): Promise<IOrderDocument> {
-    const {
-      shippingAddress,
-      paymentMethod,
-      phone,
-      cardNumber,
-      expMonth,
-      expYear,
-      cvc,
-    } = createProductDto;
-
-    const cart = await this.cartService.findOne({ email: user.email });
-
-    if (paymentMethod === 'cash') {
-      const order = await this.repository.create({
-        products: cart.items,
-        user: user._id,
-        totalPrice: cart.totalPrice,
-        shippingAddress,
-        paymentMethod,
-        phone,
-      });
-
-      for (const item of cart.items) {
-        const product = await this.productService.findById(item.product);
-
-        product.sold = product.sold + item.quantity;
-        product.quantity = product.quantity - item.quantity;
-
-        await product.save();
-      }
-
-      user.discountCode = '';
-
-      await user.save();
-
-      return order;
-    }
-
-    if (!cardNumber || !expMonth || !expYear || !cvc) {
-      throw new HttpException(MessagesMapping['#20'], HttpStatus.BAD_REQUEST);
-    }
-
-    // const stripe = new Stripe(this.configService.get('app.strip_key'), {
-    //   apiVersion: '2023-08-27',
-    // });
-
-    // const token = await stripe.tokens.create({
-    //   card: {
-    //     number: cardNumber,
-    //     exp_month: expMonth,
-    //     exp_year: expYear,
-    //     cvc,
-    //   },
-    // });
-
-    // const charge = await stripe.charges.create({
-    //   amount: Math.round(cart.totalPrice),
-    //   currency: 'usd',
-    //   source: token.id,
-    //   description: 'Charge For Products',
-    // });
+  private async cachePayment(
+    createOrderDTO: CreateOrderDTO,
+    cart: ICartDocument,
+    userID: Types.ObjectId | string,
+  ) {
+    const { paymentMethod, phone, address, city, country, postalCode } =
+      createOrderDTO;
 
     const order = await this.repository.create({
       products: cart.items,
-      user: user._id,
+      user: userID,
       totalPrice: cart.totalPrice,
-      isPaid: true,
-      paidAt: moment().toDate(),
-      shippingAddress,
+      address,
+      city,
+      country,
+      postalCode,
       paymentMethod,
-      paymentStripeId: 'charge.id',
       phone,
     });
 
     for (const item of cart.items) {
-      const product = await this.productService.findById(item.product);
-      const sold = product.sold + item.quantity;
-      const quantity = product.quantity - item.quantity;
-      await this.productService.updateById(item.product, { sold, quantity });
+      const id = item.product;
+      const { total } = item;
+      const product = await this.productService.findById(id);
+      const sold = product.sold + total;
+      const quantity = product.quantity - total;
+
+      await this.productService.updateById(id, { sold, quantity });
     }
 
-    await this.cartService.deleteById(cart._id);
-
-    user.discountCode = '';
-    await user.save();
+    await this.cartService.deleteCart(userID);
 
     return order;
+  }
+
+  private async stripePayment(
+    createOrderDTO: CreateOrderDTO,
+    cart: ICartDocument,
+    userID: Types.ObjectId | string,
+  ) {
+    const {
+      cardNumber,
+      expMonth,
+      expYear,
+      cvc,
+      address,
+      city,
+      country,
+      postalCode,
+      paymentMethod,
+      phone,
+    } = createOrderDTO;
+
+    const token = await this.stripe.tokens.create({
+      card: {
+        number: cardNumber,
+        exp_month: expMonth,
+        exp_year: expYear,
+        cvc,
+      },
+    });
+
+    const charge = this.stripe.charges.create({
+      amount: Math.round(cart.totalPrice),
+      currency: 'usd',
+      source: token.id,
+      description: 'Charge For Products',
+    });
+
+    const order = await this.repository.create({
+      products: cart.items,
+      user: userID,
+      totalPrice: cart.totalPrice,
+      isPaid: true,
+      address,
+      city,
+      country,
+      postalCode,
+      paymentMethod,
+      paymentStripeId: charge.id,
+      phone,
+    });
+
+    for (const item of cart.items) {
+      const id = item.product;
+      const { total } = item;
+      const product = await this.productService.findById(id);
+      const sold = product.sold + total;
+      const quantity = product.quantity - total;
+      await this.productService.updateById(id, { sold, quantity });
+    }
+
+    await this.cartService.deleteCart(userID);
+
+    return order;
+  }
+
+  public async create(
+    createOrderDTO: CreateOrderDTO,
+    user: IUserDocument,
+  ): Promise<IOrderDocument> {
+    const { paymentMethod } = createOrderDTO;
+
+    const cart = await this.cartService.findOne({ email: user.email });
+
+    if (cart.items.length === 0) {
+      throw new HttpException(MessagesMapping['#16'], HttpStatus.NOT_FOUND);
+    }
+
+    const order =
+      paymentMethod === 'cash'
+        ? await this.cachePayment(createOrderDTO, cart, user._id)
+        : await this.stripePayment(createOrderDTO, cart, user._id);
+
+    return order;
+  }
+
+  public async changeOrderStatus(id: Types.ObjectId | string, status: string) {
+    if (
+      ![
+        'Not Processed',
+        'Processing',
+        'Shipped',
+        'Delivered',
+        'Cancelled',
+      ].includes(status)
+    ) {
+      throw new HttpException(MessagesMapping['#26'], HttpStatus.BAD_REQUEST);
+    }
+
+    const order = await this.findById(id);
+
+    if (status === 'Cancelled') {
+      for (const item of order.products) {
+        const product = await this.productService.findById(item.product);
+
+        await this.productService.updateById(item.product, {
+          quantity: product.quantity + item.totalProductQuantity,
+          sold: product.sold - item.totalProductQuantity,
+        });
+      }
+
+      await this.deleteById(id);
+
+      return {
+        type: 'Success',
+        message: 'successfulOrderCancel',
+        statusCode: 200,
+      };
+    }
+
+    order.status = status;
+
+    await order.save();
+
+    return {
+      type: 'Success',
+      message: 'successfulStatusUpdate',
+      statusCode: 200,
+    };
+  }
+
+  async getOrders(user: IUserDocument) {
+    if (user.role === 'Admin' || user.role === 'SuperAdmin') {
+      const orders = await this.findPaginated({}, {});
+
+      return {
+        type: 'Success',
+        message: 'successfulOrdersFound',
+        statusCode: 200,
+        orders,
+      };
+    }
+
+    const orders = await this.find({ user: user._id });
+
+    return {
+      type: 'Success',
+      message: 'successfulOrdersFound',
+      statusCode: 200,
+      orders,
+    };
+  }
+
+  async getOrder(user: IUserDocument, id: Types.ObjectId | string) {
+    if (user.role === 'Admin' || user.role === 'SuperAdmin') {
+      const orders = await this.findById(id);
+
+      return {
+        type: 'Success',
+        message: 'successfulOrdersFound',
+        statusCode: 200,
+        orders,
+      };
+    }
+    const order = await this.findById(id);
+
+    return {
+      type: 'Success',
+      message: 'successfulOrderFound',
+      statusCode: 200,
+      order,
+    };
+  }
+
+  async cancelOrder(user: IUserDocument, id: Types.ObjectId | string) {
+    const order = await this.findById(id);
+
+    if (
+      user._id.toString() !== order.user.toString() &&
+      user.role !== 'Admin' &&
+      user.role !== 'SuperAdmin'
+    ) {
+      throw new HttpException(MessagesMapping['#24'], HttpStatus.BAD_REQUEST);
+    }
+
+    for (const item of order.products) {
+      const product = await this.productService.findById(item.product);
+
+      await this.productService.updateById(item.product, {
+        quantity: product.quantity + item.totalProductQuantity,
+        sold: product.sold - item.totalProductQuantity,
+      });
+    }
+
+    await this.deleteById(id);
+
+    return {
+      type: 'Success',
+      message: 'successfulOrderCancel',
+      statusCode: 200,
+    };
   }
 }

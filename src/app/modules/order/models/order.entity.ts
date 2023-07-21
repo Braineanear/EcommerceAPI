@@ -1,8 +1,9 @@
-import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ORDER_STATUS } from '@shared/enums/order-status.enum';
+
 import { Item } from './item.entity';
-import { Address } from './address.entity';
 
 @Schema({
   timestamps: true,
@@ -21,23 +22,17 @@ export class Order {
   @Prop({ type: Boolean, default: false })
   isPaid: boolean;
 
-  @Prop({ type: Date })
-  paidAt: Date;
-
   @Prop({ type: Boolean, default: false })
   isDelivered: boolean;
 
   @Prop({ type: Date })
   deliveredAt: Date;
 
-  @Prop({ type: Address })
-  shippingAddress: Address;
-
   @Prop({ type: String, required: true })
   paymentMethod: string;
 
   @Prop({ type: String })
-  paymentStripeId: string;
+  paymentStripeId?: string;
 
   @Prop({ type: Number, required: true })
   taxPrice: number;
@@ -50,6 +45,18 @@ export class Order {
 
   @Prop({ type: String, required: true, enum: Object.values(ORDER_STATUS) })
   status: ORDER_STATUS;
+
+  @Prop({ type: String, required: true })
+  address: string;
+
+  @Prop({ type: String, required: true })
+  city: string;
+
+  @Prop({ type: String, required: true })
+  country: string;
+
+  @Prop({ type: String })
+  postalCode?: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
