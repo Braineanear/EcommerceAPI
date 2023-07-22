@@ -144,18 +144,19 @@ export class AuthService {
     const accessTokenSecret = this.configService.get<string>(
       'auth.jwt.accessToken.secretKey',
     );
-    let payload: string = '';
+
+    let payload;
 
     if (type === TokenTypes.REFRESH) {
-      payload = jwt.verify(token, refreshTokenSecret) as string;
+      payload = jwt.verify(token, refreshTokenSecret);
     } else if (type === TokenTypes.ACCESS) {
-      payload = jwt.verify(token, accessTokenSecret) as string;
+      payload = jwt.verify(token, accessTokenSecret);
     }
 
     const tokenDoc = await this.tokenRepository.findOne({
       token,
       type,
-      user: payload.sub,
+      user: payload.sub._id,
     });
 
     if (!tokenDoc) {
@@ -368,9 +369,7 @@ export class AuthService {
       TokenTypes.REFRESH,
     );
 
-    const user = await this.userRepository.findOne({
-      id: token.user,
-    });
+    const user = await this.userRepository.findById(token.user._id);
 
     if (!user) {
       throw new HttpException(MessagesMapping['#9'], HttpStatus.NOT_FOUND);
