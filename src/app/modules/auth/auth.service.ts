@@ -8,7 +8,11 @@ import { TokenRepository } from '@modules/token/repositories/token.repository';
 import { IUserDocument } from '@modules/user/interfaces/user.interface';
 import { UserRepository } from '@modules/user/repositories/user.repository';
 import {
-    BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DebuggerService } from '@shared/debugger/debugger.service';
@@ -23,7 +27,25 @@ import { LogoutDto } from './dtos/logout.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
 import { TokenDto } from './dtos/token.dto';
+import { Request, Response } from 'express';
+interface UserPayload {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  isEmailVerified: boolean;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
+interface RequestWithUser extends Request {
+  sub: UserPayload;
+  iat: number;
+  exp: number;
+  type: string;
+}
 @Injectable()
 export class AuthService {
   constructor(
@@ -90,7 +112,7 @@ export class AuthService {
   private async generateAuthTokens(user: IUserDocument) {
     const accessTokenExpires = moment().add(
       this.configService.get('auth.jwt.accessToken.expirationTime'),
-      'minutes',
+      'hour',
     );
     const accessTokenSecret = this.configService.get<string>(
       'auth.jwt.accessToken.secretKey',
@@ -149,6 +171,9 @@ export class AuthService {
       'auth.jwt.verifyEmailToken.secretKey',
     );
 
+    const verifyResetPasswordTokenSecret = this.configService.get<string>(
+      'auth.jwt.resetPasswordToken.secretKey',
+    );
     let payload;
 
     if (type === TokenTypes.REFRESH) {
@@ -157,18 +182,19 @@ export class AuthService {
       payload = jwt.verify(token, verifyEmailTokenSecret);
     } else if (type === TokenTypes.ACCESS) {
       payload = jwt.verify(token, accessTokenSecret);
+    } else if (type === TokenTypes.RESET_PASSWORD) {
+      payload = jwt.verify(token, verifyResetPasswordTokenSecret);
     }
-
     const tokenDoc = await this.tokenRepository.findOne({
       token,
       type,
       user: payload.sub._id,
     });
+    console.log('token doc ::', tokenDoc);
 
     if (!tokenDoc) {
       throw new HttpException(MessagesMapping['#2'], HttpStatus.NOT_FOUND);
     }
-
     return tokenDoc;
   }
 
@@ -265,35 +291,47 @@ export class AuthService {
   }
 
   public async sendVerificationEmail(payload: JwtPayload) {
-    const user = await this.userRepository.findById(payload.sub);
+    try {
+      const user = await this.userRepository.findById(payload.sub);
 
-    if (user.isEmailVerified) {
-      throw new HttpException(MessagesMapping['#4'], HttpStatus.BAD_REQUEST);
+      if (user.isEmailVerified) {
+        throw new HttpException(MessagesMapping['#4'], HttpStatus.BAD_REQUEST);
+      }
+
+      const verifyEmailToken = await this.generateVerifyEmailToken(user);
+
+      await this.mailService.sendVerifyEmail(user.email, verifyEmailToken);
+
+      return {
+        token: verifyEmailToken,
+        message: MessagesMapping['#5'],
+      };
+    } catch (error) {
+      throw new HttpException(
+        MessagesMapping['#27'],
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
-
-    const verifyEmailToken = await this.generateVerifyEmailToken(user);
-
-    await this.mailService.sendVerifyEmail(user.email, verifyEmailToken);
-
-    return {
-      token: verifyEmailToken,
-      message: MessagesMapping['#5'],
-    };
   }
 
   public async verifyEmail(token: string) {
-    const tokenDoc = await this.verifyToken(token, TokenTypes.VERIFY_EMAIL);
-    const user = await this.userRepository.findById(tokenDoc.user._id);
+    try {
+      const tokenDoc = await this.verifyToken(token, TokenTypes.VERIFY_EMAIL);
+      const user = await this.userRepository.findById(tokenDoc.user._id);
+      user.isEmailVerified = true;
 
-    user.isEmailVerified = true;
+      await user.save();
 
-    await user.save();
-
-    await tokenDoc.deleteOne();
-
-    return {
-      message: MessagesMapping['#6'],
-    };
+      await tokenDoc.deleteOne();
+      return {
+        message: MessagesMapping['#6'],
+      };
+    } catch (error) {
+      throw new HttpException(
+        MessagesMapping['#29'],
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   public async resetPassword(
@@ -350,30 +388,46 @@ export class AuthService {
     };
   }
 
-  public async login(loginDto: LoginDto) {
-    const user = await this.getAuthenticatedUser(
-      loginDto.email,
-      loginDto.password,
-    );
+  // public async login(loginDto: LoginDto) {
+  //   const user = await this.getAuthenticatedUser(
+  //     loginDto.email,
+  //     loginDto.password,
+  //   );
 
-    await this.refreshTokenExistance(user);
+  //   await this.refreshTokenExistance(user);
 
-    const tokens = await this.generateAuthTokens(user);
+  //   const tokens = await this.generateAuthTokens(user);
 
-    return {
-      type: 'success',
-      statusCode: 200,
-      message: MessagesMapping['#10'],
-      user,
-      tokens,
-    };
-  }
+  //   return {
+  //     type: 'success',
+  //     statusCode: 200,
+  //     message: MessagesMapping['#10'],
+  //     user,
+  //     tokens,
+  //   };
+  // }
 
-  public async generateTokens(tokenDto: TokenDto) {
-    const token = await this.verifyToken(
-      tokenDto.refreshToken,
-      TokenTypes.REFRESH,
-    );
+  // public async generateTokens(tokenDto: TokenDto) {
+  //   const token = await this.verifyToken(
+  //     tokenDto.refreshToken,
+  //     TokenTypes.REFRESH,
+  //   );
+
+  //   const user = await this.userRepository.findById(token.user._id);
+
+  //   if (!user) {
+  //     throw new HttpException(MessagesMapping['#9'], HttpStatus.NOT_FOUND);
+  //   }
+
+  //   await this.refreshTokenExistance(user);
+
+  //   const tokens = await this.generateAuthTokens(user);
+
+  //   return tokens;
+  // }
+  public async generateTokens(req: Request, res: Response) {
+    const refreshToken = req.cookies['refresh_token'];
+    const token = await this.verifyToken(refreshToken, TokenTypes.REFRESH);
 
     const user = await this.userRepository.findById(token.user._id);
 
@@ -385,12 +439,121 @@ export class AuthService {
 
     const tokens = await this.generateAuthTokens(user);
 
-    return tokens;
+    res.cookie('access_token', tokens.access.token, { httpOnly: true });
+    res.cookie('refresh_token', tokens.refresh.token, { httpOnly: true });
+
+    return res.send(tokens);
   }
 
-  public async logout(logoutDto: LogoutDto) {
+  // public async logout(logoutDto: LogoutDto) {
+  //   const refreshToken = await this.tokenRepository.findOne({
+  //     token: logoutDto.refreshToken,
+  //     type: TokenTypes.REFRESH,
+  //   });
+
+  //   if (!refreshToken) {
+  //     throw new HttpException(MessagesMapping['#11'], HttpStatus.NOT_FOUND);
+  //   }
+
+  //   await this.tokenRepository.deleteOne({
+  //     token: logoutDto.refreshToken,
+  //     type: TokenTypes.REFRESH,
+  //   });
+  //   return {
+  //     type: 'Success',
+  //     statusCode: 200,
+  //     message: MessagesMapping['#12'],
+  //   };
+  // }
+
+  public async login(res: Response, loginDto: LoginDto) {
+    const user = await this.getAuthenticatedUser(
+      loginDto.email,
+      loginDto.password,
+    );
+    if (user.isEmailVerified) {
+      await this.refreshTokenExistance(user);
+
+      const tokens = await this.generateAuthTokens(user);
+
+      // Set the access token as a HttpOnly cookie on the response
+      res.cookie('access_token', tokens.access.token, {
+        httpOnly: true,
+
+        // Add additional cookie options here as needed, such as 'secure' and 'sameSite'
+      });
+
+      res.cookie('refresh_token', tokens.refresh.token, {
+        httpOnly: true,
+        // Add additional cookie options here as needed, such as 'secure' and 'sameSite'
+      });
+
+      return res.send({
+        type: 'success',
+        statusCode: 200,
+
+        message: MessagesMapping['#10'],
+        user,
+        tokens,
+      });
+    } else {
+      throw new HttpException(MessagesMapping['#28'], HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  public async userRole(req: Request, res: Response) {
+    const refreshToken = req.cookies['refresh_token'];
+    const accessToken =
+      req.headers.authorization || req.cookies['access_token'];
+    // const token = await this.verifyToken(accessToken, TokenTypes.ACCESS);
+    const user = req['user'] as RequestWithUser;
+    const role = user.sub.role;
+    if (!user) {
+      throw new HttpException(MessagesMapping['#9'], HttpStatus.NOT_FOUND);
+    }
+    // Set the access token as a HttpOnly cookie on the response
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+
+      // Add additional cookie options here as needed, such as 'secure' and 'sameSite'
+    });
+
+    return res.send({
+      type: 'success',
+      statusCode: 200,
+      message: MessagesMapping['#10'],
+      role,
+    });
+  }
+  public async profile(req: Request, res: Response) {
+    const refreshToken = req.cookies['refresh_token'];
+    const accessToken =
+      req.headers.authorization || req.cookies['access_token'];
+    // const token = await this.verifyToken(accessToken, TokenTypes.ACCESS);
+    const user = req['userProfile'] as UserPayload;
+
+    if (!user) {
+      throw new HttpException(MessagesMapping['#9'], HttpStatus.NOT_FOUND);
+    }
+    // Set the access token as a HttpOnly cookie on the response
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+
+      // Add additional cookie options here as needed, such as 'secure' and 'sameSite'
+    });
+
+    return res.send({
+      type: 'success',
+      statusCode: 200,
+      message: MessagesMapping['#10'],
+      user,
+    });
+  }
+
+  public async logout(req: Request, res: Response) {
+    const refToken = req.cookies['refresh_token'];
     const refreshToken = await this.tokenRepository.findOne({
-      token: logoutDto.refreshToken,
+      token: refToken,
       type: TokenTypes.REFRESH,
     });
 
@@ -399,15 +562,19 @@ export class AuthService {
     }
 
     await this.tokenRepository.deleteOne({
-      token: logoutDto.refreshToken,
+      token: refToken,
       type: TokenTypes.REFRESH,
     });
 
-    return {
+    // Clear the cookies
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+
+    return res.send({
       type: 'Success',
       statusCode: 200,
       message: MessagesMapping['#12'],
-    };
+    });
   }
 
   public async register(registrationData: RegisterDto) {
@@ -419,14 +586,15 @@ export class AuthService {
 
     createdUser.password = undefined;
 
-    const tokens = await this.generateAuthTokens(createdUser);
-
+    const payload = {
+      sub: createdUser,
+    };
+    const data = await this.sendVerificationEmail(payload);
     return {
       type: 'success',
       statusCode: 200,
       message: MessagesMapping['#13'],
-      user: createdUser,
-      tokens,
+      emailVerificationToken: data.token,
     };
   }
 }

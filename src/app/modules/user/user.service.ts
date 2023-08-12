@@ -47,7 +47,6 @@ export class UserService extends BaseService<UserRepository> {
     id: string | Types.ObjectId,
     file: Express.Multer.File,
   ): Promise<IUserDocument> {
-    console.log(id);
     const user = await this.repository.findById(id);
 
     if (user.avatar) {
@@ -59,7 +58,6 @@ export class UserService extends BaseService<UserRepository> {
     }
 
     const content: Buffer = file.buffer;
-    console.log(content);
     const aws: IAwsS3Response = await this.awsService.s3PutItemInBucket(
       user._id,
       content,

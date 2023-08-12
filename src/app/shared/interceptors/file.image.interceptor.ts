@@ -1,13 +1,21 @@
 import { Observable } from 'rxjs';
 
 import {
-    CallHandler, ExecutionContext, Injectable, NestInterceptor, PayloadTooLargeException,
-    UnprocessableEntityException, UnsupportedMediaTypeException
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+  PayloadTooLargeException,
+  UnprocessableEntityException,
+  UnsupportedMediaTypeException,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { ConfigService } from '@nestjs/config';
 
-import { ENUM_FILE_IMAGE_MIME, ENUM_FILE_STATUS_CODE_ERROR } from '../enums/file.enum';
+import {
+  ENUM_FILE_IMAGE_MIME,
+  ENUM_FILE_STATUS_CODE_ERROR,
+} from '../enums/file.enum';
 
 @Injectable()
 export class FileImageInterceptor implements NestInterceptor {
@@ -19,11 +27,10 @@ export class FileImageInterceptor implements NestInterceptor {
   ): Promise<Observable<Promise<any> | string>> {
     const ctx: HttpArgumentsHost = context.switchToHttp();
     const { file, files } = ctx.getRequest();
-
     const finalFiles = files || file;
 
     if (Array.isArray(finalFiles)) {
-      const maxFiles = this.configService.get<number>('file.maxFiles');
+      const maxFiles = this.configService.get<number>('FILE_MAXFILES');
 
       if (finalFiles.length > maxFiles) {
         throw new UnprocessableEntityException({
@@ -51,8 +58,11 @@ export class FileImageInterceptor implements NestInterceptor {
     }
 
     const { size, mimetype } = file;
+    console.log('size :: ', size);
 
-    const maxSize = this.configService.get<number>('file.maxFileSize');
+    const maxSize = this.configService.get<number>('FILE_MAXFILESIZE');
+    console.log('maxSize :: ', maxSize);
+
     if (
       !Object.values(ENUM_FILE_IMAGE_MIME).find(
         (val) => val === mimetype.toLowerCase(),

@@ -24,4 +24,7 @@ export const MessagesMapping = {
   '#24': 'You are not authorized to perform this action',
   '#25': 'You have already reviewed this product',
   '#26': 'Order status is not valid',
+  '#27': 'The process of sending the verification email failed.',
+  '#28': 'Account is not verified.',
+  '#29': 'The verification email process failed.',
 };

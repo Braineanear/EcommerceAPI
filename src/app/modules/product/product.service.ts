@@ -15,8 +15,12 @@ import { BaseService } from '@shared/services/base.service';
 
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
-import { IProductDocument } from './interfaces/product.interface';
+import {
+  IProductDocument,
+  IProductImage,
+} from './interfaces/product.interface';
 import { ProductRepository } from './repositories/product.repository';
+import { IImageDocument } from '@modules/image/interfaces/image.interface';
 
 @Injectable()
 export class ProductService extends BaseService<ProductRepository> {
@@ -32,17 +36,31 @@ export class ProductService extends BaseService<ProductRepository> {
   ) {
     super();
   }
-
+  private isEmptyObj = function (obj) {
+    return Object.keys(obj).length === 0;
+  };
   async create(createProductDto: CreateProductDto): Promise<IProductDocument> {
-    const data = {
-      ...createProductDto,
-      slug: slugify(createProductDto.name, {
-        replacement: '-',
-        remove: /[*+~.()'"!:@]/g,
-        lower: true,
-      }),
-    };
-    return this.repository.create(data);
+    try {
+      if (this.isEmptyObj(createProductDto))
+        throw new HttpException(
+          'Data is empty!!!',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      const data = {
+        ...createProductDto,
+        slug: slugify(createProductDto.name, {
+          replacement: '-',
+          remove: /[*+~.()'"!:@]/g,
+          lower: true,
+        }),
+      };
+      return this.repository.create(data);
+    } catch (error) {
+      throw new HttpException(
+        'Server is out of reach!!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async updateById(
@@ -70,14 +88,21 @@ export class ProductService extends BaseService<ProductRepository> {
     return this.repository.updateById(id, data);
   }
 
+  async getMainProductImage(
+    id: string | Types.ObjectId,
+  ): Promise<IImageDocument> {
+    const product = this.repository.findById(id);
+    const mainImageId = (await product).mainImage;
+    return await this.imageService.findById(mainImageId);
+  }
+
   async uploadMainImage(
     id: string | Types.ObjectId,
     file: Express.Multer.File,
-  ): Promise<IProductDocument> {
+  ): Promise<IProductImage> {
     const product = await this.findById(id);
     const content: Buffer = file.buffer;
     const name = product._id;
-
     const aws: IAwsS3Response = await this.awsService.s3PutItemInBucket(
       name,
       content,
@@ -87,10 +112,21 @@ export class ProductService extends BaseService<ProductRepository> {
     );
 
     const imageDoc = await this.imageService.create(aws);
-
-    return this.repository.updateById(id, {
+    const res = await this.repository.updateById(id, {
       mainImage: imageDoc._id,
     });
+    // return res;
+    // success: boolean;
+    // alt: string;
+    // message: string;
+    // imageUrl: string;
+
+    return {
+      message: 'Image uploaded successfuly',
+      success: true,
+      imageUrl:
+        'https://ecomm.ams3.digitaloceanspaces.com/' + aws.pathWithFilename,
+    };
   }
 
   async uploadImages(

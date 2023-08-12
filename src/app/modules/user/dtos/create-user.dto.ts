@@ -77,33 +77,6 @@ export class CreateUserDto {
   @IsOptional()
   phone?: string;
 
-  @ApiProperty({
-    type: String,
-    required: false,
-    description: 'User company name',
-    example: 'Google',
-  })
-  @IsString()
-  @IsOptional()
-  company?: string;
 
-  @ApiProperty({
-    type: String,
-    required: false,
-    description: 'User website URL',
-    example: 'https://google.com',
-  })
-  @IsString()
-  @IsOptional()
-  website?: string;
 
-  @ApiProperty({
-    type: String,
-    required: false,
-    description: 'User bio',
-    example: 'I am a software engineer',
-  })
-  @IsString()
-  @IsOptional()
-  bio?: string;
 }

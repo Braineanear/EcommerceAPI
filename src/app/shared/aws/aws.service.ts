@@ -1,11 +1,22 @@
 import sharp from 'sharp';
 
 import {
-    CreateBucketCommand, DeleteBucketCommand, DeleteObjectCommand, DeleteObjectsCommand,
-    GetObjectCommand, ListBucketsCommand, ListObjectsV2Command, ObjectIdentifier, PutObjectCommand,
-    S3Client
+  CreateBucketCommand,
+  DeleteBucketCommand,
+  DeleteObjectCommand,
+  DeleteObjectsCommand,
+  GetObjectCommand,
+  ListBucketsCommand,
+  ListObjectsV2Command,
+  ObjectIdentifier,
+  PutObjectCommand,
+  S3Client,
 } from '@aws-sdk/client-s3';
-import { Injectable, InternalServerErrorException, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DebuggerService } from '@shared/debugger/debugger.service';
 
@@ -28,9 +39,13 @@ export class AwsS3Service implements OnModuleInit {
         ),
       },
       region: this.configService.get<string>('aws.s3.region'),
+      endpoint: this.configService.get<string>('aws.s3.baseUrl'),
     });
 
     this.bucket = this.configService.get<string>('aws.s3.bucket');
+    console.log('region ::: ', this.s3Client.config.region());
+    console.log('credential.key ::: ', this.s3Client.config.credentials());
+    console.log('this.bucket ::: ', this.bucket);
   }
 
   async onModuleInit(): Promise<void> {
@@ -133,13 +148,11 @@ export class AwsS3Service implements OnModuleInit {
 
     // deepcode ignore GlobalReplacementRegex: <I want to replace only the first forward slash>
     options.path = path.startsWith('/') ? path.replace('/', '') : `${path}`;
-
+    console.log('options.path :', options.path);
     const key: string = `${path}/${filename}.png`;
     content = await sharp(content, {})
       .resize({
         fit: sharp.fit.fill,
-        width: 330,
-        height: 330,
       })
       .toFormat('png')
       .toBuffer();

@@ -20,6 +20,10 @@ export default registerAs(
         secretKey: process.env.AUTH_JWT_VERIFY_EMAIL_TOKEN_SECRET_KEY,
         expirationTime: 1,
       },
+      resetPasswordToken: {
+        secretKey: process.env.AUTH_JWT_RESET_PASSWORD_TOKEN_SECRET_KEY,
+        expirationTime: 1,
+      },
     },
   }),
 );

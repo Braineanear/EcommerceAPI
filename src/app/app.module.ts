@@ -1,4 +1,7 @@
-import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
+import {
+  utilities as nestWinstonModuleUtilities,
+  WinstonModule,
+} from 'nest-winston';
 import winston from 'winston';
 
 import { AuthModule } from '@modules/auth/auth.module';
@@ -77,6 +80,7 @@ import { LoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
         };
       },
     }),
+
     AuthModule,
     UserModule,
     ImageModule,

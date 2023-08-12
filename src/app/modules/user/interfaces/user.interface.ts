@@ -13,9 +13,6 @@ export interface IUserDocument extends Document {
   passwordChangedAt?: Date;
   address?: string;
   phone?: string;
-  website?: string;
-  company?: string;
-  bio?: string;
   avatar: Types.ObjectId;
   discountCode?: string;
   facebookId?: string;

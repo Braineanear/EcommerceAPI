@@ -1,5 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -58,6 +65,16 @@ export class CreateProductDto {
   @IsNotEmpty()
   price: number;
 
+  // @ApiProperty({
+  //   type: Number,
+  //   required: true,
+  //   description: 'Product price',
+  //   example: 100,
+  // })
+  // @IsNumber()
+  // @IsNotEmpty()
+  // newPrice?: number;
+
   @ApiProperty({
     type: String,
     required: true,
@@ -82,9 +99,9 @@ export class CreateProductDto {
     description: 'Size ID for product',
     example: 'e23fc2342gwsdsad5t43hsghbfdg34',
   })
-  @IsString()
-  @IsOptional()
-  size?: string;
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  size?: string[];
 
   @ApiProperty({
     type: String,
@@ -92,9 +109,9 @@ export class CreateProductDto {
     description: 'Color ID for product',
     example: 'e23fc2342gwsdsad5t43hsghbfdg34',
   })
-  @IsString()
-  @IsOptional()
-  color?: string;
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  color?: string[];
 
   @ApiProperty({
     type: [String],
@@ -108,6 +125,10 @@ export class CreateProductDto {
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
   tags: string[];
+
+  @IsString()
+  @IsNotEmpty()
+  status: string;
 
   @ValidateNested()
   @Type(() => DetailsDto)

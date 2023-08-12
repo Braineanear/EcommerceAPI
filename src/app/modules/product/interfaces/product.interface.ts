@@ -9,8 +9,8 @@ export interface IProductDocument extends Document {
   category: Types.ObjectId | string;
   seller: Types.ObjectId;
   brand: Types.ObjectId | string;
-  size: Types.ObjectId | string;
-  color: Types.ObjectId | string;
+  size: Types.ObjectId[] | string[];
+  color: Types.ObjectId[] | string[];
   tags: Types.ObjectId[] | string[];
   price: number;
   currency: string;
@@ -21,4 +21,11 @@ export interface IProductDocument extends Document {
   ratingsAverage: number;
   ratingsQuantity: number;
   details: object;
+  status: string;
+}
+
+export interface IProductImage {
+  message: string;
+  imageUrl: string;
+  success: boolean;
 }

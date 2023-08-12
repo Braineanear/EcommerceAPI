@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiBearerAuth,
@@ -32,7 +41,9 @@ export class BrandController {
   @Post()
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new brand' })
-  @ApiCreatedResponse({ description: 'The brand has been successfully created.' })
+  @ApiCreatedResponse({
+    description: 'The brand has been successfully created.',
+  })
   @ApiBadRequestResponse({ description: 'Bad request.' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
@@ -44,9 +55,6 @@ export class BrandController {
 
   @Get()
   @AllowAnonymous()
-  @ApiOperation({ summary: 'Get all brands' })
-  @ApiOkResponse({ description: 'A list of brands has been retrieved successfully.' })
-  @ApiQuery({ name: 'q', type: FindBrandsDto, required: false })
   findAll(@Query(new PaginationPipe()) q: FindBrandsDto) {
     return this.service.findPaginated((<any>q).filter, {
       ...(<any>q).options,
@@ -55,37 +63,17 @@ export class BrandController {
 
   @Get(':id')
   @AllowAnonymous()
-  @ApiOperation({ summary: 'Get a brand by ID' })
-  @ApiOkResponse({ description: 'The brand has been retrieved successfully.' })
-  @ApiNotFoundResponse({ description: 'Brand not found.' })
-  @ApiParam({ name: 'id', type: String, description: 'Brand ID' })
   findById(@Param('id') id: string) {
     return this.service.findById(id);
   }
 
   @Put(':id')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update a brand by ID' })
-  @ApiOkResponse({ description: 'The brand has been updated successfully.' })
-  @ApiBadRequestResponse({ description: 'Bad request.' })
-  @ApiNotFoundResponse({ description: 'Brand not found.' })
-  @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
-  @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiParam({ name: 'id', type: String, description: 'Brand ID' })
-  @ApiBody({ type: UpdateBrandDto })
   @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
   updateById(@Param('id') id: string, @Body() data: UpdateBrandDto) {
     return this.service.updateById(id, data);
   }
 
   @Delete(':id')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Delete a brand by ID' })
-  @ApiOkResponse({ description: 'The brand has been deleted successfully.' })
-  @ApiNotFoundResponse({ description: 'Brand not found.' })
-  @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
-  @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiParam({ name: 'id', type: String, description: 'Brand ID' })
   @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
   deleteById(@Param('id') id: string) {
     return this.service.deleteById(id);

@@ -32,11 +32,11 @@ export class Product {
   @Prop({ type: Types.ObjectId, ref: 'Brand', autopopulate: true })
   brand: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Size', autopopulate: true })
-  size: Types.ObjectId;
+  @Prop({ type: [Types.ObjectId], ref: 'Size', autopopulate: true })
+  size: Types.ObjectId[];
 
-  @Prop({ type: Types.ObjectId, ref: 'Color', autopopulate: true })
-  color: Types.ObjectId;
+  @Prop({ type: [Types.ObjectId], ref: 'Color', autopopulate: true })
+  color: Types.ObjectId[];
 
   @Prop({ type: [Types.ObjectId], ref: 'Tag', autopopulate: true })
   tags: Types.ObjectId[];
@@ -61,7 +61,7 @@ export class Product {
 
   @Prop({
     type: Number,
-    default: 0,
+    default: 1,
     min: 1,
     max: 5,
     set: (val: number) => Math.round(val * 10) / 10,
@@ -70,6 +70,9 @@ export class Product {
 
   @Prop({ type: Number, default: 0 })
   ratingsQuantity: number;
+
+  @Prop({ type: String, default: 'Hidden' })
+  status: string;
 
   @Prop({ type: Object, required: true })
   details: Record<string, any>;
