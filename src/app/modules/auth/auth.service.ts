@@ -145,10 +145,16 @@ export class AuthService {
       'auth.jwt.accessToken.secretKey',
     );
 
+    const verifyEmailTokenSecret = this.configService.get<string>(
+      'auth.jwt.verifyEmailToken.secretKey',
+    );
+
     let payload;
 
     if (type === TokenTypes.REFRESH) {
       payload = jwt.verify(token, refreshTokenSecret);
+    } else if (type === TokenTypes.VERIFY_EMAIL) {
+      payload = jwt.verify(token, verifyEmailTokenSecret);
     } else if (type === TokenTypes.ACCESS) {
       payload = jwt.verify(token, accessTokenSecret);
     }
