@@ -25,29 +25,28 @@ export class JwtAuthGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.getAllAndOverride<string[]>('isPublic', [
+    const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
       context.getHandler(),
       context.getClass(),
     ]);
 
-    if (isPublic) {
-      return true;
-    }
-
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
 
-    if (!token) {
-      throw new UnauthorizedException();
-    }
-
-    try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: this.accessTokenSecret,
-      });
-
-      request['user'] = payload;
-    } catch {
+    if (token) {
+      try {
+        const payload = await this.jwtService.verifyAsync(token, {
+          secret: this.accessTokenSecret,
+        });
+        request['user'] = payload.sub;
+      } catch (err) {
+        if (!isPublic) {
+          // If route is not public, throw an UnauthorizedException
+          throw new UnauthorizedException();
+        }
+      }
+    } else if (!isPublic) {
+      // If route is not public and no token provided, throw an UnauthorizedException
       throw new UnauthorizedException();
     }
 

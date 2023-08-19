@@ -1,9 +1,11 @@
-import { TokenModule } from '@modules/token/token.module';
-import { UserModule } from '@modules/user/user.module';
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+
+import { TokenModule } from '@modules/token/token.module';
+import { UserModule } from '@modules/user/user.module';
+
 import { MailService } from '@shared/services/mail.service';
 import { JwtStrategy } from '@shared/strategies/jwt-startegy';
 

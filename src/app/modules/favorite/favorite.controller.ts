@@ -24,7 +24,6 @@ import {
 import { AuthUser } from '@shared/decorators/auth-user.decorator';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
-import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
 import { PaginationPipe } from '@shared/pipes/pagination.pipe';
 
 import { CreateFavoriteDto } from './dtos/create-favorite.dto';
@@ -45,14 +44,14 @@ export class FavoriteController {
   @ApiQuery({ type: FindFavoritesDto, description: 'Pagination options' })
   findAll(
     @Query(new PaginationPipe()) q: FindFavoritesDto,
-    @AuthUser() user: JwtPayload,
+    @AuthUser() user: any,
   ) {
     return this.service.findFavorites(
       (<any>q).filter,
       {
         ...(<any>q).options,
       },
-      user.sub,
+      user,
     );
   }
 
@@ -85,7 +84,7 @@ export class FavoriteController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiOperation({ summary: 'Create favorite' })
   @ApiBody({ type: CreateFavoriteDto, description: 'Favorite Information' })
-  create(@Body() data: CreateFavoriteDto, @AuthUser() user: JwtPayload) {
-    return this.service.create(data, user.sub);
+  create(@Body() data: CreateFavoriteDto, @AuthUser() user: any) {
+    return this.service.create(data, user);
   }
 }

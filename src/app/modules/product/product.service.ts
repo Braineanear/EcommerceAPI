@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import slugify from 'slugify';
 
 import { BrandService } from '@modules/brand/brand.service';
@@ -7,6 +7,7 @@ import { ColorService } from '@modules/color/color.service';
 import { ImageService } from '@modules/image/image.service';
 import { SizeService } from '@modules/size/size.service';
 import { TagService } from '@modules/tag/tag.service';
+import { HistoryService } from '@modules/history/history.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AwsS3Service } from '@shared/aws/aws.service';
 import { IAwsS3Response } from '@shared/aws/interfaces/aws.interface';
@@ -29,6 +30,7 @@ export class ProductService extends BaseService<ProductRepository> {
     protected readonly sizeService: SizeService,
     protected readonly tagService: TagService,
     protected readonly colorService: ColorService,
+    protected readonly historyService: HistoryService,
   ) {
     super();
   }
@@ -166,6 +168,29 @@ export class ProductService extends BaseService<ProductRepository> {
     );
 
     await product.save();
+
+    return product;
+  }
+
+  async findById(id: string | Types.ObjectId, user?: any): Promise<any> {
+    const product = await this.repository.findById(id);
+
+    if (!product) {
+      throw new HttpException(MessagesMapping['#14'], HttpStatus.NOT_FOUND);
+    }
+
+    if (user) {
+      await this.historyService.create({
+        user: new mongoose.Types.ObjectId(user._id),
+        product: product._id,
+        isAnonymous: false,
+      });
+    } else {
+      await this.historyService.create({
+        product: product._id,
+        isAnonymous: true,
+      });
+    }
 
     return product;
   }

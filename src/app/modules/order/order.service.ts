@@ -1,4 +1,3 @@
-import e from 'express';
 import { Types } from 'mongoose';
 import Stripe from 'stripe';
 
@@ -153,10 +152,10 @@ export class OrderService extends BaseService<OrderRepository> {
 
   public async create(
     createOrderDTO: CreateOrderDTO,
-    user: IUserDocument,
+    userId: string,
   ): Promise<IOrderDocument> {
     const { paymentMethod } = createOrderDTO;
-    const cart = await this.cartService.findOne({ user: user._id });
+    const cart = await this.cartService.findOne({ user: userId });
 
     if (cart.items.length === 0) {
       throw new HttpException(MessagesMapping['#16'], HttpStatus.NOT_FOUND);
@@ -164,8 +163,8 @@ export class OrderService extends BaseService<OrderRepository> {
 
     const order =
       paymentMethod === 'cash'
-        ? await this.cachePayment(createOrderDTO, cart, user._id)
-        : await this.stripePayment(createOrderDTO, cart, user._id);
+        ? await this.cachePayment(createOrderDTO, cart, userId)
+        : await this.stripePayment(createOrderDTO, cart, userId);
 
     return order;
   }

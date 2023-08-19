@@ -1,7 +1,6 @@
 import { Types } from 'mongoose';
 
 import { ProductService } from '@modules/product/product.service';
-import { IUserDocument } from '@modules/user/interfaces/user.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DebuggerService } from '@shared/debugger/debugger.service';
 import { MessagesMapping } from '@shared/messages-mapping';
@@ -19,10 +18,10 @@ export class ReviewService extends BaseService<ReviewRepository> {
   ) {
     super();
   }
-  async updateReview(id: string, update: object, user: IUserDocument) {
+  async updateReview(id: string, update: object, userId: string) {
     const review = await this.findById(id);
 
-    if (review.user.toString() !== user._id.toString()) {
+    if (review.user.toString() !== userId) {
       throw new HttpException(MessagesMapping['#24'], HttpStatus.UNAUTHORIZED);
     }
 
@@ -42,10 +41,10 @@ export class ReviewService extends BaseService<ReviewRepository> {
     return await this.repository.updateById(id, update);
   }
 
-  async deleteReview(id: string, user: IUserDocument) {
+  async deleteReview(id: string, userId: string) {
     const review = await this.findById(id);
 
-    if (review.user.toString() !== user._id.toString()) {
+    if (review.user.toString() !== userId) {
       throw new HttpException(MessagesMapping['#24'], HttpStatus.UNAUTHORIZED);
     }
 
@@ -66,11 +65,11 @@ export class ReviewService extends BaseService<ReviewRepository> {
     return await this.repository.deleteById(id);
   }
 
-  async create(doc: CreateReviewDto, user: IUserDocument) {
+  async create(doc: CreateReviewDto, userId: string) {
     const product = await this.productService.findById(doc.product);
 
     const review = await this.repository.findOne({
-      user: user._id,
+      user: userId,
       product: doc.product,
     });
 
@@ -88,7 +87,7 @@ export class ReviewService extends BaseService<ReviewRepository> {
     return this.repository.create({
       ...doc,
       product: product._id,
-      user: new Types.ObjectId(user._id),
+      user: new Types.ObjectId(userId),
     });
   }
 }

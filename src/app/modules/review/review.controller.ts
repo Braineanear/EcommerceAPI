@@ -25,7 +25,6 @@ import {
 import { AuthUser } from '@shared/decorators/auth-user.decorator';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
-import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
 import { PaginationPipe } from '@shared/pipes/pagination.pipe';
 
 import { CreateReviewDto } from './dtos/create-review.dto';
@@ -52,9 +51,9 @@ export class ReviewController {
   updateReview(
     @Param('id') id: string,
     @Body() data: UpdateReviewDto,
-    @AuthUser() user: JwtPayload,
+    @AuthUser() user: any,
   ) {
-    return this.service.updateReview(id, data, user.sub);
+    return this.service.updateReview(id, data, user._id);
   }
 
   @Get()
@@ -87,8 +86,8 @@ export class ReviewController {
   @ApiNotFoundResponse({ description: 'Review not found.' })
   @ApiOperation({ summary: 'Delete review by ID' })
   @ApiParam({ name: 'id', type: 'string', description: 'Review ID' })
-  deleteReview(@Param('id') id: string, @AuthUser() user: JwtPayload) {
-    return this.service.deleteReview(id, user.sub);
+  deleteReview(@Param('id') id: string, @AuthUser() user: any) {
+    return this.service.deleteReview(id, user._id);
   }
 
   @Post()
@@ -99,7 +98,7 @@ export class ReviewController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiOperation({ summary: 'Create review' })
   @ApiBody({ type: CreateReviewDto, description: 'Review Information' })
-  create(@Body() data: CreateReviewDto, @AuthUser() user: JwtPayload) {
-    return this.service.create(data, user.sub);
+  create(@Body() data: CreateReviewDto, @AuthUser() user: any) {
+    return this.service.create(data, user._id);
   }
 }

@@ -1,15 +1,17 @@
 import { Types } from 'mongoose';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { ColorService } from '@modules/color/color.service';
 import { ProductService } from '@modules/product/product.service';
 import { SizeService } from '@modules/size/size.service';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+
 import { DebuggerService } from '@shared/debugger/debugger.service';
 import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
 import { CreateCartDto } from './dtos/create-cart.dto';
 import { ProductCartDto } from './dtos/product-cart.dto';
+
 import { CartRepository } from './repositories/cart.repository';
 
 @Injectable()
@@ -61,7 +63,7 @@ export class CartService extends BaseService<CartRepository> {
     }
 
     const cartData = {
-      user,
+      user: new Types.ObjectId(user),
       items: [
         {
           product: doc.product,

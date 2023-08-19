@@ -2,18 +2,16 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import { Types } from 'mongoose';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { ITokenDocument } from '@modules/token/interfaces/token.interface';
 import { TokenRepository } from '@modules/token/repositories/token.repository';
 import { IUserDocument } from '@modules/user/interfaces/user.interface';
 import { UserRepository } from '@modules/user/repositories/user.repository';
-import {
-    BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+
 import { DebuggerService } from '@shared/debugger/debugger.service';
 import { TokenTypes } from '@shared/enums/token-type.enum';
-import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
 import { MessagesMapping } from '@shared/messages-mapping';
 import { MailService } from '@shared/services/mail.service';
 
@@ -156,7 +154,7 @@ export class AuthService {
     const tokenDoc = await this.tokenRepository.findOne({
       token,
       type,
-      user: payload.sub._id,
+      user: payload._id,
     });
 
     if (!tokenDoc) {
@@ -258,8 +256,8 @@ export class AuthService {
     return verifyEmailToken;
   }
 
-  public async sendVerificationEmail(payload: JwtPayload) {
-    const user = await this.userRepository.findById(payload.sub);
+  public async sendVerificationEmail(payload: any) {
+    const user = await this.userRepository.findById(payload);
 
     if (user.isEmailVerified) {
       throw new HttpException(MessagesMapping['#4'], HttpStatus.BAD_REQUEST);

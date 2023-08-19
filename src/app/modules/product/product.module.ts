@@ -13,6 +13,7 @@ import { Product, ProductSchema } from './models/product.entity';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 import { ProductRepository } from './repositories/product.repository';
+import { HistoryModule } from '@modules/history/history.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { ProductRepository } from './repositories/product.repository';
     forwardRef(() => SizeModule),
     forwardRef(() => BrandModule),
     forwardRef(() => TagModule),
-    forwardRef(() => UserModule)
+    forwardRef(() => UserModule),
+    forwardRef(() => HistoryModule),
   ],
   providers: [ProductService, ProductRepository],
   controllers: [ProductController],

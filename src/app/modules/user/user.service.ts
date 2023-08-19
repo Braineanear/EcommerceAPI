@@ -4,7 +4,6 @@ import { ImageService } from '@modules/image/image.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AwsS3Service } from '@shared/aws/aws.service';
 import { IAwsS3Response } from '@shared/aws/interfaces/aws.interface';
-import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
 import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
@@ -21,8 +20,8 @@ export class UserService extends BaseService<UserRepository> {
   ) {
     super();
   }
-  async getLoggedinUserDetails(payload: JwtPayload): Promise<IUserDocument> {
-    const user = await this.repository.findById(payload.sub);
+  async getLoggedinUserDetails(userId: string): Promise<IUserDocument> {
+    const user = await this.repository.findById(userId);
 
     if (!user) {
       throw new HttpException(MessagesMapping['#9'], HttpStatus.NOT_FOUND);
@@ -33,8 +32,8 @@ export class UserService extends BaseService<UserRepository> {
     return user;
   }
 
-  async deleteLoggedinUserDetails(payload: JwtPayload): Promise<IUserDocument> {
-    const user = await this.repository.deleteById(payload.sub);
+  async deleteLoggedinUserDetails(userId: string): Promise<IUserDocument> {
+    const user = await this.repository.deleteById(userId);
 
     if (!user) {
       throw new HttpException(MessagesMapping['#9'], HttpStatus.NOT_FOUND);
@@ -76,10 +75,10 @@ export class UserService extends BaseService<UserRepository> {
   }
 
   async uploadLoggedinUserImage(
-    payload: JwtPayload,
+    userId: string,
     file: Express.Multer.File,
   ): Promise<IUserDocument> {
-    const user = await this.repository.deleteById(payload.sub);
+    const user = await this.repository.deleteById(userId);
 
     if (user.avatar) {
       const image = await this.imageService.findById(user.avatar);

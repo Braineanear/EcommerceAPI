@@ -29,7 +29,6 @@ import { UploadFileSingle } from '@shared/decorators/file.decorator';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { ENUM_FILE_TYPE } from '@shared/enums/file.enum';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
-import { JwtPayload } from '@shared/interfaces/jwt-payload.interface';
 import { PaginationPipe } from '@shared/pipes/pagination.pipe';
 
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -67,8 +66,8 @@ export class UserController {
   @ApiOkResponse({
     description: 'Successfully fetched logged in user details.',
   })
-  async getLoggedinUserDetails(@AuthUser() user: JwtPayload) {
-    return this.service.getLoggedinUserDetails(user);
+  async getLoggedinUserDetails(@AuthUser() user: any) {
+    return this.service.getLoggedinUserDetails(user._id);
   }
 
   @Delete('me')
@@ -78,8 +77,8 @@ export class UserController {
   @ApiOkResponse({
     description: 'Successfully deleted logged in user details.',
   })
-  async deleteLoggedinUserDetails(@AuthUser() user: JwtPayload) {
-    return this.service.deleteLoggedinUserDetails(user);
+  async deleteLoggedinUserDetails(@AuthUser() user: any) {
+    return this.service.deleteLoggedinUserDetails(user._id);
   }
 
   @UploadFileSingle('file', ENUM_FILE_TYPE.IMAGE)
@@ -90,10 +89,10 @@ export class UserController {
   @ApiOperation({ summary: 'Upload Logged in User Image' })
   @ApiCreatedResponse({ description: 'Image has been successfully uploaded.' })
   async uploadLoggedinUserImage(
-    @AuthUser() user: JwtPayload,
+    @AuthUser() user: any,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.service.uploadLoggedinUserImage(user, file);
+    return this.service.uploadLoggedinUserImage(user._id, file);
   }
 
   @Put(':id')
