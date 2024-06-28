@@ -46,11 +46,11 @@ import { UserService } from './user.service';
   description: 'You are not authorized to access this endpoint, please login!',
 })
 @Roles(RoleTypeEnum.SuperAdmin, RoleTypeEnum.Admin)
+@ApiBearerAuth()
 export class UserController {
   constructor(private readonly service: UserService) {}
 
   @Post()
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Create User' })
   @ApiBody({ type: CreateUserDto, description: 'User Data' })
   @ApiCreatedResponse({ description: 'User has been successfully created.' })
@@ -61,7 +61,6 @@ export class UserController {
 
   @Get('me')
   @Roles(RoleTypeEnum.All)
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Logged in User Details' })
   @ApiOkResponse({
     description: 'Successfully fetched logged in user details.',
@@ -71,7 +70,6 @@ export class UserController {
   }
 
   @Delete('me')
-  @ApiBearerAuth()
   @Roles(RoleTypeEnum.All)
   @ApiOperation({ summary: 'Delete Logged in User Details' })
   @ApiOkResponse({
@@ -84,7 +82,6 @@ export class UserController {
   @UploadFileSingle('file', ENUM_FILE_TYPE.IMAGE)
   @Post('me/images/upload')
   @Roles(RoleTypeEnum.All)
-  @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Upload Logged in User Image' })
   @ApiCreatedResponse({ description: 'Image has been successfully uploaded.' })
@@ -96,7 +93,6 @@ export class UserController {
   }
 
   @Put(':id')
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update User by ID' })
   @ApiBody({ type: UpdateUserDto, description: 'New User Data' })
   @ApiParam({ name: 'id', type: 'string', description: 'User ID' })
@@ -126,19 +122,17 @@ export class UserController {
   }
 
   @Delete(':id')
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete User by ID' })
   @ApiParam({ name: 'id', type: 'string', description: 'User ID' })
   @ApiOkResponse({ description: 'User has been successfully deleted.' })
   @ApiNotFoundResponse({ description: 'User not found.' })
   async deleteById(@Param('id') id: string) {
-    this.service.deleteById(id);
+    return this.service.deleteById(id);
   }
 
   @UploadFileSingle('file', ENUM_FILE_TYPE.IMAGE)
   @Post(':id/images/upload')
   @ApiConsumes('multipart/form-data')
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Upload User Image' })
   @ApiParam({ name: 'id', type: 'string', description: 'User ID' })
   @ApiCreatedResponse({ description: 'Image has been successfully uploaded.' })

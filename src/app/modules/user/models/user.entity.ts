@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
@@ -51,4 +51,8 @@ export class User {
   avatar: Types.ObjectId;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+type UserDocument = User & Document;
+
+const UserSchema = SchemaFactory.createForClass(User);
+
+export { UserDocument, UserSchema };

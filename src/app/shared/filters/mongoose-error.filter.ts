@@ -1,6 +1,5 @@
 import { Response } from 'express';
 import { MongoError } from 'mongodb';
-
 import {
   ArgumentsHost,
   Catch,
@@ -10,43 +9,44 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 
+interface MongoErrorWithDetails extends MongoError {
+  errors?: any;
+}
+
 @Catch(MongoError)
 export class MongooseErrorFilter implements ExceptionFilter {
-  env: string;
+  private readonly env: string;
 
   constructor(
-    public reflector: Reflector,
-    private configService: ConfigService,
+    private readonly reflector: Reflector,
+    private readonly configService: ConfigService,
   ) {
-    this.env = this.configService.get<string>('app.env');
+    this.env = this.configService.get<string>('app.env', 'production');
   }
 
-  catch(exception: MongoError, host: ArgumentsHost) {
+  catch(exception: MongoError, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    switch (exception.code) {
-      case 11000:
-        response.status(HttpStatus.BAD_REQUEST).json({
-          statusCode: HttpStatus.BAD_REQUEST,
-          type: exception.name,
-          message: 'Duplicate key error',
-          errors:
-            this.env === 'development' ? this.parseError(exception) : undefined,
-        });
-        break;
-      default:
-        response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-          type: exception.name,
-          message: 'Internal server error',
-          errors:
-            this.env === 'development' ? this.parseError(exception) : undefined,
-        });
-        break;
-    }
+    const statusCode =
+      exception.code === 11000
+        ? HttpStatus.BAD_REQUEST
+        : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    const message =
+      exception.code === 11000
+        ? 'Duplicate key error'
+        : 'Internal server error';
+
+    response.status(statusCode).json({
+      statusCode,
+      type: exception.name,
+      message,
+      errors: this.env === 'development' ? this.parseError(exception) : undefined,
+    });
   }
-  parseError(error) {
+
+  private parseError(error: MongoErrorWithDetails): any {
     return error.errors ? error.errors : error;
   }
 }

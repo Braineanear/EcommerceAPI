@@ -1,7 +1,5 @@
 import { Document, FilterQuery, PaginateModel, Types, UpdateQuery } from 'mongoose';
-
 import { Injectable } from '@nestjs/common';
-
 import { IBaseRepository } from '../interfaces/i-base-repository.interface';
 import { IPaginateOptions } from '../interfaces/i-paginate-options';
 import { IPaginatedInterface } from '../interfaces/i-paginate-result.interface';
@@ -16,16 +14,17 @@ export class BaseRepository<T extends Document> implements IBaseRepository<T> {
 
   async save(doc: T): Promise<T> {
     const createdModel = new this.model(doc);
-    return createdModel.save() as any;
+    return createdModel.save() as Promise<T>;
   }
 
-  async findById(_id: string | Types.ObjectId): Promise<T> {
+  async findById(_id: string | Types.ObjectId): Promise<T | null> {
     return this.model.findById(_id);
   }
 
-  async findOne(filter: FilterQuery<T>): Promise<T> {
+  async findOne(filter: FilterQuery<T>): Promise<T | null> {
     return this.model.findOne(filter);
   }
+
   async find(
     filter: FilterQuery<T>,
     projection: any = null,
@@ -34,36 +33,30 @@ export class BaseRepository<T extends Document> implements IBaseRepository<T> {
     return this.model.find(filter, projection).sort(sort);
   }
 
-  async updateById(_id: string | Types.ObjectId, update: object): Promise<T> {
-    return this.model.findByIdAndUpdate(_id, update, {
-      new: true,
-      useFindAndModify: true,
-    });
+  async updateById(_id: string | Types.ObjectId, update: Partial<T>): Promise<T | null> {
+    return this.model.findByIdAndUpdate(_id, update, { new: true });
   }
 
-  async updateOne(filter: FilterQuery<T>, update: UpdateQuery<T>): Promise<T> {
-    return this.model.findOneAndUpdate(filter, update, {
-      new: true,
-      useFindAndModify: false,
-    });
+  async updateOne(filter: FilterQuery<T>, update: UpdateQuery<T>): Promise<T | null> {
+    return this.model.findOneAndUpdate(filter, update, { new: true });
   }
 
   async updateMany(
     filter: FilterQuery<T>,
     update: UpdateQuery<T>,
   ): Promise<any> {
-    return this.model.updateMany(filter, update, { new: true });
+    return this.model.updateMany(filter, update);
   }
 
-  async deleteById(_id: string | Types.ObjectId): Promise<T> {
+  async deleteById(_id: string | Types.ObjectId): Promise<T | null> {
     return this.model.findByIdAndRemove(_id);
   }
 
-  async deleteOne(filter: object): Promise<T> {
-    return this.model.findOneAndRemove(filter, { useFindAndModify: false });
+  async deleteOne(filter: FilterQuery<T>): Promise<T | null> {
+    return this.model.findOneAndRemove(filter);
   }
 
-  async deleteMany(filter: object): Promise<any> {
+  async deleteMany(filter: FilterQuery<T>): Promise<any> {
     return this.model.deleteMany(filter);
   }
 

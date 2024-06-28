@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 @Schema({
   timestamps: true,
   versionKey: false,
 })
-export class Color {
+class Color {
   @Prop({ type: String, required: true })
   name: string;
 
@@ -12,4 +13,8 @@ export class Color {
   code: string;
 }
 
-export const ColorSchema = SchemaFactory.createForClass(Color);
+type ColorDocument = Color & Document;
+
+const ColorSchema = SchemaFactory.createForClass(Color);
+
+export { Color, ColorDocument, ColorSchema };

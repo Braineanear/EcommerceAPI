@@ -1,24 +1,22 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-
 import { LanguageEnum } from '../enums/language.enum';
 
 export class TranslationDto {
   @ApiProperty({
-    type: String,
-    required: true,
+    description: 'Language of the translation',
     example: LanguageEnum.en,
-    description: 'Language',
+    enum: LanguageEnum,
+    required: true,
   })
   @IsNotEmpty()
-  language: string;
+  @IsEnum(LanguageEnum)
+  language: LanguageEnum;
 
   @ApiProperty({
-    type: String,
-    required: true,
+    description: 'Name in the specified language',
     example: 'Cairo International Airport',
-    description: 'Name',
+    required: true,
   })
   @IsString()
   @IsNotEmpty()

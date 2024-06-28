@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
+import { Types } from 'mongoose';
 
 export class CreateReviewDto {
   @ApiProperty({
@@ -31,5 +32,5 @@ export class CreateReviewDto {
   })
   @IsString()
   @IsNotEmpty()
-  product: string;
+  product: Types.ObjectId;
 }

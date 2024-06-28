@@ -1,5 +1,4 @@
 import { Document } from 'mongoose';
-
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({
@@ -31,4 +30,4 @@ ImageSchema.virtual('url').get(function (this: ImageDocument) {
   return process.env.AWS_S3_BASE_URL + '/' + this.pathWithFilename;
 });
 
-export { ImageSchema };
+export { ImageSchema, ImageDocument };

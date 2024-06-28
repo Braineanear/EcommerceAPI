@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
@@ -21,4 +21,8 @@ export class History {
   isAnonymous: boolean;
 }
 
-export const HistorySchema = SchemaFactory.createForClass(History);
+type HistoryDocument = History & Document;
+
+const HistorySchema = SchemaFactory.createForClass(History);
+
+export { HistoryDocument, HistorySchema };

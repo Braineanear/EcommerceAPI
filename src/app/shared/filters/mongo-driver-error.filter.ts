@@ -1,6 +1,5 @@
 import { Response } from 'express';
 import { MongoError } from 'mongodb';
-
 import {
   ArgumentsHost,
   Catch,
@@ -9,22 +8,21 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
-
 import { MongoErrorCodes } from '../constants/mongo-error-codes.constant';
 import { PathErrorDto } from '../dtos/path-error.dto';
 
 @Catch(MongoError)
 export class MongoDriverErrorFilter implements ExceptionFilter {
-  env: string;
+  private readonly env: string;
 
   constructor(
-    public reflector: Reflector,
-    private configService: ConfigService,
+    private readonly reflector: Reflector,
+    private readonly configService: ConfigService,
   ) {
-    this.env = this.configService.get<string>('app.env');
+    this.env = this.configService.get<string>('app.env', 'production');
   }
 
-  catch(exception: MongoError, host: ArgumentsHost) {
+  catch(exception: MongoError, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const status =
@@ -35,24 +33,30 @@ export class MongoDriverErrorFilter implements ExceptionFilter {
     response.status(HttpStatus.SERVICE_UNAVAILABLE).json({
       statusCode: status,
       message: HttpStatus[status],
-      errors:
-        this.env === 'development' ? this.parseError(exception) : undefined,
+      errors: this.env === 'development' ? this.parseError(exception) : undefined,
     });
   }
-  parseError(error): PathErrorDto[] {
-    const status = MongoErrorCodes[error.code]
-      ? MongoErrorCodes[error.code]
-      : HttpStatus.SERVICE_UNAVAILABLE;
+
+  private parseError(error: MongoError): PathErrorDto[] {
+    const status = MongoErrorCodes[error.code] || HttpStatus.SERVICE_UNAVAILABLE;
+
+    const path = this.env === 'development' && this.hasKeyPattern(error)
+    ? Object.keys(error.keyPattern).join(',')
+    : undefined;
+
+
     return [
       {
-        status: status,
+        status,
         message: this.env === 'development' ? error.message : undefined,
-        path:
-          this.env === 'development'
-            ? Object.keys(error.keyPattern).join(',')
-            : undefined,
-        code: error.code,
+        path,
+        code: error.code as string,
       },
     ];
   }
+
+  private hasKeyPattern(error: MongoError): error is MongoError & { keyPattern: Record<string, any> } {
+    return 'keyPattern' in error;
+  }
+
 }

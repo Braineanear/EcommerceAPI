@@ -1,37 +1,36 @@
 import { Response } from 'express';
-
 import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
   HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
-  env: string;
+  private readonly env: string;
 
-  constructor(private configService: ConfigService) {
-    this.env = this.configService.get<string>('app.env');
+  constructor(private readonly configService: ConfigService) {
+    this.env = this.configService.get<string>('app.env', 'production');
   }
-  catch(exception: HttpException, host: ArgumentsHost) {
+
+  catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
+    const isDevelopment = this.env === 'development';
 
-    let message;
-
-    if (status === 500) {
-      message = 'Internal server error';
-    } else {
-      message = 'An error occurred';
-    }
+    const message =
+      status === HttpStatus.INTERNAL_SERVER_ERROR
+        ? 'Internal server error'
+        : 'An error occurred';
 
     response.status(status).json({
       statusCode: status,
-      type: this.env === 'development' ? exception.name : undefined,
-      message: this.env === 'development' ? exception.message : message,
+      type: isDevelopment ? exception.name : undefined,
+      message: isDevelopment ? exception.message : message,
     });
   }
 }

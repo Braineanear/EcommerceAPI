@@ -1,3 +1,4 @@
+import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({
@@ -12,4 +13,8 @@ export class Tag {
   code: string;
 }
 
-export const TagSchema = SchemaFactory.createForClass(Tag);
+type TagDocument = Tag & Document;
+
+const TagSchema = SchemaFactory.createForClass(Tag);
+
+export { TagDocument, TagSchema };

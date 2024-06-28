@@ -1,5 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MaxLength } from 'class-validator';
-
+import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
 
@@ -14,6 +13,8 @@ export class RegisterDto {
   })
   @IsString()
   @IsNotEmpty()
+  @MaxLength(50)
+  @MinLength(2)
   firstName: string;
 
   @ApiProperty({
@@ -26,6 +27,8 @@ export class RegisterDto {
   })
   @IsString()
   @IsNotEmpty()
+  @MaxLength(50)
+  @MinLength(2)
   lastName: string;
 
   @ApiProperty({
@@ -35,6 +38,7 @@ export class RegisterDto {
     type: String,
     required: true,
   })
+  @IsNotEmpty()
   role: RoleTypeEnum;
 
   @ApiProperty({
@@ -48,6 +52,9 @@ export class RegisterDto {
   })
   @IsString()
   @IsNotEmpty()
+  @IsEmail()
+  @MaxLength(50)
+  @MinLength(5)
   email: string;
 
   @ApiProperty({
@@ -58,5 +65,9 @@ export class RegisterDto {
     type: String,
     required: true,
   })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(50)
+  @MinLength(6)
   password: string;
 }

@@ -1,3 +1,4 @@
+import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({
@@ -12,4 +13,8 @@ export class Size {
   code: string;
 }
 
-export const SizeSchema = SchemaFactory.createForClass(Size);
+type SizeDocument = Size & Document;
+
+const SizeSchema = SchemaFactory.createForClass(Size);
+
+export { SizeDocument, SizeSchema };

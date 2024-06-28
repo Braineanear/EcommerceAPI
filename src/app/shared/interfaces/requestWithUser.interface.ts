@@ -1,7 +1,7 @@
 import { Request } from 'express';
 
-import { IUserDocument } from '@modules/user/interfaces/user.interface';
+import { UserDocument } from '@modules/user/models/user.entity';
 
 export interface RequestWithUser extends Request {
-  user: IUserDocument;
+  user: UserDocument;
 }

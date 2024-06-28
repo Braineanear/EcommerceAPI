@@ -6,11 +6,11 @@ import { DebuggerService } from '@shared/debugger/debugger.service';
 import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
-import { CreateReviewDto } from './dtos/create-review.dto';
 import { ReviewRepository } from './repositories/review.repository';
+import { ReviewDocument } from './models/review.entity';
 
 @Injectable()
-export class ReviewService extends BaseService<ReviewRepository> {
+export class ReviewService extends BaseService<ReviewDocument, ReviewRepository> {
   constructor(
     protected readonly repository: ReviewRepository,
     protected readonly debuggerService: DebuggerService,
@@ -65,15 +65,15 @@ export class ReviewService extends BaseService<ReviewRepository> {
     return await this.repository.deleteById(id);
   }
 
-  async create(doc: CreateReviewDto, userId: string) {
+  async create(doc: Partial<ReviewDocument>, userId: string): Promise<ReviewDocument> {
     const product = await this.productService.findById(doc.product);
 
-    const review = await this.repository.findOne({
+    const existingReview = await this.repository.findOne({
       user: userId,
       product: doc.product,
     });
 
-    if (review) {
+    if (existingReview) {
       throw new HttpException(MessagesMapping['#25'], HttpStatus.UNAUTHORIZED);
     }
 
@@ -84,10 +84,12 @@ export class ReviewService extends BaseService<ReviewRepository> {
 
     await product.save();
 
-    return this.repository.create({
+    const createdReview = await this.repository.create({
       ...doc,
       product: product._id,
       user: new Types.ObjectId(userId),
     });
+
+    return createdReview;
   }
 }

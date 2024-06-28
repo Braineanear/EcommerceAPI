@@ -4,14 +4,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BaseRepository } from '@shared/repositories/base.repository';
 
-import { ITokenDocument } from '../interfaces/token.interface';
-import { Token } from '../models/token.entity';
+import { Token, TokenDocument } from '../models/token.entity';
 
 @Injectable()
-export class TokenRepository extends BaseRepository<ITokenDocument> {
+export class TokenRepository extends BaseRepository<TokenDocument> {
   constructor(
     @InjectModel(Token.name)
-    protected readonly model: PaginateModel<ITokenDocument>,
+    protected readonly model: PaginateModel<TokenDocument>,
   ) {
     super(model);
   }

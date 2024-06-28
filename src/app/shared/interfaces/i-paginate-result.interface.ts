@@ -1,5 +1,5 @@
 export interface IPaginatedInterface<T> {
-  docs: Array<T>;
+  docs: T[];
   total: number;
   limit: number;
   page?: number;

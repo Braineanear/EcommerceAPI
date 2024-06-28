@@ -5,9 +5,9 @@ import { Types } from 'mongoose';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { ITokenDocument } from '@modules/token/interfaces/token.interface';
+import { TokenDocument } from '@modules/token/models/token.entity';
 import { TokenRepository } from '@modules/token/repositories/token.repository';
-import { IUserDocument } from '@modules/user/interfaces/user.interface';
+import { UserDocument } from '@modules/user/models/user.entity';
 import { UserRepository } from '@modules/user/repositories/user.repository';
 
 import { DebuggerService } from '@shared/debugger/debugger.service';
@@ -32,7 +32,7 @@ export class AuthService {
     private readonly mailService: MailService,
   ) {}
 
-  private async refreshTokenExistance(user: IUserDocument): Promise<void> {
+  private async refreshTokenExistance(user: UserDocument): Promise<void> {
     await this.tokenRepository.deleteOne({
       user: user.id,
       type: TokenTypes.REFRESH,
@@ -40,9 +40,7 @@ export class AuthService {
   }
 
   private async userExistance(email: string): Promise<void> {
-    const user = await this.userRepository.findOne({
-      email,
-    });
+    const user = await this.userRepository.findOne({ email });
 
     if (user) {
       throw new HttpException(MessagesMapping['#1'], HttpStatus.BAD_REQUEST);
@@ -50,17 +48,13 @@ export class AuthService {
   }
 
   private generateToken(
-    user: IUserDocument,
+    user: UserDocument,
     expires: moment.Moment,
     type: TokenTypes,
     secret: string,
   ): string {
-    const userData = JSON.parse(JSON.stringify(user));
     const payload = {
-      sub: {
-        ...userData,
-        password: undefined,
-      },
+      sub: { ...user.toObject(), password: undefined },
       iat: moment().unix(),
       exp: expires.unix(),
       type,
@@ -74,25 +68,21 @@ export class AuthService {
     userId: Types.ObjectId,
     expires: moment.Moment,
     type: TokenTypes,
-  ): Promise<ITokenDocument> {
-    const tokenDoc = await this.tokenRepository.create({
+  ): Promise<TokenDocument> {
+    return this.tokenRepository.create({
       token,
       user: userId,
       expires: expires.toDate(),
       type,
     });
-
-    return tokenDoc;
   }
 
-  private async generateAuthTokens(user: IUserDocument) {
+  private async generateAuthTokens(user: UserDocument) {
     const accessTokenExpires = moment().add(
-      this.configService.get('auth.jwt.accessToken.expirationTime'),
+      this.configService.get<number>('auth.jwt.accessToken.expirationTime'),
       'minutes',
     );
-    const accessTokenSecret = this.configService.get<string>(
-      'auth.jwt.accessToken.secretKey',
-    );
+    const accessTokenSecret = this.configService.get<string>('auth.jwt.accessToken.secretKey');
 
     const accessToken = this.generateToken(
       user,
@@ -102,12 +92,10 @@ export class AuthService {
     );
 
     const refreshTokenExpires = moment().add(
-      this.configService.get('auth.jwt.refreshToken.expirationTime'),
+      this.configService.get<number>('auth.jwt.refreshToken.expirationTime'),
       'days',
     );
-    const refreshTokenSecret = this.configService.get<string>(
-      'auth.jwt.refreshToken.secretKey',
-    );
+    const refreshTokenSecret = this.configService.get<string>('auth.jwt.refreshToken.secretKey');
 
     const refreshToken = this.generateToken(
       user,
@@ -135,26 +123,22 @@ export class AuthService {
     };
   }
 
-  private async verifyToken(token: string, type: string) {
-    const refreshTokenSecret = this.configService.get<string>(
-      'auth.jwt.refreshToken.secretKey',
-    );
-    const accessTokenSecret = this.configService.get<string>(
-      'auth.jwt.accessToken.secretKey',
+  private async verifyToken(token: string, type: TokenTypes) {
+    const secret = this.configService.get<string>(
+      type === TokenTypes.REFRESH ? 'auth.jwt.refreshToken.secretKey' : 'auth.jwt.accessToken.secretKey'
     );
 
     let payload;
-
-    if (type === TokenTypes.REFRESH) {
-      payload = jwt.verify(token, refreshTokenSecret);
-    } else if (type === TokenTypes.ACCESS) {
-      payload = jwt.verify(token, accessTokenSecret);
+    try {
+      payload = jwt.verify(token, secret);
+    } catch (err) {
+      throw new HttpException(MessagesMapping['#2'], HttpStatus.UNAUTHORIZED);
     }
 
     const tokenDoc = await this.tokenRepository.findOne({
       token,
       type,
-      user: payload._id,
+      user: payload.sub._id,
     });
 
     if (!tokenDoc) {
@@ -172,12 +156,10 @@ export class AuthService {
     }
 
     const expires = moment().add(
-      this.configService.get('auth.jwt.forgotPasswordToken.expirationTime'),
+      this.configService.get<number>('auth.jwt.forgotPasswordToken.expirationTime'),
       'hours',
     );
-    const secret = this.configService.get<string>(
-      'auth.jwt.forgotPasswordToken.secretKey',
-    );
+    const secret = this.configService.get<string>('auth.jwt.forgotPasswordToken.secretKey');
 
     const resetPasswordToken = this.generateToken(
       user,
@@ -200,10 +182,7 @@ export class AuthService {
     plainTextPassword: string,
     hashedPassword: string,
   ): Promise<void> {
-    const isPasswordMatching = await bcrypt.compare(
-      plainTextPassword,
-      hashedPassword,
-    );
+    const isPasswordMatching = await bcrypt.compare(plainTextPassword, hashedPassword);
 
     if (!isPasswordMatching) {
       throw new HttpException(MessagesMapping['#3'], HttpStatus.UNAUTHORIZED);
@@ -213,11 +192,8 @@ export class AuthService {
   private async getAuthenticatedUser(
     email: string,
     plainTextPassword: string,
-  ): Promise<IUserDocument> {
-    const user = await this.userRepository.findOne({
-      email,
-      isDeleted: false,
-    });
+  ): Promise<UserDocument> {
+    const user = await this.userRepository.findOne({ email, isDeleted: false });
 
     if (!user) {
       throw new HttpException(MessagesMapping['#9'], HttpStatus.NOT_FOUND);
@@ -230,14 +206,12 @@ export class AuthService {
     return user;
   }
 
-  private async generateVerifyEmailToken(user: IUserDocument): Promise<string> {
+  private async generateVerifyEmailToken(user: UserDocument): Promise<string> {
     const expires = moment().add(
-      this.configService.get('auth.jwt.verifyEmailToken.expirationTime'),
+      this.configService.get<number>('auth.jwt.verifyEmailToken.expirationTime'),
       'hours',
     );
-    const secret = this.configService.get<string>(
-      'auth.jwt.verifyEmailToken.secretKey',
-    );
+    const secret = this.configService.get<string>('auth.jwt.verifyEmailToken.secretKey');
 
     const verifyEmailToken = this.generateToken(
       user,
@@ -280,7 +254,6 @@ export class AuthService {
     user.isEmailVerified = true;
 
     await user.save();
-
     await tokenDoc.deleteOne();
 
     return {
@@ -304,9 +277,7 @@ export class AuthService {
     user.password = password;
 
     await user.save();
-
     await this.mailService.sendAfterResetPasswordEmail(user.email);
-
     await this.tokenRepository.deleteOne({
       token,
       type: TokenTypes.RESET_PASSWORD,
@@ -317,36 +288,22 @@ export class AuthService {
     };
   }
 
-  public async forgotPassword(
-    forgotPasswordDto: ForgotPasswordDto,
-  ): Promise<any> {
-    const user = await this.userRepository.findOne({
-      email: forgotPasswordDto.email,
-    });
+  public async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<any> {
+    const user = await this.userRepository.findOne({ email: forgotPasswordDto.email });
 
     if (!user) {
       throw new HttpException(MessagesMapping['#9'], HttpStatus.NOT_FOUND);
     }
 
-    const resetPasswordToken = await this.generateResetPasswordToken(
-      forgotPasswordDto.email,
-    );
+    const resetPasswordToken = await this.generateResetPasswordToken(forgotPasswordDto.email);
 
-    await this.mailService.sendResetPasswordEmail(
-      user.email,
-      resetPasswordToken,
-    );
+    await this.mailService.sendResetPasswordEmail(user.email, resetPasswordToken);
 
-    return {
-      token: resetPasswordToken,
-    };
+    return { token: resetPasswordToken };
   }
 
   public async login(loginDto: LoginDto) {
-    const user = await this.getAuthenticatedUser(
-      loginDto.email,
-      loginDto.password,
-    );
+    const user = await this.getAuthenticatedUser(loginDto.email, loginDto.password);
 
     await this.refreshTokenExistance(user);
 
@@ -362,11 +319,7 @@ export class AuthService {
   }
 
   public async generateTokens(tokenDto: TokenDto) {
-    const token = await this.verifyToken(
-      tokenDto.refreshToken,
-      TokenTypes.REFRESH,
-    );
-
+    const token = await this.verifyToken(tokenDto.refreshToken, TokenTypes.REFRESH);
     const user = await this.userRepository.findById(token.user._id);
 
     if (!user) {
@@ -374,7 +327,6 @@ export class AuthService {
     }
 
     await this.refreshTokenExistance(user);
-
     const tokens = await this.generateAuthTokens(user);
 
     return tokens;
@@ -396,7 +348,7 @@ export class AuthService {
     });
 
     return {
-      type: 'Success',
+      type: 'success',
       statusCode: 200,
       message: MessagesMapping['#12'],
     };
@@ -405,9 +357,7 @@ export class AuthService {
   public async register(registrationData: RegisterDto) {
     await this.userExistance(registrationData.email);
 
-    const createdUser = await this.userRepository.create({
-      ...registrationData,
-    });
+    const createdUser = await this.userRepository.create({ ...registrationData });
 
     createdUser.password = undefined;
 

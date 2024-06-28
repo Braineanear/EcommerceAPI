@@ -1,7 +1,6 @@
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { RoleTypeEnum } from '@shared/enums/role-type.enum';
 
 @Schema({
   timestamps: true,
@@ -75,4 +74,8 @@ export class Product {
   details: Record<string, any>;
 }
 
-export const ProductSchema = SchemaFactory.createForClass(Product);
+type ProductDocument = Product & Document;
+
+const ProductSchema = SchemaFactory.createForClass(Product);
+
+export { ProductDocument, ProductSchema };

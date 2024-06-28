@@ -2,9 +2,9 @@ import { Types } from 'mongoose';
 import Stripe from 'stripe';
 
 import { CartService } from '@modules/cart/cart.service';
-import { ICartDocument } from '@modules/cart/interfaces/cart.interface';
+import { CartDocument } from '@modules/cart/models/cart.entity';
 import { ProductService } from '@modules/product/product.service';
-import { IUserDocument } from '@modules/user/interfaces/user.interface';
+import { UserDocument } from '@modules/user/models/user.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DebuggerService } from '@shared/debugger/debugger.service';
@@ -12,11 +12,12 @@ import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
 import { CreateOrderDTO } from './dtos/create-order.dto';
-import { IOrderDocument } from './interfaces/order.interface';
 import { OrderRepository } from './repositories/order.repository';
+import { OrderDocument } from './models/order.entity';
+import { ORDER_STATUS } from '@shared/enums/order-status.enum';
 
 @Injectable()
-export class OrderService extends BaseService<OrderRepository> {
+export class OrderService extends BaseService<OrderDocument, OrderRepository> {
   private stripe: Stripe;
   private stripeSecretKey = this.configService.get<string>('STRIPE_SECRET_KEY');
 
@@ -35,9 +36,9 @@ export class OrderService extends BaseService<OrderRepository> {
   }
 
   private async cachePayment(
-    createOrderDTO: CreateOrderDTO,
-    cart: ICartDocument,
-    userID: Types.ObjectId | string,
+    createOrderDTO: Partial<OrderDocument>,
+    cart: CartDocument,
+    userID: Types.ObjectId,
   ) {
     const {
       paymentMethod,
@@ -82,9 +83,9 @@ export class OrderService extends BaseService<OrderRepository> {
   }
 
   private async stripePayment(
-    createOrderDTO: CreateOrderDTO,
-    cart: ICartDocument,
-    userID: Types.ObjectId | string,
+    createOrderDTO: Partial<OrderDocument>,
+    cart: CartDocument,
+    userID: Types.ObjectId,
   ) {
     const {
       cardNumber,
@@ -107,9 +108,10 @@ export class OrderService extends BaseService<OrderRepository> {
         number: cardNumber,
         exp_month: expMonth,
         exp_year: expYear,
-        cvc,
+        cvc: cvc,
       },
-    });
+    },{});
+
 
     const charge = await this.stripe.charges.create({
       amount: Math.round(cart.totalPrice),
@@ -151,9 +153,9 @@ export class OrderService extends BaseService<OrderRepository> {
   }
 
   public async create(
-    createOrderDTO: CreateOrderDTO,
-    userId: string,
-  ): Promise<IOrderDocument> {
+    createOrderDTO: Partial<OrderDocument>,
+    userId: Types.ObjectId,
+  ): Promise<OrderDocument> {
     const { paymentMethod } = createOrderDTO;
     const cart = await this.cartService.findOne({ user: userId });
 
@@ -169,7 +171,7 @@ export class OrderService extends BaseService<OrderRepository> {
     return order;
   }
 
-  public async changeOrderStatus(id: Types.ObjectId | string, status: string) {
+  public async changeOrderStatus(id: Types.ObjectId | string, status: ORDER_STATUS) {
     if (
       ![
         'Not Processed',
@@ -214,7 +216,7 @@ export class OrderService extends BaseService<OrderRepository> {
     };
   }
 
-  async getOrders(user: IUserDocument) {
+  async getOrders(user: UserDocument) {
     if (user.role === 'Admin' || user.role === 'SuperAdmin') {
       const orders = await this.findPaginated({}, {});
 
@@ -236,7 +238,7 @@ export class OrderService extends BaseService<OrderRepository> {
     };
   }
 
-  async getOrder(user: IUserDocument, id: Types.ObjectId | string) {
+  async getOrder(user: UserDocument, id: Types.ObjectId | string) {
     if (user.role === 'Admin' || user.role === 'SuperAdmin') {
       const orders = await this.findById(id);
 
@@ -257,7 +259,7 @@ export class OrderService extends BaseService<OrderRepository> {
     };
   }
 
-  async cancelOrder(user: IUserDocument, id: Types.ObjectId | string) {
+  async cancelOrder(user: UserDocument, id: Types.ObjectId | string) {
     const order = await this.findById(id);
 
     if (

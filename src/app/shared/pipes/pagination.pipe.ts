@@ -1,41 +1,23 @@
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
-
 import { FormattedPaginateQueryOptionsDto } from '../dtos/formatted-paginate-query-options.dto';
 import { PaginationOptionsDto } from '../dtos/pagination-options.dto';
 import { SortDirectionValue } from '../enums/sort-direction.enum';
 import { IPaginateOptions } from '../interfaces/i-paginate-options';
 
 @Injectable()
-export class PaginationPipe
-  implements PipeTransform<any, FormattedPaginateQueryOptionsDto>
-{
-  transform(value: any, metadata: ArgumentMetadata) {
-    const { page, limit, sortBy, direction, ...filter } = value;
-    const sortVal: any = { [sortBy]: SortDirectionValue[direction] };
-    const paginateOptions: IPaginateOptions = new PaginationOptionsDto(
-      { page: page, limit: limit },
-      sortVal,
-    );
+export class PaginationPipe implements PipeTransform<any, FormattedPaginateQueryOptionsDto> {
+  transform(value: any, metadata: ArgumentMetadata): FormattedPaginateQueryOptionsDto {
+    const { page, limit, sortBy, direction, search, ...filter } = value;
 
-    paginateOptions.lean = paginateOptions.lean ? paginateOptions.lean : false;
+    const sortVal = { [sortBy]: SortDirectionValue[direction] };
+    const paginateOptions: IPaginateOptions = new PaginationOptionsDto({ page, limit }, sortVal);
+    paginateOptions.lean = paginateOptions.lean ?? false;
 
-    if (filter.search) {
+    if (search) {
       filter['$or'] = [
-        {
-          name: {
-            $regex: '^' + filter.search,
-            $options: 'i',
-          },
-        },
-        {
-          code: {
-            $regex: '^' + filter.search,
-            $options: 'i',
-          },
-        },
+        { name: { $regex: `^${search}`, $options: 'i' } },
+        { code: { $regex: `^${search}`, $options: 'i' } },
       ];
-
-      delete filter.search;
     }
 
     return {

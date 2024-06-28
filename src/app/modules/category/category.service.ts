@@ -8,11 +8,11 @@ import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
 import { CreateCategoryDto } from './dtos/create-category.dto';
-import { ICategoryDocument } from './interfaces/category.interface';
 import { CategoryRepository } from './repositories/category.repository';
+import { CategoryDocument } from './models/category.entity';
 
 @Injectable()
-export class CategoryService extends BaseService<CategoryRepository> {
+export class CategoryService extends BaseService<CategoryDocument, CategoryRepository> {
   constructor(
     protected readonly repository: CategoryRepository,
     protected readonly awsService: AwsS3Service,
@@ -23,7 +23,7 @@ export class CategoryService extends BaseService<CategoryRepository> {
 
   async create(
     createCategoryDto: CreateCategoryDto,
-  ): Promise<ICategoryDocument> {
+  ): Promise<CategoryDocument> {
     const result = await this.repository.create(createCategoryDto);
 
     return result;
@@ -32,7 +32,7 @@ export class CategoryService extends BaseService<CategoryRepository> {
   async uploadImage(
     id: string | Types.ObjectId,
     file: Express.Multer.File,
-  ): Promise<ICategoryDocument> {
+  ): Promise<CategoryDocument> {
     const category = await this.findById(id);
 
     if (category.image) {
@@ -60,7 +60,7 @@ export class CategoryService extends BaseService<CategoryRepository> {
     return category;
   }
 
-  async deleteById(id: string | Types.ObjectId): Promise<ICategoryDocument> {
+  async deleteById(id: string | Types.ObjectId): Promise<CategoryDocument> {
     const result = await this.repository.deleteById(id);
 
     if (!result) {

@@ -1,9 +1,32 @@
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ORDER_STATUS } from '@shared/enums/order-status.enum';
 
-import { Item, ItemSchema } from './item.entity';
+@Schema({
+  timestamps: true,
+  versionKey: false,
+})
+export class Item {
+  @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
+  product: Types.ObjectId;
+
+  @Prop({ type: Number, required: true })
+  quantity: number;
+
+  @Prop({ type: Number, required: true })
+  price: number;
+
+  @Prop({ type: Number, required: true })
+  total: number;
+
+  @Prop({ type: Number })
+  totalProductQuantity?: number;
+}
+
+type ItemDocument = Item & Document;
+
+const ItemSchema = SchemaFactory.createForClass(Item);
 
 @Schema({
   timestamps: true,
@@ -57,6 +80,22 @@ export class Order {
 
   @Prop({ type: String })
   postalCode?: string;
+
+  @Prop({ type: String})
+  cardNumber?: string;
+
+  @Prop({ type: String })
+  expMonth?: string;
+
+  @Prop({ type: String })
+  expYear?: string
+
+  @Prop({ type: String })
+  cvc?: string
 }
 
-export const OrderSchema = SchemaFactory.createForClass(Order);
+type OrderDocument = Order & Document;
+
+const OrderSchema = SchemaFactory.createForClass(Order);
+
+export { ItemDocument, OrderDocument, ItemSchema, OrderSchema };

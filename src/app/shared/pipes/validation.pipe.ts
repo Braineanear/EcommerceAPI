@@ -1,8 +1,11 @@
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-
 import {
-    ArgumentMetadata, HttpException, HttpStatus, Injectable, PipeTransform
+  ArgumentMetadata,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  PipeTransform,
 } from '@nestjs/common';
 
 @Injectable()
@@ -24,19 +27,10 @@ export class ValidationPipe implements PipeTransform {
     return value;
   }
 
-  private isEmpty(value: any) {
-    if (Object.keys(value).length > 0) {
-      return false;
-    }
-    return true;
-  }
-
-  private formatErrors(errors: any[]) {
+  private formatErrors(errors: any[]): string {
     return errors
       .map((err) => {
-        for (let property in err.constraints) {
-          return err.constraints[property];
-        }
+        return Object.values(err.constraints).join(', ');
       })
       .join(', ');
   }

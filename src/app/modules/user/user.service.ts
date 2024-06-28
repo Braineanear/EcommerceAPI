@@ -8,11 +8,11 @@ import { MessagesMapping } from '@shared/messages-mapping';
 import { BaseService } from '@shared/services/base.service';
 
 import { CreateUserDto } from './dtos/create-user.dto';
-import { IUserDocument } from './interfaces/user.interface';
 import { UserRepository } from './repositories/user.repository';
+import { UserDocument } from './models/user.entity';
 
 @Injectable()
-export class UserService extends BaseService<UserRepository> {
+export class UserService extends BaseService<UserDocument, UserRepository> {
   constructor(
     protected readonly repository: UserRepository,
     protected readonly awsService: AwsS3Service,
@@ -20,7 +20,7 @@ export class UserService extends BaseService<UserRepository> {
   ) {
     super();
   }
-  async getLoggedinUserDetails(userId: string): Promise<IUserDocument> {
+  async getLoggedinUserDetails(userId: string): Promise<UserDocument> {
     const user = await this.repository.findById(userId);
 
     if (!user) {
@@ -32,7 +32,7 @@ export class UserService extends BaseService<UserRepository> {
     return user;
   }
 
-  async deleteLoggedinUserDetails(userId: string): Promise<IUserDocument> {
+  async deleteLoggedinUserDetails(userId: string): Promise<UserDocument> {
     const user = await this.repository.deleteById(userId);
 
     if (!user) {
@@ -45,7 +45,7 @@ export class UserService extends BaseService<UserRepository> {
   async uploadImage(
     id: string | Types.ObjectId,
     file: Express.Multer.File,
-  ): Promise<IUserDocument> {
+  ): Promise<UserDocument> {
     console.log(id);
     const user = await this.repository.findById(id);
 
@@ -77,7 +77,7 @@ export class UserService extends BaseService<UserRepository> {
   async uploadLoggedinUserImage(
     userId: string,
     file: Express.Multer.File,
-  ): Promise<IUserDocument> {
+  ): Promise<UserDocument> {
     const user = await this.repository.deleteById(userId);
 
     if (user.avatar) {
@@ -104,7 +104,7 @@ export class UserService extends BaseService<UserRepository> {
     });
   }
 
-  async create(userDto: CreateUserDto): Promise<IUserDocument> {
+  async create(userDto: CreateUserDto): Promise<UserDocument> {
     const user = await this.repository.create(userDto);
 
     return user;

@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
+import { Types } from 'mongoose';
 
 class DetailsDto {
   [key: string]: any;
@@ -36,7 +37,7 @@ export class CreateProductDto {
   })
   @IsString()
   @IsNotEmpty()
-  category: string;
+  category: Types.ObjectId;
 
   @ApiProperty({
     type: String,
@@ -46,7 +47,7 @@ export class CreateProductDto {
   })
   @IsString()
   @IsOptional()
-  brand?: string;
+  brand?: Types.ObjectId;
 
   @ApiProperty({
     type: Number,
@@ -84,7 +85,7 @@ export class CreateProductDto {
   })
   @IsString()
   @IsOptional()
-  size?: string;
+  size?: Types.ObjectId;
 
   @ApiProperty({
     type: String,
@@ -94,7 +95,7 @@ export class CreateProductDto {
   })
   @IsString()
   @IsOptional()
-  color?: string;
+  color?: Types.ObjectId;
 
   @ApiProperty({
     type: [String],
@@ -107,7 +108,7 @@ export class CreateProductDto {
   })
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
-  tags: string[];
+  tags: Types.ObjectId[];
 
   @ValidateNested()
   @Type(() => DetailsDto)

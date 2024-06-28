@@ -1,5 +1,9 @@
 import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 import winston from 'winston';
+import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { AuthModule } from '@modules/auth/auth.module';
 import { BrandModule } from '@modules/brand/brand.module';
@@ -14,10 +18,7 @@ import { ReviewModule } from '@modules/review/review.module';
 import { SizeModule } from '@modules/size/size.module';
 import { TagModule } from '@modules/tag/tag.module';
 import { UserModule } from '@modules/user/user.module';
-import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-import { MongooseModule } from '@nestjs/mongoose';
+
 import Configs from '@shared/config';
 import { DebuggerModule } from '@shared/debugger/debugger.module';
 import { HttpExceptionFilter } from '@shared/filters/http-exception.filter';
@@ -40,11 +41,11 @@ import { LoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
     }),
     WinstonModule.forRootAsync({
       imports: [DebuggerModule],
-      useFactory: (logger: winston.LoggerOptions) => {
+      useFactory: (configService: ConfigService) => {
         return {
           transports: [
             new winston.transports.Console({
-              level: logger.level,
+              level: configService.get<string>('LOG_LEVEL', 'info'),
               format: winston.format.combine(
                 winston.format.timestamp(),
                 winston.format.prettyPrint(),
@@ -58,24 +59,20 @@ import { LoggerMiddleware } from '@shared/middlewares/http-logger.middleware';
     }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
-        return {
-          uri: config.get<string>('DATABASE_URL'),
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-          connectionFactory: (connection) => {
-            connection.plugin(require('mongoose-paginate-v2'));
-            connection.plugin(require('mongoose-autopopulate'));
-            Logger.debug(
-              `App connected to mongodb on ${config.get<string>(
-                'DATABASE_URL',
-              )}`,
-              'MONGODB',
-            );
-            return connection;
-          },
-        };
-      },
+      useFactory: (config: ConfigService) => ({
+        uri: config.get<string>('DATABASE_URL'),
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        connectionFactory: (connection) => {
+          connection.plugin(require('mongoose-paginate-v2'));
+          connection.plugin(require('mongoose-autopopulate'));
+          Logger.debug(
+            `App connected to MongoDB on ${config.get<string>('DATABASE_URL')}`,
+            'MONGODB',
+          );
+          return connection;
+        },
+      }),
     }),
     AuthModule,
     UserModule,

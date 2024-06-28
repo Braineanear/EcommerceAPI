@@ -16,11 +16,11 @@ import { BaseService } from '@shared/services/base.service';
 
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
-import { IProductDocument } from './interfaces/product.interface';
 import { ProductRepository } from './repositories/product.repository';
+import { ProductDocument } from './models/product.entity';
 
 @Injectable()
-export class ProductService extends BaseService<ProductRepository> {
+export class ProductService extends BaseService<ProductDocument, ProductRepository> {
   constructor(
     protected readonly repository: ProductRepository,
     protected readonly awsService: AwsS3Service,
@@ -35,7 +35,7 @@ export class ProductService extends BaseService<ProductRepository> {
     super();
   }
 
-  async create(createProductDto: CreateProductDto): Promise<IProductDocument> {
+  async create(createProductDto: Partial<CreateProductDto>): Promise<ProductDocument> {
     const data = {
       ...createProductDto,
       slug: slugify(createProductDto.name, {
@@ -50,7 +50,7 @@ export class ProductService extends BaseService<ProductRepository> {
   async updateById(
     id: string | Types.ObjectId,
     data: UpdateProductDto,
-  ): Promise<IProductDocument> {
+  ): Promise<ProductDocument> {
     const item = await this.repository.findById(id);
 
     if (!item) {
@@ -75,7 +75,7 @@ export class ProductService extends BaseService<ProductRepository> {
   async uploadMainImage(
     id: string | Types.ObjectId,
     file: Express.Multer.File,
-  ): Promise<IProductDocument> {
+  ): Promise<ProductDocument> {
     const product = await this.findById(id);
     const content: Buffer = file.buffer;
     const name = product._id;
@@ -98,7 +98,7 @@ export class ProductService extends BaseService<ProductRepository> {
   async uploadImages(
     id: string | Types.ObjectId,
     files: Express.Multer.File[],
-  ): Promise<IProductDocument> {
+  ): Promise<ProductDocument> {
     const product = await this.findById(id);
     let counter = 1;
 
@@ -125,7 +125,7 @@ export class ProductService extends BaseService<ProductRepository> {
 
   async deleteMainImage(
     id: string | Types.ObjectId,
-  ): Promise<IProductDocument> {
+  ): Promise<ProductDocument> {
     const product = await this.findById(id);
     const image = await this.imageService.findById(product.mainImage);
 
@@ -147,7 +147,7 @@ export class ProductService extends BaseService<ProductRepository> {
   async deleteSubImage(
     id: string | Types.ObjectId,
     imageId: string | Types.ObjectId,
-  ): Promise<IProductDocument> {
+  ): Promise<ProductDocument> {
     const product = await this.findById(id);
     const exist = product.images.find(
       (image) => image._id.toString() === imageId.toString(),

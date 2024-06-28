@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
@@ -18,4 +18,8 @@ export class Favorite {
   user: Types.ObjectId;
 }
 
-export const FavoriteSchema = SchemaFactory.createForClass(Favorite);
+type FavoriteDocument = Favorite & Document;
+
+const FavoriteSchema = SchemaFactory.createForClass(Favorite);
+
+export { FavoriteDocument, FavoriteSchema };

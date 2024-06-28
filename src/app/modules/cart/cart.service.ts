@@ -13,9 +13,10 @@ import { CreateCartDto } from './dtos/create-cart.dto';
 import { ProductCartDto } from './dtos/product-cart.dto';
 
 import { CartRepository } from './repositories/cart.repository';
+import { CartDocument } from './models/cart.entity';
 
 @Injectable()
-export class CartService extends BaseService<CartRepository> {
+export class CartService extends BaseService<CartDocument, CartRepository> {
   constructor(
     protected readonly repository: CartRepository,
     protected readonly debuggerService: DebuggerService,

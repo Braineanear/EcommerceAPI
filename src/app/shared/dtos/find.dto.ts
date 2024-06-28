@@ -1,7 +1,5 @@
 import { IsOptional, IsString } from 'class-validator';
-
 import { ApiProperty } from '@nestjs/swagger';
-
 import { PaginateQueryOptionsDto } from '../dtos/paginate-query-options.dto';
 
 export class FindDto extends PaginateQueryOptionsDto {
@@ -9,6 +7,7 @@ export class FindDto extends PaginateQueryOptionsDto {
     type: String,
     required: false,
     description: 'The search keyword',
+    example: 'example keyword',
   })
   @IsOptional()
   @IsString()

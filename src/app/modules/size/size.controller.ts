@@ -23,7 +23,7 @@ export class SizeController {
   @ApiBadRequestResponse({ description: 'Bad request.' })
   @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  @ApiBody({ type: CreateSizeDto })
+  @ApiBody({ type: CreateSizeDto, description: 'Size Information' })
   create(@Body() data: CreateSizeDto) {
     return this.service.create(data);
   }
@@ -33,7 +33,7 @@ export class SizeController {
   @ApiOperation({ summary: 'Get all sizes' })
   @ApiOkResponse({ description: 'Successfully returned all sizes.' })
   @ApiBadRequestResponse({ description: 'Bad request.' })
-  @ApiQuery({ type: FindSizesDto })
+  @ApiQuery({ type: FindSizesDto, description: 'Pagination options' })
   findAll(@Query(new PaginationPipe()) q: FindSizesDto) {
     return this.service.findPaginated((<any>q).filter, {
       ...(<any>q).options,
@@ -60,7 +60,7 @@ export class SizeController {
   @ApiUnauthorizedResponse({ description: 'Unauthorized.' })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   @ApiParam({ name: 'id', description: 'Size ID' })
-  @ApiBody({ type: UpdateSizeDto })
+  @ApiBody({ type: UpdateSizeDto, description: 'Size Information' })
   updateById(@Param('id') id: string, @Body() data: UpdateSizeDto) {
     return this.service.updateById(id, data);
   }

@@ -1,5 +1,5 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
 
 @Schema({
   timestamps: true,
@@ -25,4 +25,8 @@ export class Review {
   user: Types.ObjectId;
 }
 
-export const ReviewSchema = SchemaFactory.createForClass(Review);
+type ReviewDocument = Review & Document;
+
+const ReviewSchema = SchemaFactory.createForClass(Review);
+
+export { ReviewDocument, ReviewSchema };

@@ -1,13 +1,13 @@
-import { IsNotEmpty, IsString } from 'class-validator';
 
-import { ApiProperty } from '@nestjs/swagger';
+import { ORDER_STATUS } from '@shared/enums/order-status.enum';
+import { Types } from 'mongoose';
 
 export class CreateOrderDTO {
   phone: string;
   paymentMethod: string;
   address: string;
-  products: string[];
-  status: string;
+  products: Types.ObjectId[];
+  status: ORDER_STATUS;
   total: number;
   createdAt: Date;
   updatedAt: Date;

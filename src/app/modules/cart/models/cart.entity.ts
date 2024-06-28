@@ -1,14 +1,34 @@
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { Item, ItemSchema } from './item.entity';
+@Schema({
+  timestamps: false,
+  versionKey: false,
+})
+class Item {
+  @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
+  product: Types.ObjectId;
+
+  @Prop({ type: Number, required: true })
+  quantity: number;
+
+  @Prop({ type: Number, required: true })
+  price: number;
+
+  @Prop({ type: Number, required: true })
+  total: number;
+}
+
+type ItemDocument = Item & Document;
+
+const ItemSchema = SchemaFactory.createForClass(Item);
 
 @Schema({
   timestamps: true,
   versionKey: false,
 })
-export class Cart {
+class Cart {
   @Prop({ type: Types.ObjectId, ref: 'User', autopopulate: true })
   user: Types.ObjectId;
 
@@ -22,4 +42,8 @@ export class Cart {
   totalQuantity: number;
 }
 
-export const CartSchema = SchemaFactory.createForClass(Cart);
+type CartDocument = Cart & Document;
+
+const CartSchema = SchemaFactory.createForClass(Cart);
+
+export { Item, ItemDocument, Cart, CartDocument, CartSchema };

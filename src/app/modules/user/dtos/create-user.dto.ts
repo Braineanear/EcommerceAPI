@@ -1,5 +1,4 @@
-import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
 
@@ -27,10 +26,9 @@ export class CreateUserDto {
   @ApiProperty({
     type: String,
     required: true,
-    description: 'User email',
-    example: 'be@example.com',
+    description: 'User email address',
+    example: 'john.doe@example.com',
   })
-  @IsString()
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -49,12 +47,11 @@ export class CreateUserDto {
     type: String,
     required: true,
     description: 'User role',
-    enum: Object.values(RoleTypeEnum),
+    enum: RoleTypeEnum,
     example: RoleTypeEnum.User,
   })
-  @IsString()
-  @IsNotEmpty()
   @IsEnum(RoleTypeEnum)
+  @IsNotEmpty()
   role: RoleTypeEnum;
 
   @ApiProperty({
@@ -70,7 +67,7 @@ export class CreateUserDto {
   @ApiProperty({
     type: String,
     required: false,
-    description: 'User phone',
+    description: 'User phone number',
     example: '+1 212-226-3126',
   })
   @IsString()
@@ -100,7 +97,7 @@ export class CreateUserDto {
   @ApiProperty({
     type: String,
     required: false,
-    description: 'User bio',
+    description: 'User biography',
     example: 'I am a software engineer',
   })
   @IsString()

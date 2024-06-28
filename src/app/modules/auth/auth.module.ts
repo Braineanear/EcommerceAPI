@@ -7,7 +7,7 @@ import { TokenModule } from '@modules/token/token.module';
 import { UserModule } from '@modules/user/user.module';
 
 import { MailService } from '@shared/services/mail.service';
-import { JwtStrategy } from '@shared/strategies/jwt-startegy';
+import { JwtStrategy } from '@shared/strategies/jwt-strategy';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -17,25 +17,20 @@ import { AuthService } from './auth.service';
     forwardRef(() => UserModule),
     forwardRef(() => TokenModule),
     PassportModule,
-
     JwtModule.registerAsync({
-      global: true,
       imports: [ConfigModule],
-      useFactory: (config: ConfigService) => {
-        return {
-          secret: config.get<string>('auth.jwt.accessToken.secretKey'),
-          signOptions: {
-            expiresIn: config.get<string>(
-              'auth.jwt.accessToken.expirationTime',
-            ),
-          },
-        };
-      },
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('auth.jwt.accessToken.secretKey'),
+        signOptions: {
+          expiresIn: config.get<string>('auth.jwt.accessToken.expirationTime'),
+        },
+      }),
       inject: [ConfigService],
     }),
+    ConfigModule
   ],
   providers: [AuthService, JwtStrategy, MailService],
   controllers: [AuthController],
-  exports: [],
+  exports: [AuthService, JwtStrategy, JwtModule],
 })
 export class AuthModule {}

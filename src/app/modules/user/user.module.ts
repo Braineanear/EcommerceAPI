@@ -6,8 +6,7 @@ import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AwsModule } from '@shared/aws/aws.module';
 
-import { IUserDocument } from './interfaces/user.interface';
-import { User, UserSchema } from './models/user.entity';
+import { User, UserSchema, UserDocument } from './models/user.entity';
 import { UserRepository } from './repositories/user.repository';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
@@ -19,7 +18,8 @@ import { UserService } from './user.service';
         name: User.name,
         useFactory: () => {
           const schema = UserSchema;
-          schema.pre<IUserDocument>('save', function (next: NextFunction) {
+
+          schema.pre<UserDocument>('save', function (next: NextFunction) {
             const user = this;
 
             if (!user.isModified('password')) {
@@ -51,6 +51,6 @@ import { UserService } from './user.service';
   ],
   providers: [UserService, UserRepository],
   controllers: [UserController],
-  exports: [UserRepository, UserService],
+  exports: [UserService, UserRepository],
 })
 export class UserModule {}

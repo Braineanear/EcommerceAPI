@@ -7,6 +7,6 @@ export interface ITranslation {
 export interface ITranslationModel {
   translation: ITranslation[];
 }
-export type ITranslationDocumnet = Document &
+export type ITranslationDocument = Document &
   ITranslationModel &
   Record<string, unknown>;

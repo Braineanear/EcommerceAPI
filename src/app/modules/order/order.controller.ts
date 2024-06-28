@@ -16,6 +16,7 @@ import {
 import { AuthUser } from '@shared/decorators/auth-user.decorator';
 import { Roles } from '@shared/decorators/roles.decorator';
 import { RoleTypeEnum } from '@shared/enums/role-type.enum';
+import { ORDER_STATUS } from '@shared/enums/order-status.enum';
 import { OrderService } from './order.service';
 
 @ApiBearerAuth()
@@ -39,7 +40,7 @@ export class OrderController {
   }
 
   @Put('/:id/status')
-  changeOrderStatus(@Param('id') id: string, @Body() data: { status: string }) {
+  changeOrderStatus(@Param('id') id: string, @Body() data: { status: ORDER_STATUS }) {
     return this.service.changeOrderStatus(id, data.status);
   }
 

@@ -4,14 +4,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BaseRepository } from '@shared/repositories/base.repository';
 
-import { IHistoryDocument } from '../interfaces/history.interface';
-import { History } from '../models/history.entity';
+import { History, HistoryDocument } from '../models/history.entity';
 
 @Injectable()
-export class HistoryRepository extends BaseRepository<IHistoryDocument> {
+export class HistoryRepository extends BaseRepository<HistoryDocument> {
   constructor(
     @InjectModel(History.name)
-    protected readonly model: PaginateModel<IHistoryDocument>,
+    protected readonly model: PaginateModel<HistoryDocument>,
   ) {
     super(model);
   }

@@ -4,14 +4,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BaseRepository } from '@shared/repositories/base.repository';
 
-import { IColorDocument } from '../interfaces/color.interface';
-import { Color } from '../models/color.entity';
+import { Color, ColorDocument } from '../models/color.entity';
 
 @Injectable()
-export class ColorRepository extends BaseRepository<IColorDocument> {
+export class ColorRepository extends BaseRepository<ColorDocument> {
   constructor(
     @InjectModel(Color.name)
-    protected readonly model: PaginateModel<IColorDocument>,
+    protected readonly model: PaginateModel<ColorDocument>,
   ) {
     super(model);
   }

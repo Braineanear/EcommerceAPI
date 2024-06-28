@@ -1,11 +1,10 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-
 import { ApiProperty } from '@nestjs/swagger';
 
 export class SuccessResponseDto {
   @ApiProperty({
     description: 'Response message',
-    example: 'messageCode',
+    example: 'Operation completed successfully',
     type: String,
   })
   @IsNotEmpty()

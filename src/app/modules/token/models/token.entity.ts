@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { TokenTypes } from '@shared/enums/token-type.enum';
@@ -26,4 +26,8 @@ export class Token {
   type: TokenTypes;
 }
 
-export const TokenSchema = SchemaFactory.createForClass(Token);
+type TokenDocument = Token & Document;
+
+const TokenSchema = SchemaFactory.createForClass(Token);
+
+export { TokenDocument, TokenSchema };
