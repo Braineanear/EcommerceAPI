@@ -18,6 +18,7 @@ import { MailService } from '@shared/services/mail.service';
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
 import { LoginDto } from './dtos/login.dto';
 import { LogoutDto } from './dtos/logout.dto';
+import { RoleTypeEnum } from '@shared/enums/role-type.enum';
 import { RegisterDto } from './dtos/register.dto';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
 import { TokenDto } from './dtos/token.dto';
@@ -357,7 +358,10 @@ export class AuthService {
   public async register(registrationData: RegisterDto) {
     await this.userExistance(registrationData.email);
 
-    const createdUser = await this.userRepository.create({ ...registrationData });
+    const createdUser = await this.userRepository.create({
+      ...registrationData,
+      role: RoleTypeEnum.User,
+    });
 
     createdUser.password = undefined;
 
